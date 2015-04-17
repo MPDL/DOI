@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.mpg.mdpl.doi.rest.DOIResource;
+import de.mpg.mdpl.doi.rest.exceptionMapper.DoiAlreadyExistsMapper;
+import de.mpg.mdpl.doi.rest.exceptionMapper.DoxiExceptionMapper;
 
 public class SimpleTest extends JerseyTest {
 
@@ -28,7 +30,7 @@ public class SimpleTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		return new ResourceConfig(DOIResource.class);
+		return new ResourceConfig(DOIResource.class, DoxiExceptionMapper.class, DoiAlreadyExistsMapper.class);
 	}
 
 	@Test
@@ -82,5 +84,15 @@ public class SimpleTest extends JerseyTest {
 
 		// new DataciteAPIController().updateUrl(testDoi, url);
 		logger.info("--------------------- FINISHED get DOI test ---------------------");
+	}
+	
+	@Test
+	public void testException()
+	{
+		Response result = target("doi").path("test").request().get();
+		logger.info("Exception " + result.readEntity(String.class) +result.getStatus());
+		
+		Response result2 = target("doi").path("test2").request().get();
+		logger.info("Exception " + result2.readEntity(String.class) +result2.getStatus());
 	}
 }
