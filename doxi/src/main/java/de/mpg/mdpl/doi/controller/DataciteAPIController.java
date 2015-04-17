@@ -94,6 +94,9 @@ public class DataciteAPIController {
 			return Response.notModified("HANDLE_ALREADY_EXISTS").build();
 		} else if (getResp.getStatus() == Response.Status.NOT_FOUND
 				.getStatusCode()) {
+			
+			//TODO URL check
+			
 			metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml, doi);
 
 			Response mdResp = createOrUpdateMetadata(metadataXml);
