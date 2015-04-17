@@ -15,4 +15,9 @@ public class UrlInvalidException extends DoxiException {
 	{
 		super(PropertyReader.getMessage("URL_INVALID_EXCEPTION"));
 	}
+	
+	public UrlInvalidException(String message)
+	{
+		super(message);
+	}
 }

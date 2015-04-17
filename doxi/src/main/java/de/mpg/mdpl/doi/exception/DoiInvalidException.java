@@ -15,4 +15,8 @@ public class DoiInvalidException extends DoxiException {
 	{
 		super(PropertyReader.getMessage("DOI_INVALID_EXCEPTION"));
 	}
+	public DoiInvalidException(String message)
+	{
+		super(message);
+	}
 }

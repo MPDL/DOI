@@ -15,4 +15,8 @@ public class DoiAlreadyExistsException extends DoxiException {
 	{
 		super(PropertyReader.getMessage("DOI_ALREADY_EXISTS_EXCEPTION"));
 	}
+	
+	public DoiAlreadyExistsException(String message) {
+		super(message);
+	}
 }

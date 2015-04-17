@@ -15,4 +15,9 @@ public class DoiRegisterException extends DoxiException {
 		super(PropertyReader.getMessage("DOI_REGISTER_EXCEPTION"));
 	}
 	
+	public DoiRegisterException(String message)
+	{
+		super(message);
+	}
+	
 }
