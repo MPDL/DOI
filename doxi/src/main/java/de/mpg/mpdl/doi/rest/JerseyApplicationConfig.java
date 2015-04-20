@@ -19,10 +19,11 @@ public class JerseyApplicationConfig extends ResourceConfig {
 	public JerseyApplicationConfig()
 	{
 		packages(true,"de.mpg.mpdl.doi");
-	    property("contextConfigLocation", "classpath:applicationContext.xml");
+	    //property("contextConfigLocation", "classpath:applicationContext.xml");
 		
-		//register(SecurityConfig.class);
-		//register(SecurityWebApplicationInitializer.class);
+		register(SecurityConfig.class);
+		register(SecurityWebApplicationInitializer.class);
+		
 		//ApplicationContext appCon = ContextLoader.getCurrentWebApplicationContext();
 		//logger.info(appCon);
 		
