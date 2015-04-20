@@ -1,4 +1,4 @@
-package de.mpg.mdpl.doi.exception;
+package de.mpg.mpdl.doi.exception;
 
 /**
  * DoxiException and its subclasses define a subclass adapted for the DOxI service

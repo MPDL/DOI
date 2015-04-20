@@ -1,10 +1,10 @@
-package de.mpg.mdpl.doi.exception;
+package de.mpg.mpdl.doi.exception;
 
-import de.mpg.mdpl.doi.util.PropertyReader;
+import de.mpg.mpdl.doi.util.PropertyReader;
 
 /**
  * Subclass of DoxiException signaling that a DOI has already been created before and cannot be created
- * @see de.mpg.mdpl.doi.exception.DoxiException
+ * @see de.mpg.mpdl.doi.exception.DoxiException
  * @author walter
  *
  */

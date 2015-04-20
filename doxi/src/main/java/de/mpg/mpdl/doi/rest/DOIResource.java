@@ -1,4 +1,4 @@
-package de.mpg.mdpl.doi.rest;
+package de.mpg.mpdl.doi.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,19 +18,19 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.mpg.mdpl.doi.controller.DataciteAPIController;
-import de.mpg.mdpl.doi.controller.DoiControllerInterface;
-import de.mpg.mdpl.doi.exception.DoiAlreadyExistsException;
-import de.mpg.mdpl.doi.exception.DoxiException;
-import de.mpg.mdpl.doi.exception.MetadataInvalidException;
-import de.mpg.mdpl.doi.model.DOI;
+import de.mpg.mpdl.doi.controller.DataciteAPIController;
+import de.mpg.mpdl.doi.controller.DoiControllerInterface;
+import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
+import de.mpg.mpdl.doi.exception.DoxiException;
+import de.mpg.mpdl.doi.exception.MetadataInvalidException;
+import de.mpg.mpdl.doi.model.DOI;
 
 @Path("doi")
 public class DOIResource {
 
 	private static Logger logger = LogManager.getLogger();
 
-	private DoiControllerInterface doiController;
+	private DoiControllerInterface doiController = DataciteAPIController.getInstance();
 	
 
 	
@@ -38,7 +38,7 @@ public class DOIResource {
 	@PUT
 	@Produces("text/plain")
 	@Consumes({"text/xml", "application/xml"})
-	public Response create(@PathParam("doi") String doi, @QueryParam("url") String url, String metadataXml) throws DoxiException {
+	public Response create(@PathParam("doi") String doi, @QueryParam("url") String url, String metadataXml) throws Exception {
 
 		String resultDoi = doiController.createDOI(doi, url, metadataXml).getDoi();
 		Response r = Response.status(Status.CREATED).entity(resultDoi).build();

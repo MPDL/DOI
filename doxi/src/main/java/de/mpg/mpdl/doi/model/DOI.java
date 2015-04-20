@@ -1,4 +1,4 @@
-package de.mpg.mdpl.doi.model;
+package de.mpg.mpdl.doi.model;
 
 import java.net.URI;
 

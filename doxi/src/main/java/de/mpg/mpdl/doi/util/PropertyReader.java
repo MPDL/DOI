@@ -1,4 +1,4 @@
-package de.mpg.mdpl.doi.util;
+package de.mpg.mpdl.doi.util;
 
 import java.io.IOException;
 import java.io.InputStream;

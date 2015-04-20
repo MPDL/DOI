@@ -1,10 +1,10 @@
-package de.mpg.mdpl.doi.rest.exceptionMapper;
+package de.mpg.mpdl.doi.rest.exceptionMapper;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
-import de.mpg.mdpl.doi.exception.DoiAlreadyExistsException;
+import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 
 @Provider
 public class DoiAlreadyExistsMapper implements javax.ws.rs.ext.ExceptionMapper<DoiAlreadyExistsException>

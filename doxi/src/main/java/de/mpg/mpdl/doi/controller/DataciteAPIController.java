@@ -1,4 +1,4 @@
-package de.mpg.mdpl.doi.controller;
+package de.mpg.mpdl.doi.controller;
 
 import java.io.InputStream;
 import java.io.StringReader;
@@ -32,14 +32,14 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
-import de.mpg.mdpl.doi.exception.DoiAlreadyExistsException;
-import de.mpg.mdpl.doi.exception.DoiNotFoundException;
-import de.mpg.mdpl.doi.exception.DoiRegisterException;
-import de.mpg.mdpl.doi.exception.DoxiException;
-import de.mpg.mdpl.doi.exception.MetadataInvalidException;
-import de.mpg.mdpl.doi.exception.UrlInvalidException;
-import de.mpg.mdpl.doi.model.DOI;
-import de.mpg.mdpl.doi.util.PropertyReader;
+import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
+import de.mpg.mpdl.doi.exception.DoiNotFoundException;
+import de.mpg.mpdl.doi.exception.DoiRegisterException;
+import de.mpg.mpdl.doi.exception.DoxiException;
+import de.mpg.mpdl.doi.exception.MetadataInvalidException;
+import de.mpg.mpdl.doi.exception.UrlInvalidException;
+import de.mpg.mpdl.doi.model.DOI;
+import de.mpg.mpdl.doi.util.PropertyReader;
 
 @Singleton
 public class DataciteAPIController implements DoiControllerInterface {

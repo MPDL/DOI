@@ -5,6 +5,7 @@ import java.io.InputStream;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,9 +14,12 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.mpg.mdpl.doi.rest.DOIResource;
-import de.mpg.mdpl.doi.rest.exceptionMapper.DoiAlreadyExistsMapper;
-import de.mpg.mdpl.doi.rest.exceptionMapper.DoxiExceptionMapper;
+import de.mpg.mpdl.doi.rest.DOIResource;
+import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doi.rest.exceptionMapper.DoiAlreadyExistsMapper;
+import de.mpg.mpdl.doi.rest.exceptionMapper.DoxiExceptionMapper;
+import de.mpg.mpdl.doi.security.spring.config.SecurityConfig;
+import de.mpg.mpdl.doi.security.spring.config.SecurityWebApplicationInitializer;
 
 public class SimpleTest extends JerseyTest {
 
@@ -30,7 +34,8 @@ public class SimpleTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		return new ResourceConfig(DOIResource.class, DoxiExceptionMapper.class, DoiAlreadyExistsMapper.class);
+		return new JerseyApplicationConfig();
+		//return new ResourceConfig(DOIResource.class, DoxiExceptionMapper.class, DoiAlreadyExistsMapper.class, ExceptionMapper.class, SecurityConfig.class, SecurityWebApplicationInitializer.class);
 	}
 
 	@Test
@@ -51,7 +56,7 @@ public class SimpleTest extends JerseyTest {
 	public void testCreateDoi() throws Exception {
 		logger.info("--------------------- STARTING create DOI test ---------------------");
 		Response result = target("doi").path(testDoi).queryParam("url", url)
-				.request().put(Entity.text(metadata));
+				.request().put(Entity.xml(metadata));
 		logger.info("Status: " + result.getStatus() + " expected 200");
 		logger.info("Message: " + result.getEntityTag().getValue());
 		Assert.assertEquals(201, result.getStatus());
@@ -64,7 +69,7 @@ public class SimpleTest extends JerseyTest {
 	public void testUpdateMd() throws Exception {
 		logger.info("--------------------- STARTING update DOI test ---------------------");
 		Response result = target("doi").path(testDoi).queryParam("url", url).request()
-				.post(Entity.text(updatedMetadata));
+				.post(Entity.xml(updatedMetadata));
 		logger.info("Status: " + result.getStatus() + " expected 200\nEntity: " + result.readEntity(String.class));
 		Assert.assertEquals(201, result.getStatus());
 
