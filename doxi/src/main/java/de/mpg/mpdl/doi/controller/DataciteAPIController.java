@@ -31,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ContextLoader;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
@@ -120,6 +122,10 @@ public class DataciteAPIController implements DoiControllerInterface {
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException {
 
+		
+		ApplicationContext appCon = ContextLoader.getCurrentWebApplicationContext();
+		logger.info("Context: " + appCon);
+		
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
 				|| getResp.getStatus() == Response.Status.NO_CONTENT

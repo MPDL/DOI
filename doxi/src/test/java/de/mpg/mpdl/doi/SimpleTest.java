@@ -5,21 +5,18 @@ import java.io.InputStream;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
+import org.glassfish.jersey.test.DeploymentContext;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.web.context.ContextLoaderListener;
 
-import de.mpg.mpdl.doi.rest.DOIResource;
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
-import de.mpg.mpdl.doi.rest.exceptionMapper.DoiAlreadyExistsMapper;
-import de.mpg.mpdl.doi.rest.exceptionMapper.DoxiExceptionMapper;
-import de.mpg.mpdl.doi.security.spring.config.SecurityConfig;
-import de.mpg.mpdl.doi.security.spring.config.SecurityWebApplicationInitializer;
 
 public class SimpleTest extends JerseyTest {
 
@@ -32,11 +29,28 @@ public class SimpleTest extends JerseyTest {
 	private InputStream updatedMetadata = SimpleTest.class
 			.getResourceAsStream("/doi_update_metadata.xml");
 
+	
+	
+	
 	@Override
 	protected Application configure() {
+		
+		
 		return new JerseyApplicationConfig();
+		
+		
 		//return new ResourceConfig(DOIResource.class, DoxiExceptionMapper.class, DoiAlreadyExistsMapper.class, ExceptionMapper.class, SecurityConfig.class, SecurityWebApplicationInitializer.class);
 	}
+	/*
+	@Override
+    protected DeploymentContext configureDeployment(){
+        return ServletDeploymentContext
+                .forServlet(new ServletContainer(new JerseyApplicationConfig()))
+                .addListener(ContextLoaderListener.class)
+                .contextParam("contextConfigLocation", "classpath:applicationContext.xml")
+                .build();
+    }
+    */
 
 	@Test
 	public void testGetDoiList() throws Exception {

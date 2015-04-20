@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
@@ -38,6 +39,7 @@ public class DOIResource {
 	@PUT
 	@Produces("text/plain")
 	@Consumes({"text/xml", "application/xml"})
+	@PreAuthorize("hasAuthority('USER')")
 	public Response create(@PathParam("doi") String doi, @QueryParam("url") String url, String metadataXml) throws Exception {
 
 		String resultDoi = doiController.createDOI(doi, url, metadataXml).getDoi();
