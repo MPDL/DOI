@@ -20,4 +20,14 @@ public class UrlInvalidException extends DoxiException {
 	{
 		super(message);
 	}
+	
+	public UrlInvalidException(int statusCode)
+	{
+		super(statusCode);
+	}
+	
+	public UrlInvalidException(int statusCode, String message)
+	{
+		super(statusCode, message);
+	}
 }

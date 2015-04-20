@@ -49,4 +49,8 @@ public class DoxiException extends Exception{
 		return statusCode;
 	}
 	
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
+	}
+	
 }

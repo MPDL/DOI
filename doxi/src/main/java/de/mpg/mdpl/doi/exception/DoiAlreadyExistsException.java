@@ -19,4 +19,12 @@ public class DoiAlreadyExistsException extends DoxiException {
 	public DoiAlreadyExistsException(String message) {
 		super(message);
 	}
+	
+	public DoiAlreadyExistsException(int statusCode) {
+		super(statusCode);
+	}
+	
+	public DoiAlreadyExistsException(int statusCode, String message) {
+		super(statusCode, message);
+	}
 }

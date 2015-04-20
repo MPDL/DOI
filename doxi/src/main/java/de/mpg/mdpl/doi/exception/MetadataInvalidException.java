@@ -24,6 +24,18 @@ public class MetadataInvalidException extends DoxiException {
 		this.metadataXml = metadataXml;
 	}
 	
+	public MetadataInvalidException(String metadataXml, int statusCode)
+	{
+		super(statusCode);
+		this.metadataXml = metadataXml;
+	}
+	
+	public MetadataInvalidException(String metadataXml, int statusCode, String message)
+	{
+		super(statusCode, message);
+		this.metadataXml = metadataXml;
+	}
+	
 	public String getMetadata() {
 		return this.metadataXml;
 	}

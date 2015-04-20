@@ -20,4 +20,14 @@ public class DoiRegisterException extends DoxiException {
 		super(message);
 	}
 	
+	public DoiRegisterException(int statusCode)
+	{
+		super(statusCode);
+	}
+	
+	public DoiRegisterException(int statusCode, String message)
+	{
+		super(statusCode, message);
+	}
+	
 }
