@@ -39,6 +39,7 @@ public class DOIResource {
 	@PUT
 	@Produces("text/plain")
 	@Consumes({"text/xml", "application/xml"})
+	@PreAuthorize("hasAuthority('USER')")
 	public Response create(@PathParam("doi") String doi, @QueryParam("url") String url, String metadataXml) throws Exception {
 
 		String resultDoi = doiController.createDOI(doi, url, metadataXml).getDoi();
