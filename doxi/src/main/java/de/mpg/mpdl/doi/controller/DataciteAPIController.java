@@ -176,12 +176,13 @@ public class DataciteAPIController implements DoiControllerInterface {
 				Response mdResp = createOrUpdateMetadata(metadataXml);
 				if (mdResp.getStatus() == Response.Status.CREATED
 						.getStatusCode()) {
+					String respString = mdResp.readEntity(String.class);
 					logger.info("Metadata uploaded successfully"
 							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + mdResp.readEntity(String.class));
+							+ " -- " + respString);
 					DOI resultDoi = new DOI();
 					resultDoi.setDoi(doi);
-					resultDoi.setMetadata(mdResp.readEntity(String.class));
+					resultDoi.setMetadata(respString);
 					String entity = "doi=" + doi + "\nurl=" + url;
 					Response doiResp = createOrUpdateUrl(entity);
 
