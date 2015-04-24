@@ -1,11 +1,17 @@
 package de.mpg.mpdl.doi;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.util.EnumSet;
 import java.util.Scanner;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletRegistration;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,14 +22,20 @@ import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.client.filter.CsrfProtectionFilter;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.spring.SpringWebApplicationInitializer;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.glassfish.jersey.servlet.init.JerseyServletContainerInitializer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.SpringServletContainerInitializer;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
-import de.mpg.mpdl.doi.security.spring.config.SecurityWebApplicationInitializer;
 
 public class SimpleTest {
 
@@ -70,16 +82,35 @@ public class SimpleTest {
 		
 		//HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create("http://localhost:8123"), new JerseyApplicationConfig());
 		
+		
 		server = new HttpServer();
 		NetworkListener listener = new NetworkListener("grizzly2", "localhost", 8123);
 		server.addListener(listener);
 		
+		
 		WebappContext ctx = new WebappContext("ctx","/");       
 		
-		SecurityWebApplicationInitializer initializer = new SecurityWebApplicationInitializer();
-		initializer.onStartup(ctx);
 		
-		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig()));
+		//If Java-config should be used, create a class SecurityWebApplicationInitializer extends AbstractSecurityWebApplicationInitializer
+		//and a config and use the following method:
+		//SecurityWebApplicationInitializer initializer = new SecurityWebApplicationInitializer();
+		//initializer.onStartup(ctx);
+		
+		
+		
+//		 If XML-Config should be used use SpringWebApplicationInitializer from package jersey-spring 3, which does the following:
+//		 ctx.addContextInitParameter("contextConfigLocation", "classpath:applicationContext.xml");
+//		 ctx.addListener(ContextLoaderListener.class);
+//		 ctx.addListener(RequestContextListener.class);
+		new SpringWebApplicationInitializer().onStartup(ctx);
+
+		
+		//Register Jersey Servlet
+		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/*");
+
+		//Register security filter
+		FilterRegistration reg = ctx.addFilter("springSecurityFilterChain", new DelegatingFilterProxy("springSecurityFilterChain"));
+		reg.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");;
 
 		ctx.deploy(server);
 		
@@ -89,9 +120,11 @@ public class SimpleTest {
 		
 		ClientConfig clientConfig = new ClientConfig();
 		clientConfig.register(new CsrfProtectionFilter("doxi test"));
+		
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
 			    .nonPreemptive().credentials("user", "password").build();
 		clientConfig.register(feature);
+		
 		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/doi");
 	}
 	
@@ -127,7 +160,7 @@ public class SimpleTest {
 		String metadata = streamToString(SimpleTest.class.getResourceAsStream("/doi_metadata.xml"));
 		
 		Response result = target.path(testDoi).queryParam("url", url)
-				.request().put(Entity.xml(metadata));
+				.request(MediaType.TEXT_PLAIN_TYPE).put(Entity.xml(metadata));
 		logger.info("Status: " + result.getStatus() + " expected 201");
 		logger.info("Message: " + result.readEntity(String.class));
 		Assert.assertEquals(201, result.getStatus());
