@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,6 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.ContextLoader;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
@@ -45,6 +44,12 @@ import de.mpg.mpdl.doi.exception.UrlInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
+/**
+ * Implementation of the DoiControllerInterface
+ * 
+ * @author walter
+ * 
+ */
 @Singleton
 public class DataciteAPIController implements DoiControllerInterface {
 
@@ -75,59 +80,85 @@ public class DataciteAPIController implements DoiControllerInterface {
 		return instance;
 	}
 
-	/**
-	 * @return xml
-	 * @param doi
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOI(java.lang.String
+	 * )
 	 */
-	public DOI getDOI(String doi) {
+	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException {
 		DOI doiObject = new DOI();
 		doiObject.setDoi(doi);
 		Response doiResponse = dataciteTarget.path("doi").path(doi).request()
 				.get();
 		if (doiResponse.getStatus() == Response.Status.OK.getStatusCode()) {
-
+			try {
+				doiObject.setDoi(doi);
+				doiObject.setUrl(new URI(doiResponse.readEntity(String.class)));
+				Response doiMetaDataResponse = dataciteTarget.path("metadata")
+						.path(doi).request().get();
+				if (doiMetaDataResponse.getStatus() == Response.Status.OK
+						.getStatusCode()) {
+					doiObject.setMetadata(doiMetaDataResponse
+							.readEntity(String.class));
+				} else {
+					logger.error("Error getting DOI metadata");
+					// TODO maybe another exception type?
+					throw new DoxiException(doiResponse.getStatus(),
+							doiResponse.readEntity(String.class));
+				}
+			} catch (URISyntaxException e) {
+				logger.error("Error setting URL", e);
+				throw new DoxiException(e);
+			}
 		} else {
-
+			logger.error("Error getting DOI");
+			throw new DoiNotFoundException(doiResponse.getStatus(),
+					doiResponse.readEntity(String.class));
 		}
-
 		return doiObject;
 	}
 
-	/**
-	 * Requesting Datacite service to List all DOIs already registered
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return response including list of all DOIs already registered
-	 * @throws DoxiException 
+	 * @see de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOIList()
 	 */
-	public List<DOI> getDOIList() throws DoxiException {
+	public List<DOI> getDOIList(String prefix) throws DoxiException {
 		List<DOI> doiList = new ArrayList<DOI>();
 		Response response = dataciteTarget.path("doi").request().get();
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
 			for (String listItem : response.readEntity(String.class)
 					.split("\n")) {
-				DOI doi = new DOI();
-				doi.setDoi(listItem);
-				doiList.add(doi);
+				if (listItem.startsWith(prefix)) {
+					DOI doi = new DOI();
+					doi.setDoi(listItem);
+					doiList.add(doi);
+				}
 			}
 		} else {
-			throw new DoxiException(response.getStatus(), response.getStatusInfo().toString());
+			throw new DoxiException(response.getStatus(), response
+					.getStatusInfo().toString());
 		}
 		return doiList;
 	}
 
-	public DOI createDOI(String url, String metadataXml) throws Exception {
-		String doi = generateDoi();
-		return createDOI(doi, url, metadataXml);
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#createDOI(java.lang
+	 * .String, java.lang.String, java.lang.String)
+	 */
 	public DOI createDOI(String doi, String url, String metadataXml)
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException {
 
-		Authentication a = SecurityContextHolder.getContext().getAuthentication();
-		
-		logger.info("SecurityContext: " + SecurityContextHolder.getContext().getAuthentication().getName());
-		
+		ApplicationContext appCon = ContextLoader
+				.getCurrentWebApplicationContext();
+		logger.info("Context: " + appCon);
+
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
 				|| getResp.getStatus() == Response.Status.NO_CONTENT
@@ -147,13 +178,14 @@ public class DataciteAPIController implements DoiControllerInterface {
 				Response mdResp = createOrUpdateMetadata(metadataXml);
 				if (mdResp.getStatus() == Response.Status.CREATED
 						.getStatusCode()) {
-					String respString = mdResp.readEntity(String.class);
+					String metaDataResponseEntity = mdResp
+							.readEntity(String.class);
 					logger.info("Metadata uploaded successfully"
 							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + respString);
+							+ " -- " + metaDataResponseEntity);
 					DOI resultDoi = new DOI();
 					resultDoi.setDoi(doi);
-					resultDoi.setMetadata(respString);
+					resultDoi.setMetadata(metaDataResponseEntity);
 					String entity = "doi=" + doi + "\nurl=" + url;
 					Response doiResp = createOrUpdateUrl(entity);
 
@@ -165,19 +197,23 @@ public class DataciteAPIController implements DoiControllerInterface {
 						resultDoi.setUrl(URI.create(url));
 						return resultDoi;
 					} else {
+						String doiResponseEntity = doiResp
+								.readEntity(String.class);
 						logger.error("Problem with url upload "
 								+ doiResp.getStatusInfo() + doiResp.getStatus()
-								+ " -- " + doiResp.readEntity(String.class));
+								+ " -- " + doiResponseEntity);
 						throw new DoiRegisterException(doiResp.getStatus(),
-								doiResp.readEntity(String.class));
+								doiResponseEntity);
 					}
 
 				} else {
+					String metaDataResponseEntity = mdResp
+							.readEntity(String.class);
 					logger.error("Problem with metadata "
 							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + mdResp.readEntity(String.class));
+							+ " -- " + metaDataResponseEntity);
 					throw new MetadataInvalidException(metadataXml,
-							mdResp.getStatus(), mdResp.readEntity(String.class));
+							mdResp.getStatus(), metaDataResponseEntity);
 				}
 			} catch (Exception e) {
 				logger.error("Problem replacing DOI in metadata", e);
@@ -185,36 +221,55 @@ public class DataciteAPIController implements DoiControllerInterface {
 			}
 
 		} else {
+			String getDoiResponseEntity = getResp.readEntity(String.class);
 			logger.error("Problem with get DOI " + doi + " "
 					+ getResp.getStatusInfo() + getResp.getStatus() + " -- "
-					+ getResp.readEntity(String.class));
-			throw new DoxiException(getResp.getStatus(),
-					getResp.readEntity(String.class));
+					+ getDoiResponseEntity);
+			throw new DoxiException(getResp.getStatus(), getDoiResponseEntity);
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#createDOIAutoGenerated
+	 * (java.lang.String, java.lang.String)
+	 */
 	@Override
 	public DOI createDOIAutoGenerated(String url, String metadataXml)
 			throws DoxiException, DoiNotFoundException,
 			MetadataInvalidException, DoiRegisterException {
-		// TODO Auto-generated method stub
-		return null;
+		return createDOI(generateDoi(), url, metadataXml);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#createDOIKnownSuffix
+	 * (java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public DOI createDOIKnownSuffix(String suffix, String url,
-			String metadataXml) throws DoxiException {
-		// TODO Auto-generated method stub
-		return null;
+			String metadataXml) throws DoxiException,
+			DoiAlreadyExistsException, MetadataInvalidException,
+			DoiRegisterException {
+		return createDOI(getDoiPrefix() + suffix, url, metadataXml);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#inactivateDOI(java.
+	 * lang.String)
+	 */
 	@Override
 	public void inactivateDOI(String doi) throws DoxiException {
-		// TODO Auto-generated method stub
-		logger.debug("");
-		;
-
+		dataciteTarget.path("doi").path(doi).request().delete();
+		logger.info("DOI [" + doi + "] set to inactive");
 	}
 
 	@Override
@@ -238,12 +293,14 @@ public class DataciteAPIController implements DoiControllerInterface {
 
 				if (mdResp.getStatus() == Response.Status.CREATED
 						.getStatusCode()) {
+					String metadataResponseEntity = mdResp
+							.readEntity(String.class);
 					logger.info("Metadata uploaded successfully"
 							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + mdResp.readEntity(String.class));
+							+ " -- " + metadataResponseEntity);
 					DOI resultDoi = new DOI();
 					resultDoi.setDoi(doi);
-					resultDoi.setMetadata(mdResp.readEntity(String.class));
+					resultDoi.setMetadata(metadataResponseEntity);
 					String entity = "doi=" + doi + "\nurl=" + url;
 					Response doiResp = createOrUpdateUrl(entity);
 
@@ -255,63 +312,69 @@ public class DataciteAPIController implements DoiControllerInterface {
 						resultDoi.setUrl(URI.create(url));
 						return resultDoi;
 					} else {
+						String registerDoiResponseEntity = doiResp
+								.readEntity(String.class);
 						logger.error("Problem with url upload "
 								+ doiResp.getStatusInfo() + doiResp.getStatus()
-								+ " -- " + doiResp.readEntity(String.class));
+								+ " -- " + registerDoiResponseEntity);
 						throw new DoiRegisterException(doiResp.getStatus(),
-								doiResp.readEntity(String.class));
+								registerDoiResponseEntity);
 					}
 				} else {
+					String metadataResponseEntity = mdResp
+							.readEntity(String.class);
 					logger.error("Problem with metadata "
 							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + mdResp.readEntity(String.class));
+							+ " -- " + metadataResponseEntity);
 					throw new MetadataInvalidException(metadataXml,
-							mdResp.getStatus(), mdResp.readEntity(String.class));
+							mdResp.getStatus(), metadataResponseEntity);
 				}
 			} catch (Exception e) {
 				logger.error("Problem replacing DOI in metadata", e);
 				throw new DoxiException("Problem replacing DOI in metadata");
 			}
 		} else {
+			String getDoiEntity = getResp.readEntity(String.class);
 			logger.error("Problem with get DOI " + doi + " "
 					+ getResp.getStatusInfo() + getResp.getStatus() + " -- "
-					+ getResp.readEntity(String.class));
-			throw new DoxiException(getResp.getStatus(),
-					getResp.readEntity(String.class));
+					+ getDoiEntity);
+			throw new DoxiException(getResp.getStatus(), getDoiEntity);
 		}
 
 	}
 
-	/*
-	 * public Response updateUrl(String doi, String url) { String entity =
-	 * "doi=" + doi + "\nurl=" + url; Response doiResp =
-	 * dataciteTarget.path("doi")
-	 * .request(MediaType.TEXT_PLAIN_TYPE).post(Entity.text(entity));
-	 * 
-	 * if (doiResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
-	 * logger.info("URL uploaded successfully " + doiResp.getStatusInfo() +
-	 * doiResp.getStatus() + " -- " + doiResp.readEntity(String.class)); } else
-	 * { logger.error("Problem with url upload " + doiResp.getStatusInfo() +
-	 * doiResp.getStatus() + " -- " + doiResp.readEntity(String.class)); }
-	 * return doiResp; }
-	 */
-
 	/**
+	 * creates or updates metadata for a specific DOI
 	 * 
 	 * @param metadataXml
-	 * @return Http Response of the Datacite service
+	 * @return Response of the Datacite service
 	 */
-	public Response createOrUpdateMetadata(String metadataXml) {
+	private Response createOrUpdateMetadata(String metadataXml) {
 		return dataciteTarget.path("metadata")
 				.request(MediaType.TEXT_PLAIN_TYPE)
 				.post(Entity.xml(metadataXml));
 	}
 
+	/**
+	 * creates or updates an URL for a specific DOI
+	 * 
+	 * @param doiAndUrl
+	 * @return Response of the Datacite service
+	 */
 	private Response createOrUpdateUrl(String doiAndUrl) {
 		return dataciteTarget.path("doi").request(MediaType.TEXT_PLAIN_TYPE)
 				.post(Entity.text(doiAndUrl));
 	}
 
+	/**
+	 * replace DOI in metadata XML
+	 * 
+	 * @param metadataXml
+	 * @param doi
+	 * @return metadata XML
+	 * @throws TransformerConfigurationException
+	 * @throws TransformerException
+	 */
 	private String replaceDOIIdentifierInMetadataXml(String metadataXml,
 			String doi) throws TransformerConfigurationException,
 			TransformerException {
@@ -339,16 +402,27 @@ public class DataciteAPIController implements DoiControllerInterface {
 	}
 
 	/**
+	 * generates a new DOI based on BASE36
 	 * 
 	 * @return a not yet registered DOI
 	 * @throws Exception
 	 */
-	// TODO maybe add parameter service ID?
+	// TODO generate DOI (BASE36 encoded key stored in the db)
 	private synchronized String generateDoi() {
 		// Base36 encoding as Datacite DOI service is case insensitive
-		String doiPrefix = Integer.toString(this.shortId, 36);
+		String doiSuffix = Integer.toString(this.shortId, 36);
 		this.shortId++;
-		return doiPrefix;
+		return getDoiPrefix() + doiSuffix;
+	}
+
+	/**
+	 * gets the DOI prefix for the current user
+	 * 
+	 * @return
+	 */
+	// TODO get prefix (including service ID) for current user from database
+	private String getDoiPrefix() {
+		return "10.5072";
 	}
 
 }

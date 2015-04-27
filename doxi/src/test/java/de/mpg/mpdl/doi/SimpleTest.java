@@ -37,7 +37,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 
-public class SimpleTest {
+public class SimpleTest { 
 
 	private Logger logger = LogManager.getLogger(SimpleTest.class);
 
