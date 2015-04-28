@@ -21,7 +21,6 @@ public interface DoiControllerInterface {
 	 * @throws DoxiException
 	 * @throws DoiNotFoundException
 	 */
-	@PreAuthorize("hasRole('USER')")
 	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException;
 
 	/**
