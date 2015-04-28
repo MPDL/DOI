@@ -21,6 +21,7 @@ public interface DoiControllerInterface {
 	 * @throws DoxiException
 	 * @throws DoiNotFoundException
 	 */
+	@PreAuthorize("hasRole('USER')")
 	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException;
 
 	/**
@@ -43,6 +44,8 @@ public interface DoiControllerInterface {
 	 * @throws MetadataInvalidException
 	 * @throws DoiRegisterException
 	 */
+	
+	@PreAuthorize("hasRole('USER')")
 	public DOI createDOI(String doi, String url, String metadataXml)
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException;

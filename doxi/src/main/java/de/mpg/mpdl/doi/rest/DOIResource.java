@@ -19,7 +19,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
@@ -33,17 +36,18 @@ public class DOIResource {
 
 	private static Logger logger = LogManager.getLogger();
 
-	private DoiControllerInterface doiController = DataciteAPIController
-			.getInstance();
+	@Autowired
+	private DoiControllerInterface doiController;
+	
 
 	@Path("{doi:10\\..+/.+}")
 	@PUT
 	@Produces("text/plain")
 	@Consumes({ "text/xml", "application/xml" })
-	@PreAuthorize("hasAuthority('USER')")
 	public Response create(@PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml) throws Exception {
 
+		logger.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 		String resultDoi = doiController.createDOI(doi, url, metadataXml)
 				.getDoi();
 		Response r = Response.status(Status.CREATED).entity(resultDoi).build();

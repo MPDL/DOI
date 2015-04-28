@@ -33,6 +33,11 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.context.ContextLoader;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
@@ -42,6 +47,7 @@ import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doi.exception.UrlInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
+import de.mpg.mpdl.doi.security.spring.DoxiUser;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
 /**
@@ -51,6 +57,8 @@ import de.mpg.mpdl.doi.util.PropertyReader;
  * 
  */
 @Singleton
+@Component
+@Scope(value="singleton")
 public class DataciteAPIController implements DoiControllerInterface {
 
 	private final int RETRY_TIMEOUT = 1000; // Timeout until retrying request in
@@ -151,13 +159,12 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#createDOI(java.lang
 	 * .String, java.lang.String, java.lang.String)
 	 */
+	
 	public DOI createDOI(String doi, String url, String metadataXml)
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException {
 
-		ApplicationContext appCon = ContextLoader
-				.getCurrentWebApplicationContext();
-		logger.info("Context: " + appCon);
+		//DoxiUser user = (DoxiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
@@ -422,7 +429,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 */
 	// TODO get prefix (including service ID) for current user from database
 	private String getDoiPrefix() {
-		return "10.5072";
+		DoxiUser doxiUser = (DoxiUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return doxiUser.getPrefix();
+		//return "10.5072";
 	}
 
 }
