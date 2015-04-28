@@ -1,15 +1,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 xmlns:security="http://www.springframework.org/schema/security"
+xmlns:tx="http://www.springframework.org/schema/tx"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:context="http://www.springframework.org/schema/context"
 xsi:schemaLocation="http://www.springframework.org/schema/beans
 		  http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 		  http://www.springframework.org/schema/security
 		  http://www.springframework.org/schema/security/spring-security.xsd
+		  http://www.springframework.org/schema/tx
+		  http://www.springframework.org/schema/tx/spring-tx.xsd
 		  http://www.springframework.org/schema/context
 		  http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 	
-	<context:component-scan base-package="com.mkyong.customer" />
+	<context:component-scan base-package="de.mpg.mpdl.doi" />
+	
+	<!-- this is the service object that we want to make transactional -->
+    <bean id="uniqueInkrementedIdDao" class="de.mpg.mpdl.doi.model.UniqueInkrementedIdDao"/>
+
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/><!-- a PlatformTransactionManager is still required -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- (this dependency is defined somewhere else) -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 	
 	<security:http>
 		<security:intercept-url pattern="/**" access="hasRole('USER')" />
@@ -48,4 +61,5 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
             <value>select username,password,enabled,email,prefix from users where username = ?</value>
         </property>
    </bean>
+   
 </beans>

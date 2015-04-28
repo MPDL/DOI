@@ -32,8 +32,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.ContextLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
@@ -42,6 +45,8 @@ import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doi.exception.UrlInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
+import de.mpg.mpdl.doi.model.UniqueInkrementedIdDao;
+import de.mpg.mpdl.doi.security.spring.DoxiUser;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
 /**
@@ -57,7 +62,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 											// milliseconds
 
 	private static DataciteAPIController instance = new DataciteAPIController();
-	private int shortId;
+
+	@Autowired
+	private UniqueInkrementedIdDao uniqueInkrementIdDao;
 
 	private static Logger logger = LogManager.getLogger();
 	WebTarget dataciteTarget;
@@ -72,8 +79,6 @@ public class DataciteAPIController implements DoiControllerInterface {
 		Client client = ClientBuilder.newClient(clientConfig);
 		this.dataciteTarget = client.target(PropertyReader
 				.getProperty("datacite.api.url"));
-		// TODO change shortID to DB-auto-increment-key
-		this.shortId = 0;
 	}
 
 	public static DataciteAPIController getInstance() {
@@ -410,8 +415,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 	// TODO generate DOI (BASE36 encoded key stored in the db)
 	private synchronized String generateDoi() {
 		// Base36 encoding as Datacite DOI service is case insensitive
-		String doiSuffix = Integer.toString(this.shortId, 36);
-		this.shortId++;
+		String doiSuffix = Long.toString(uniqueInkrementIdDao.getNextDoi(), 36);
 		return getDoiPrefix() + doiSuffix;
 	}
 
@@ -422,7 +426,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 */
 	// TODO get prefix (including service ID) for current user from database
 	private String getDoiPrefix() {
-		return "10.5072";
+		DoxiUser currentUser = (DoxiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return currentUser.getPrefix();
 	}
 
 }

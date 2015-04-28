@@ -22,21 +22,25 @@ import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.client.filter.CsrfProtectionFilter;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.spring.SpringWebApplicationInitializer;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.glassfish.jersey.servlet.init.JerseyServletContainerInitializer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.web.SpringServletContainerInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.request.RequestContextListener;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
+import de.mpg.mpdl.doi.controller.DataciteAPIController;
+import de.mpg.mpdl.doi.model.UniqueInkrementedIdDao;
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext.xml" })
 public class SimpleTest { 
 
 	private Logger logger = LogManager.getLogger(SimpleTest.class);
@@ -49,6 +53,9 @@ public class SimpleTest {
 
 	private WebTarget target;
 	private HttpServer server;
+	
+	@Autowired
+	private UniqueInkrementedIdDao uniqueInkrementIdDao;
 	
 	/*
 	@Override
@@ -135,8 +142,6 @@ public class SimpleTest {
 		
 	}
 	
-	
-    
 
 	@Test
 	public void testGetDoiList() throws Exception {
