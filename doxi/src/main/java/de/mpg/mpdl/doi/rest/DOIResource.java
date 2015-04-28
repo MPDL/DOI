@@ -2,9 +2,11 @@ package de.mpg.mpdl.doi.rest;
 
 import java.util.List;
 
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -12,42 +14,38 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
-import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoxiException;
-import de.mpg.mpdl.doi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
 
 @Path("doi")
+
 public class DOIResource {
 
 	private static Logger logger = LogManager.getLogger();
 
-	@Autowired
-	private DoiControllerInterface doiController;
+	private DoiControllerInterface doiController = DataciteAPIController.getInstance();
 	
 
 	@Path("{doi:10\\..+/.+}")
 	@PUT
 	@Produces("text/plain")
 	@Consumes({ "text/xml", "application/xml" })
-	public Response create(@PathParam("doi") String doi,
+	@PermitAll
+	public Response create(@Context SecurityContext sc, @PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml) throws Exception {
 
-		logger.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//		logger.info(sc.getContext().getAuthentication().getPrincipal());
+		logger.info(sc.toString());
 		String resultDoi = doiController.createDOI(doi, url, metadataXml)
 				.getDoi();
 		Response r = Response.status(Status.CREATED).entity(resultDoi).build();
@@ -91,6 +89,7 @@ public class DOIResource {
 	@Path("{doi:10\\..+/.+}")
 	@GET
 	@Produces("text/plain")
+	@DenyAll
 	public String getDOI(@PathParam("doi") String doi) throws DoxiException {
 
 		DOI resultDoi = doiController.getDOI(doi);

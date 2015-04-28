@@ -2,8 +2,6 @@ package de.mpg.mpdl.doi.controller;
 
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
 import de.mpg.mpdl.doi.exception.DoiRegisterException;
@@ -44,7 +42,6 @@ public interface DoiControllerInterface {
 	 * @throws DoiRegisterException
 	 */
 	
-	@PreAuthorize("hasRole('USER')")
 	public DOI createDOI(String doi, String url, String metadataXml)
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException;

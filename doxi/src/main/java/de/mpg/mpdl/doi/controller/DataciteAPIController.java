@@ -5,11 +5,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
+import javax.inject.Scope;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -24,31 +23,18 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.XQueryCompiler;
-import net.sf.saxon.s9api.XdmNode;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
 import de.mpg.mpdl.doi.exception.DoiRegisterException;
 import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.exception.MetadataInvalidException;
-import de.mpg.mpdl.doi.exception.UrlInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
-import de.mpg.mpdl.doi.model.UniqueInkrementedIdDao;
-import de.mpg.mpdl.doi.security.spring.DoxiUser;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
 /**
@@ -58,17 +44,12 @@ import de.mpg.mpdl.doi.util.PropertyReader;
  * 
  */
 
-@Component
-@Scope(value="singleton")
 public class DataciteAPIController implements DoiControllerInterface {
 
+	private static DataciteAPIController instance = new DataciteAPIController();
+	
 	private final int RETRY_TIMEOUT = 1000; // Timeout until retrying request in
 											// milliseconds
-
-	
-
-	@Autowired
-	private UniqueInkrementedIdDao uniqueInkrementIdDao;
 
 	private static Logger logger = LogManager.getLogger();
 	WebTarget dataciteTarget;
@@ -85,6 +66,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 				.getProperty("datacite.api.url"));
 	}
 
+	public static DataciteAPIController getInstance() {
+		return instance;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -160,10 +144,6 @@ public class DataciteAPIController implements DoiControllerInterface {
 	public DOI createDOI(String doi, String url, String metadataXml)
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException {
-
-		ApplicationContext appCon = ContextLoader
-				.getCurrentWebApplicationContext();
-		logger.info("Context: " + appCon);
 
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
@@ -416,7 +396,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 	// TODO generate DOI (BASE36 encoded key stored in the db)
 	private synchronized String generateDoi() {
 		// Base36 encoding as Datacite DOI service is case insensitive
-		String doiSuffix = Long.toString(uniqueInkrementIdDao.getNextDoi(), 36);
+//		String doiSuffix = Long.toString(uniqueInkrementIdDao.getNextDoi(), 36);
+		String doiSuffix = Long.toString( (long)Math.random(), 36);
 		return getDoiPrefix() + doiSuffix;
 	}
 
@@ -427,8 +408,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 */
 	// TODO get prefix (including service ID) for current user from database
 	private String getDoiPrefix() {
-		DoxiUser currentUser = (DoxiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return currentUser.getPrefix();
+//		DoxiUser currentUser = (DoxiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		return currentUser.getPrefix();
+		return "10.5072";
 	}
 
 }
