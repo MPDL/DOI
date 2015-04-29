@@ -2,32 +2,56 @@ package de.mpg.mpdl.doi.security;
 
 import java.security.Principal;
 
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 public class Authorizer implements SecurityContext {
+	
+	@Context
+    UriInfo uriInfo;
+	
+	private Principal principal = null;
 
+	public Authorizer(final DoxiUser user) {
+        if (user != null) {
+        	principal = user;
+        } 
+    }
+	
 	@Override
 	public Principal getUserPrincipal() {
-		// TODO Auto-generated method stub
-		return null;
+		return principal;
 	}
 
 	@Override
 	public boolean isUserInRole(String role) {
-		// TODO Auto-generated method stub
+		if(this.principal != null)
+		{
+			DoxiUser user = (DoxiUser)principal;
+			
+			for(DoxiRole doxiRole : user.getRoles())
+			{
+				if(doxiRole.getRole()!= null && doxiRole.getRole().equals(role))
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean isSecure() {
-		// TODO Auto-generated method stub
-		return false;
+		return "https".equals(uriInfo.getRequestUri().getScheme());
 	}
 
 	@Override
 	public String getAuthenticationScheme() {
-		// TODO Auto-generated method stub
-		return null;
+		if (principal == null) {
+            return null;
+        }
+        return SecurityContext.BASIC_AUTH;
 	}
 
 }

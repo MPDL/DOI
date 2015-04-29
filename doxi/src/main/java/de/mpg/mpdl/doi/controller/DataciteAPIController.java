@@ -8,13 +8,17 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ManagedBean;
+import javax.annotation.Resource;
 import javax.inject.Scope;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -28,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.jvnet.hk2.annotations.Service;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
@@ -53,7 +58,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 
 	private static Logger logger = LogManager.getLogger();
 	WebTarget dataciteTarget;
-
+	
 	private DataciteAPIController() {
 		ClientConfig clientConfig = new ClientConfig();
 		HttpAuthenticationFeature authFeature = HttpAuthenticationFeature
@@ -78,6 +83,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * )
 	 */
 	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException {
+		
+		
 		DOI doiObject = new DOI();
 		doiObject.setDoi(doi);
 		Response doiResponse = dataciteTarget.path("doi").path(doi).request()

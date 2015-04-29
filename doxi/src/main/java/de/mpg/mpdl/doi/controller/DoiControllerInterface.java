@@ -2,6 +2,8 @@ package de.mpg.mpdl.doi.controller;
 
 import java.util.List;
 
+import org.jvnet.hk2.annotations.Service;
+
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
 import de.mpg.mpdl.doi.exception.DoiRegisterException;

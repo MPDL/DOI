@@ -1,6 +1,8 @@
 package de.mpg.mpdl.doi.rest;
 
 import javax.annotation.security.DenyAll;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.ws.rs.ApplicationPath;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +17,8 @@ import de.mpg.mpdl.doi.security.HttpBasicContainerRequestFilter;
 
 public class JerseyApplicationConfig extends ResourceConfig {
 
+	public static EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+	
 	Logger logger = LogManager.getLogger();
 	public JerseyApplicationConfig()
 	{

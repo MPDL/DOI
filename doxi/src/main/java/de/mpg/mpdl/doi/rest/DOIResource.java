@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -40,7 +41,6 @@ public class DOIResource {
 	@PUT
 	@Produces("text/plain")
 	@Consumes({ "text/xml", "application/xml" })
-	@PermitAll
 	public Response create(@Context SecurityContext sc, @PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml) throws Exception {
 
@@ -89,7 +89,6 @@ public class DOIResource {
 	@Path("{doi:10\\..+/.+}")
 	@GET
 	@Produces("text/plain")
-	@DenyAll
 	public String getDOI(@PathParam("doi") String doi) throws DoxiException {
 
 		DOI resultDoi = doiController.getDOI(doi);

@@ -1,7 +1,6 @@
 package de.mpg.mpdl.doi;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Scanner;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -12,15 +11,13 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.server.Server;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.NetworkListener;
+import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.client.filter.CsrfProtectionFilter;
-import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.glassfish.jersey.test.DeploymentContext;
-import org.glassfish.jersey.test.jetty.JettyTestContainerFactory;
-import org.glassfish.jersey.test.spi.TestContainer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,7 +36,7 @@ public class SimpleTest {
 			.getResourceAsStream("/doi_update_metadata.xml");
 
 	private WebTarget target;
-	private Server server;
+	private HttpServer server;
 	
 	/*
 	@Override
@@ -71,18 +68,18 @@ public class SimpleTest {
 	public void setUp() throws Exception
 	{
 		
-		//HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create("http://localhost:8123"), new JerseyApplicationConfig());
-		
+//		HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create("http://localhost:8123"), new JerseyApplicationConfig());
+		/*
 		TestContainer test =  new JettyTestContainerFactory().create(URI.create("http://localhost:8123/"), DeploymentContext.builder(new JerseyApplicationConfig()).build()); // createServer(URI.create("http://localhost:8123"));
 		test.start();
+		*/
 		
-		/*
 		server = new HttpServer();
 		NetworkListener listener = new NetworkListener("grizzly2", "localhost", 8123);
 		server.addListener(listener);
-		*/
 		
-		//WebappContext ctx = new WebappContext("ctx","/");       
+		
+		WebappContext ctx = new WebappContext("ctx","/");       
 		
 		
 		//If Java-config should be used, create a class SecurityWebApplicationInitializer extends AbstractSecurityWebApplicationInitializer
@@ -98,19 +95,19 @@ public class SimpleTest {
 //		 ctx.addListener(RequestContextListener.class);
 
 		
-		//Register Jersey Servlet
-		//ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/*");
+//		Register Jersey Servlet
+		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/*");
 
-		//ctx.deploy(server);
+		ctx.deploy(server);
 		
-		//server.start();
+		server.start();
 		
 		ClientConfig clientConfig = new ClientConfig();
 		clientConfig.register(new CsrfProtectionFilter("doxi test"));
 		
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
-			    .nonPreemptive().credentials("user", "password").build();
-		clientConfig.register(feature);
+			    .credentials("user", "password").build();
+//		clientConfig.register(feature);
 		
 		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/doi");
 	}
@@ -118,8 +115,8 @@ public class SimpleTest {
 	@After
 	public void tearDown() throws Exception
 	{
-		//server.shutdown();
-		server.stop();
+		server.shutdown();
+//		server.stop();
 		
 	}
 	

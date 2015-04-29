@@ -1,20 +1,35 @@
 package de.mpg.mpdl.doi.security;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
-@Entity
+@Entity(name="users")
 public class DoxiUser implements Principal {
 
-	
+	@Column(name="username")
+	@Id
 	private String username;
 	
+	@Column(name="password")
 	private String password;
 	
+	@Column(name="email")
 	private String email;
 	
+	@Column(name="prefix")
 	private String prefix;
+	
+	@OneToMany(cascade=CascadeType.PERSIST)
+	@JoinColumn(name="username", referencedColumnName="username")
+	private List<DoxiRole> roles = new ArrayList<DoxiRole>();
 	
 	
 
@@ -60,6 +75,14 @@ public class DoxiUser implements Principal {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public List<DoxiRole> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<DoxiRole> roles) {
+		this.roles = roles;
 	}
 
 
