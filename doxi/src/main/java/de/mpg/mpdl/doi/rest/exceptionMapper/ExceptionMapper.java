@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 
-@Provider
+
 public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception>
 {
 	private static Logger logger = LogManager.getLogger();

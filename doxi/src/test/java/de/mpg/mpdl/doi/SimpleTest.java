@@ -106,8 +106,8 @@ public class SimpleTest {
 		clientConfig.register(new CsrfProtectionFilter("doxi test"));
 		
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
-			    .credentials("user", "password").build();
-//		clientConfig.register(feature);
+			    .credentials("admin", "admin").build();
+		clientConfig.register(feature);
 		
 		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/doi");
 	}

@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -53,19 +54,20 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 				qu.setParameter(1, values[0]);
 				qu.setParameter(2, values[1]);
 				authenticatedUser = qu.getSingleResult();
+				em.close();
+				requestContext.setSecurityContext(new Authorizer(authenticatedUser));
+				return;
 			} catch (Exception e) {
 				logger.error("ERROR with Http basic authentication", e);
-				throw new WebApplicationException(Response.status(Status.UNAUTHORIZED).entity("Wrong credentials!").build());
+				//throw new ForbiddenException("Wrong credentials!");
 			}
 	        
-	        requestContext.setSecurityContext(new Authorizer(authenticatedUser));
 	        
-		} else {
-			requestContext.setSecurityContext(new Authorizer(null));
-		}
+	        
+		} 
+			
+		requestContext.setSecurityContext(new Authorizer(null));
 		
-		
-		logger.info("RequestContext: " + requestContext);
 	}
 	
 	

@@ -11,12 +11,13 @@ import javax.persistence.ManyToOne;
 @Entity(name="roles")
 public class DoxiRole {
 	
-	@Column(name="role")
+	@Column(name="role", nullable=false)
 	@Id
 	private String role;
 	
 	
 	@Id
+	@Column(name="username", nullable=false)
 	private String username;
 	
 	public String getRole() {
@@ -25,6 +26,14 @@ public class DoxiRole {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 

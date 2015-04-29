@@ -23,29 +23,32 @@ import javax.ws.rs.core.SecurityContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
+
+
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.model.DOI;
 
 @Path("doi")
-
 public class DOIResource {
 
 	private static Logger logger = LogManager.getLogger();
 
-	private DoiControllerInterface doiController = DataciteAPIController.getInstance();
+	@Inject
+	private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();
 	
 
 	@Path("{doi:10\\..+/.+}")
 	@PUT
 	@Produces("text/plain")
 	@Consumes({ "text/xml", "application/xml" })
-	public Response create(@Context SecurityContext sc, @PathParam("doi") String doi,
+	@RolesAllowed("user")
+	public Response create(@PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml) throws Exception {
 
-//		logger.info(sc.getContext().getAuthentication().getPrincipal());
-		logger.info(sc.toString());
+
 		String resultDoi = doiController.createDOI(doi, url, metadataXml)
 				.getDoi();
 		Response r = Response.status(Status.CREATED).entity(resultDoi).build();
@@ -55,6 +58,7 @@ public class DOIResource {
 	@PUT
 	@Produces("text/plain")
 	@Consumes({ "text/xml", "application/xml" })
+	@RolesAllowed("user")
 	public Response createAutoOrSuffix(@QueryParam("url") String url,
 			@QueryParam("suffix") String suffix, String metadataXml)
 			throws DoxiException {
@@ -76,6 +80,7 @@ public class DOIResource {
 	@POST
 	@Produces("text/plain")
 	@Consumes({ "text/xml", "application/xml" })
+	@RolesAllowed("user")
 	public Response updateDOI(@PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml)
 			throws DoxiException {
@@ -89,6 +94,7 @@ public class DOIResource {
 	@Path("{doi:10\\..+/.+}")
 	@GET
 	@Produces("text/plain")
+	@RolesAllowed("user")
 	public String getDOI(@PathParam("doi") String doi) throws DoxiException {
 
 		DOI resultDoi = doiController.getDOI(doi);
@@ -97,6 +103,7 @@ public class DOIResource {
 
 	@GET
 	@Produces("text/plain")
+	@RolesAllowed("user")
 	public Response getDOIList() throws DoxiException {
 		// TODO prefix depending on current user
 		List<DOI> resultDoiList = doiController.getDOIList("10.15771");
@@ -106,6 +113,7 @@ public class DOIResource {
 	@Path("{doi:10\\..+/.+}")
 	@DELETE
 	@Produces("text/plain")
+	@RolesAllowed("user")
 	public void inactivate(@PathParam("doi") String doi) throws DoxiException {
 
 		doiController.inactivateDOI(doi);

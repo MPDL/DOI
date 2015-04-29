@@ -9,22 +9,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity(name="users")
 public class DoxiUser implements Principal {
 
-	@Column(name="username")
+	@Column(name="username", nullable=false)
 	@Id
 	private String username;
 	
-	@Column(name="password")
+	@Column(name="password", nullable=false)
+	
 	private String password;
 	
 	@Column(name="email")
 	private String email;
 	
-	@Column(name="prefix")
+	@Column(name="prefix", nullable=false)
 	private String prefix;
 	
 	@OneToMany(cascade=CascadeType.PERSIST)

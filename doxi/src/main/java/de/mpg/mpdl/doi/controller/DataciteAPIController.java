@@ -8,9 +8,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.ManagedBean;
-import javax.annotation.Resource;
-import javax.inject.Scope;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Singleton;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -35,11 +35,13 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.jvnet.hk2.annotations.Service;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
+import de.mpg.mpdl.doi.exception.DoiInvalidException;
 import de.mpg.mpdl.doi.exception.DoiNotFoundException;
 import de.mpg.mpdl.doi.exception.DoiRegisterException;
 import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
+import de.mpg.mpdl.doi.security.DoxiUser;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
 /**
@@ -51,15 +53,18 @@ import de.mpg.mpdl.doi.util.PropertyReader;
 
 public class DataciteAPIController implements DoiControllerInterface {
 
-	private static DataciteAPIController instance = new DataciteAPIController();
+	
 	
 	private final int RETRY_TIMEOUT = 1000; // Timeout until retrying request in
 											// milliseconds
 
 	private static Logger logger = LogManager.getLogger();
-	WebTarget dataciteTarget;
+	private WebTarget dataciteTarget;
 	
-	private DataciteAPIController() {
+	@Context
+	private SecurityContext secContext;
+	
+	public DataciteAPIController() {
 		ClientConfig clientConfig = new ClientConfig();
 		HttpAuthenticationFeature authFeature = HttpAuthenticationFeature
 				.basic(PropertyReader.getProperty("datacite.api.login.user"),
@@ -71,10 +76,6 @@ public class DataciteAPIController implements DoiControllerInterface {
 				.getProperty("datacite.api.url"));
 	}
 
-	public static DataciteAPIController getInstance() {
-		return instance;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,8 +83,10 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOI(java.lang.String
 	 * )
 	 */
+
 	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException {
 		
+		logger.info(secContext.getUserPrincipal());
 		
 		DOI doiObject = new DOI();
 		doiObject.setDoi(doi);
@@ -152,6 +155,11 @@ public class DataciteAPIController implements DoiControllerInterface {
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException {
 
+		if(doi==null || !doi.startsWith(getDoiPrefix()))
+		{
+			throw new DoiInvalidException("Prefix not allowed for this user");
+		}
+		
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
 				|| getResp.getStatus() == Response.Status.NO_CONTENT
@@ -415,9 +423,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 */
 	// TODO get prefix (including service ID) for current user from database
 	private String getDoiPrefix() {
-//		DoxiUser currentUser = (DoxiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		return currentUser.getPrefix();
-		return "10.5072";
+		DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
+		return currentUser.getPrefix();
+		//return "10.5072";
 	}
 
 }

@@ -32,7 +32,7 @@ public class Authorizer implements SecurityContext {
 			
 			for(DoxiRole doxiRole : user.getRoles())
 			{
-				if(doxiRole.getRole()!= null && doxiRole.getRole().equals(role))
+				if(doxiRole.getRole()!= null && (doxiRole.getRole().equals(role) || doxiRole.getRole().equals("admin")))
 				{
 					return true;
 				}
