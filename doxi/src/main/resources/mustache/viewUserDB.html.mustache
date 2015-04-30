@@ -8,7 +8,7 @@
     <title>MPDL Doxi</title>
 
     <!-- Bootstrap -->
-    <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,30 +35,36 @@
     
     
 	    <h2>Create new user:</h2>
-	    <form method="post">
+	    <form id="userForm" method="post">
 	    
-	    <div class="form-group">
+	    <div class="form-group has-feedback">
 	  		<label for="username">Username</label>
-	  		<input type="text" class="form-control" placeholder="Enter username" aria-describedby="basic-addon1" name="username" id="username">
+	  		<input type="text" class="form-control" placeholder="Enter username" aria-describedby="basic-addon1" name="username" id="username" required>
+	  		<span class="glyphicon form-control-feedback" id="username1"></span>	
 		</div>
-		<div class="form-group">
+		<div class="form-group has-feedback">
 	  		<label for="email">Email address</label>
-	  		<input type="text" class="form-control" placeholder="Enter email" aria-describedby="basic-addon1" name="email" id="email">
+	  		<input type="email" class="form-control" placeholder="Enter email" aria-describedby="basic-addon1" name="email" id="email">
+	  		<span class="glyphicon form-control-feedback" id="email1"></span>
 		</div>
-		 <div class="form-group">
+		 <div class="form-group has-feedback">
 	  		<label for="password">Password</label>
-	  		<input type="text" class="form-control" placeholder="Enter password" aria-describedby="basic-addon1" name="password" id="password">
+	  		<input type="password" class="form-control" placeholder="Enter password" aria-describedby="basic-addon1" name="password" id="password" required>
+	  		<span class="glyphicon form-control-feedback" id="password1"></span>
 		</div>
-			 <div class="form-group">
+			 <div class="form-group has-feedback">
 	  		<label for="password_repeat">Repeat Password</label>
-	  		<input type="text" class="form-control" placeholder="Repeat password" aria-describedby="basic-addon1" name="password_repeat" id="password_repeat">
+	  		<input type="password" class="form-control" placeholder="Repeat password" aria-describedby="basic-addon1" name="password_repeat" id="password_repeat" required>
+	  		<span class="glyphicon form-control-feedback" id="password_repeat1"></span>
+	  		
 		</div>
-	    <div class="form-group">
+	    <div class="form-group has-feedback">
 	  		<label for="prefix">DOI prefix</label>
-	  		<input type="text" class="form-control" placeholder="Enter DOI prefix" aria-describedby="basic-addon1" name="prefix" id="prefix">
+	  		<input type="text" class="form-control" placeholder="Enter DOI prefix" aria-describedby="basic-addon1" name="prefix" id="prefix" required>
+	  		<span class="glyphicon form-control-feedback" id="prefix1"></span>
 		</div>
 		
-	 	<div class="form-group">
+	 	<div class="form-group has-feedback">
 	  		<label for="role">Role</label>
 	  		<select class="form-control" id="role" name="role">
 			    <option value="user">User</option>
@@ -77,7 +83,46 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/resources/js/bootstrap.min.js"></script>
+    <script src="/resources/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="/resources/jquery.validate/jquery.validate.min.js"></script>
+      <script src="/resources/jquery.validate/additional-methods.min.js"></script>
+    <script>
+	    $.validator.setDefaults({
+	    	highlight: function(element) {
+	            var id_attr = "#" + $( element ).attr("id") + "1";
+	            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+	            $(id_attr).removeClass('glyphicon-ok').addClass('glyphicon-remove');         
+	        },
+	        unhighlight: function(element) {
+	            var id_attr = "#" + $( element ).attr("id") + "1";
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	            $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');         
+	        },
+	        errorElement: 'span',
+	            errorClass: 'help-block',
+	            errorPlacement: function(error, element) {
+	                if(element.length) {
+	                    error.insertAfter(element);
+	                } else {
+	                error.insertAfter(element);
+	                }
+	            } 
+	    });
+		    $('#userForm').validate({
+			rules : {
+				"prefix" : {
+					required: true,
+					pattern: /^10\..+$/
+					
+				},
+				"password_repeat": {
+					equalTo: "#password"
+				}
+			}
+		});
+		
+	</script>
   </body>
 </html>
 

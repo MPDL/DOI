@@ -9,6 +9,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import net.sf.saxon.functions.Data;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -23,6 +25,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.mpg.mpdl.doi.controller.DataciteAPIController;
+import de.mpg.mpdl.doi.exception.DoiRegisterException;
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 
 public class SimpleTest { 
@@ -199,11 +203,36 @@ public class SimpleTest {
 		Response result2 = target.path("test2").request().get();
 		logger.info("Exception " + result2.readEntity(String.class) +result2.getStatus());
 	}
-	
+
 	
 	private static String streamToString(InputStream is)
 	{
 		String inputStreamString = new Scanner(is,"UTF-8").useDelimiter("\\A").next();
         return inputStreamString;
+	}
+	
+	public static void main(String[] arg)
+	{
+		
+		for(int i=0; i<1; i++)
+		{
+			
+			new Thread(){
+				public void run()
+				{
+					//System.out.println("thread");
+					try {
+						//logger.info("Next: " );
+						DataciteAPIController contr = new DataciteAPIController();
+						String suff = contr.getNextDoiSuffix();
+						System.out.println(suff);
+						
+					} catch (Exception e) {
+						System.out.println(e);
+						//logger.info("Problem", e);
+					}
+				}
+			}.start();
+		}
 	}
 }

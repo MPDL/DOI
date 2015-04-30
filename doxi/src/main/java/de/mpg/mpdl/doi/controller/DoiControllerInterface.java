@@ -24,12 +24,12 @@ public interface DoiControllerInterface {
 	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException;
 
 	/**
-	 * returns a list of all already register DOIs for a given service-prefix
+	 * returns a list of all already register DOIs for the current user
 	 * 
 	 * @return List of DOIs
 	 * @throws DoxiException
 	 */
-	public List<DOI> getDOIList(String prefix) throws DoxiException;
+	public List<DOI> getDOIList() throws DoxiException;
 
 	/**
 	 * registers a given DOI with the given metadata and URL

@@ -10,11 +10,21 @@
   <exclude-unlisted-classes>false</exclude-unlisted-classes>
   
   <properties>
-      <property name="javax.persistence.jdbc.driver"   value="org.postgresql.Driver" />
-      <property name="javax.persistence.jdbc.url"      value="jdbc:postgresql://dev-pubman.mpdl.mpg.de:5432/doxi" />
-      <property name="javax.persistence.jdbc.user"     value="postgres" />
-      <property name="javax.persistence.jdbc.password" value="postgres" />
+         <!-- 
       <property name="eclipselink.ddl-generation"      value="create-tables" />
+   
+      <property name="eclipselink.create-ddl-jdbc-file-name"      value="META-INF/create_tables.sql" />
+      -->
+      <property name="eclipselink.logging.level" value="INFO"/>
+      
+      
+      
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="javax.persistence.schema-generation.create-source" value="script"/>
+      <property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create_tables.sql"/>
+      <property name="javax.persistence.sql-load-script-source" value="META-INF/insert_database_content.sql"/>
+      
+      
   </properties>
 </persistence-unit>
 </persistence>

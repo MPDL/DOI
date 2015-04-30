@@ -30,4 +30,8 @@ public class DoiRegisterException extends DoxiException {
 		super(statusCode, message);
 	}
 	
+	public DoiRegisterException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

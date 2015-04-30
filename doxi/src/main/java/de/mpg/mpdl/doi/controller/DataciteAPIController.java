@@ -11,6 +11,8 @@ import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -41,6 +43,7 @@ import de.mpg.mpdl.doi.exception.DoiRegisterException;
 import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doi.model.DOI;
+import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doi.security.DoxiUser;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
@@ -125,9 +128,11 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * 
 	 * @see de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOIList()
 	 */
-	public List<DOI> getDOIList(String prefix) throws DoxiException {
+	public List<DOI> getDOIList() throws DoxiException {
 		List<DOI> doiList = new ArrayList<DOI>();
 		Response response = dataciteTarget.path("doi").request().get();
+		
+		String prefix = getDoiPrefix();
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
 			for (String listItem : response.readEntity(String.class)
 					.split("\n")) {
@@ -409,11 +414,34 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * @throws Exception
 	 */
 	// TODO generate DOI (BASE36 encoded key stored in the db)
-	private synchronized String generateDoi() {
+	private String generateDoi() throws DoiRegisterException {
 		// Base36 encoding as Datacite DOI service is case insensitive
 //		String doiSuffix = Long.toString(uniqueInkrementIdDao.getNextDoi(), 36);
-		String doiSuffix = Long.toString( (long)Math.random(), 36);
-		return getDoiPrefix() + doiSuffix;
+		String doiSuffix = null;
+
+		return getDoiPrefix() + getNextDoiSuffix();
+	}
+	
+	public String getNextDoiSuffix()  throws DoiRegisterException
+	{
+		EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			
+			Query query = em.createNativeQuery("SELECT value FROM unique_identifier WHERE id = 1 FOR UPDATE;");
+			List<Long> results = query.getResultList();
+			String doiSuffix = Long.toString( results.get(0), 36);
+			Query updateQuery = em.createNativeQuery("UPDATE unique_identifier SET value  = value + 1 WHERE id = 1;");
+			
+			updateQuery.executeUpdate();
+			em.getTransaction().commit();
+			return doiSuffix;
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw new DoiRegisterException("Problem generating DOI", e);
+		} finally {
+			em.close();
+		}
 	}
 
 	/**

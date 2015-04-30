@@ -106,8 +106,15 @@ public class DOIResource {
 	@RolesAllowed("user")
 	public Response getDOIList() throws DoxiException {
 		// TODO prefix depending on current user
-		List<DOI> resultDoiList = doiController.getDOIList("10.15771");
-		return Response.status(Status.OK).entity(resultDoiList).build();
+		List<DOI> resultDoiList = doiController.getDOIList();
+		StringBuffer sb = new StringBuffer();
+		for(DOI doi : resultDoiList)
+		{
+			sb.append(doi.getDoi());
+			sb.append("\n");
+		}
+		
+		return Response.status(Status.OK).entity(sb.toString()).build();
 	}
 
 	@Path("{doi:10\\..+/.+}")

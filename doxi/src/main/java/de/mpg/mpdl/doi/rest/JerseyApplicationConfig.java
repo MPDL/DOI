@@ -1,5 +1,8 @@
 package de.mpg.mpdl.doi.rest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.security.DenyAll;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -22,12 +25,25 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doi.security.HttpBasicContainerRequestFilter;
+import de.mpg.mpdl.doi.util.PropertyReader;
 
 @ApplicationPath("/")
 
 public class JerseyApplicationConfig extends ResourceConfig {
-
-	public static EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+	
+	public static EntityManagerFactory emf;
+	
+	static{
+		Map<String,String> jpaDBProperties = new HashMap<String, String>();
+		jpaDBProperties.put("javax.persistence.jdbc.driver", PropertyReader.getProperty("doxi.jdbc.driver"));
+		jpaDBProperties.put("javax.persistence.jdbc.url", PropertyReader.getProperty("doxi.jdbc.url"));
+		jpaDBProperties.put("javax.persistence.jdbc.user", PropertyReader.getProperty("doxi.jdbc.user"));
+		jpaDBProperties.put("javax.persistence.jdbc.password", PropertyReader.getProperty("doxi.jdbc.password"));
+		
+		emf = Persistence.createEntityManagerFactory("default", jpaDBProperties);
+		
+	}
+	
 	
 	Logger logger = LogManager.getLogger();
 	public JerseyApplicationConfig()
