@@ -20,6 +20,17 @@ public class DoxiRole {
 	@Column(name="username", nullable=false)
 	private String username;
 	
+	public DoxiRole()
+	{
+		
+	}
+	
+	public DoxiRole(String role, String username)
+	{
+		this.role = role;
+		this.username = username;
+	}
+	
 	public String getRole() {
 		return role;
 	}

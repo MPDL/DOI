@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.security.DenyAll;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.ApplicationPath;
@@ -24,6 +25,8 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
+import de.mpg.mpdl.doi.security.DoxiRole;
+import de.mpg.mpdl.doi.security.DoxiUser;
 import de.mpg.mpdl.doi.security.HttpBasicContainerRequestFilter;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
@@ -73,8 +76,18 @@ public class JerseyApplicationConfig extends ResourceConfig {
 		register(RolesAllowedDynamicFeature.class);
 
 		
-
 		
+		
+		try {
+			String createUser = PropertyReader.getProperty("doxi.admin.create");
+			if("true".equals(createUser))
+			{
+				createAdminUser();
+			}
+			
+		} catch (Exception e) {
+			logger.error("Error while creating admin user", e);
+		}
 		
 		//register(SecurityConfig.class);
 		//register(SecurityWebApplicationInitializer.class);
@@ -99,6 +112,37 @@ public class JerseyApplicationConfig extends ResourceConfig {
 		
 		
 		*/
+	}
+	
+	
+	private void createAdminUser() throws Exception
+	{
+		EntityManager em = emf.createEntityManager();
+		
+		String username = PropertyReader.getProperty("doxi.admin.user");
+		
+		
+		DoxiUser alreadyExistsUser = em.find(DoxiUser.class, username);
+		if(alreadyExistsUser==null)
+		{
+			DoxiUser adminUser = new DoxiUser();
+			adminUser.setUsername(username);
+			adminUser.setPassword(PropertyReader.getProperty("doxi.admin.password"));
+			adminUser.setPrefix(PropertyReader.getProperty("doxi.admin.prefix"));
+			DoxiRole role = new DoxiRole("admin" ,PropertyReader.getProperty("doxi.admin.user"));
+			adminUser.getRoles().add(role);
+			em.getTransaction().begin();
+			em.persist(adminUser);
+			em.getTransaction().commit();
+			logger.info("Admin user " + username + " successfully created in database");
+		}
+		else
+		{
+			logger.warn("Admin user was not created, because it already exists in database");
+		}
+		
+		
+		
 	}
 	
 	public static void main(String[] args) throws Exception
