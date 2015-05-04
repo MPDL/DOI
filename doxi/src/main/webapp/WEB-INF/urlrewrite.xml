@@ -1,6 +1,0 @@
-<urlrewrite>
-    <rule>
-       <from>^/doi/(10\..*)$</from>
-       <to>/doi/doiInUrl?doi=$1</to>
-    </rule>
-</urlrewrite>

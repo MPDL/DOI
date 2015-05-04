@@ -27,7 +27,7 @@ import de.mpg.mpdl.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doi.security.HttpBasicContainerRequestFilter;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
-@ApplicationPath("/")
+@ApplicationPath("rest")
 
 public class JerseyApplicationConfig extends ResourceConfig {
 	

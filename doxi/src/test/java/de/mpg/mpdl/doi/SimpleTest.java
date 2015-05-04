@@ -113,7 +113,7 @@ public class SimpleTest {
 			    .credentials("admin", "admin").build();
 		clientConfig.register(feature);
 		
-		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/doi");
+		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/doi/rest");
 	}
 	
 	@After
