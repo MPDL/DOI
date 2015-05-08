@@ -2,8 +2,6 @@ package de.mpg.mpdl.doi.rest;
 
 import java.util.List;
 
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -15,18 +13,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-
-
-import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.model.DOI;
@@ -34,7 +26,7 @@ import de.mpg.mpdl.doi.model.DOI;
 @Path("doi")
 public class DOIResource {
 
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(DOIResource.class);
 
 	@Inject
 	private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();

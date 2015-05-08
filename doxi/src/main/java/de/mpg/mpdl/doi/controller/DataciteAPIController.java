@@ -30,11 +30,13 @@ import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.jvnet.hk2.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doi.exception.DoiInvalidException;
@@ -61,7 +63,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 	private final int RETRY_TIMEOUT = 1000; // Timeout until retrying request in
 											// milliseconds
 
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(DataciteAPIController.class);
 	private WebTarget dataciteTarget;
 	
 	@Context
@@ -89,7 +91,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 
 	public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException {
 		
-		logger.info(secContext.getUserPrincipal());
+		logger.info("User " + secContext.getUserPrincipal() + " requests getDoi() with doi " + doi);
 		
 		DOI doiObject = new DOI();
 		doiObject.setDoi(doi);
@@ -120,6 +122,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 			throw new DoiNotFoundException(doiResponse.getStatus(),
 					doiResponse.readEntity(String.class));
 		}
+		logger.info("getDoi() successfully returned doi " + doiObject.getDoi());
 		return doiObject;
 	}
 
@@ -129,6 +132,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * @see de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOIList()
 	 */
 	public List<DOI> getDOIList() throws DoxiException {
+		logger.info("User " + secContext.getUserPrincipal() + " requests getDoiList()");
+		
 		List<DOI> doiList = new ArrayList<DOI>();
 		Response response = dataciteTarget.path("doi").request().get();
 		
@@ -146,6 +151,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 			throw new DoxiException(response.getStatus(), response
 					.getStatusInfo().toString());
 		}
+		logger.info("getDoiList() successfully returned dois ");
 		return doiList;
 	}
 
@@ -160,6 +166,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 			throws DoxiException, DoiAlreadyExistsException,
 			MetadataInvalidException, DoiRegisterException {
 
+		logger.info("User " + secContext.getUserPrincipal() + " requests createDoi() with doi " + doi + " and url " + url);
+		logger.info("Metadata: " + metadataXml);
 		if(doi==null || !doi.startsWith(getDoiPrefix()))
 		{
 			throw new DoiInvalidException("Prefix not allowed for this user");
@@ -201,6 +209,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 								+ doiResp.getStatusInfo() + doiResp.getStatus()
 								+ " -- " + doiResp.readEntity(String.class));
 						resultDoi.setUrl(URI.create(url));
+						logger.info("createDoi() successfully returned with doi " + resultDoi.getDoi());
 						return resultDoi;
 					} else {
 						String doiResponseEntity = doiResp
@@ -274,14 +283,17 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 */
 	@Override
 	public void inactivateDOI(String doi) throws DoxiException {
+		logger.info("User " + secContext.getUserPrincipal() + " requests inactivateDoi() with doi " + doi);
 		dataciteTarget.path("doi").path(doi).request().delete();
-		logger.info("DOI [" + doi + "] set to inactive");
+		logger.info("inactivateDOI() successfully inactivated doi " + doi);
 	}
 
 	@Override
 	public DOI updateDOI(String doi, String url, String metadataXml)
 			throws DoxiException, DoiNotFoundException,
 			MetadataInvalidException, DoiRegisterException {
+		logger.info("User " + secContext.getUserPrincipal() + " requests updateDoi() with doi " + doi + " and url " +url);
+		logger.info("Metadata: " + metadataXml);
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
 			logger.error("DOI " + doi + " is not existing: "
@@ -316,6 +328,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 								+ doiResp.getStatusInfo() + doiResp.getStatus()
 								+ " -- " + doiResp.readEntity(String.class));
 						resultDoi.setUrl(URI.create(url));
+						logger.info("updateDoi() successfully returned with doi " + resultDoi.getDoi());
 						return resultDoi;
 					} else {
 						String registerDoiResponseEntity = doiResp

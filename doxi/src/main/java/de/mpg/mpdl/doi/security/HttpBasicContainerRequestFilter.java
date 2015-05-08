@@ -1,29 +1,17 @@
 package de.mpg.mpdl.doi.security;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.internal.util.Base64;
-import org.osgi.service.jpa.EntityManagerFactoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 
@@ -31,7 +19,7 @@ import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 @Provider
 public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 
-	Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(HttpBasicContainerRequestFilter.class);
 	
 	@Override
 	public void filter(ContainerRequestContext requestContext)

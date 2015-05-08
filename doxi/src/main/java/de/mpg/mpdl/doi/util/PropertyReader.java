@@ -1,15 +1,16 @@
 package de.mpg.mpdl.doi.util;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertyReader {
 	
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(PropertyReader.class);
 	
 	private static Properties properties = null;
 	private static Properties messages = null;
@@ -26,7 +27,15 @@ public class PropertyReader {
 	private static void loadProperties()
 	{
 		try {
+			//First try to load from from internal
 			InputStream is = PropertyReader.class.getResourceAsStream("/doxi.properties");
+			if(is==null)
+			{
+				//then from tomcat's conf dir
+				String tomcatHome = System.getProperty("catalina.base");
+	        	String path = tomcatHome + "/conf/doxi.properties";
+	        	is = new FileInputStream(path);
+			}
 			properties = new Properties();
 			properties.load(is);
 			logger.info("Properties loaded from doxi.properties");

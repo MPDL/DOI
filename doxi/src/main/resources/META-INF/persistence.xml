@@ -15,6 +15,7 @@
    
       <property name="eclipselink.create-ddl-jdbc-file-name"      value="META-INF/create_tables.sql" />
       -->
+      
       <property name="eclipselink.logging.level" value="INFO"/>
       
       

@@ -1,16 +1,15 @@
 package de.mpg.mpdl.doi.rest;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import javax.annotation.security.DenyAll;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.ApplicationPath;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
@@ -22,21 +21,24 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.glassfish.jersey.server.mvc.mustache.MustacheMvcFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doi.security.DoxiRole;
 import de.mpg.mpdl.doi.security.DoxiUser;
-import de.mpg.mpdl.doi.security.HttpBasicContainerRequestFilter;
 import de.mpg.mpdl.doi.util.PropertyReader;
 
 @ApplicationPath("rest")
-
 public class JerseyApplicationConfig extends ResourceConfig {
 	
 	public static EntityManagerFactory emf;
 	
 	static{
+		//Pass JUL logs (Java Util Logging), used by Jersey, to Log4J
+		//System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+		
 		Map<String,String> jpaDBProperties = new HashMap<String, String>();
 		jpaDBProperties.put("javax.persistence.jdbc.driver", PropertyReader.getProperty("doxi.jdbc.driver"));
 		jpaDBProperties.put("javax.persistence.jdbc.url", PropertyReader.getProperty("doxi.jdbc.url"));
@@ -48,13 +50,13 @@ public class JerseyApplicationConfig extends ResourceConfig {
 	}
 	
 	
-	Logger logger = LogManager.getLogger();
+	Logger logger = LoggerFactory.getLogger(JerseyApplicationConfig.class);
 	public JerseyApplicationConfig()
 	{
 	    //property("contextConfigLocation", "classpath:applicationContext.xml");
 	    packages(true,"de.mpg.mpdl.doi");
 		
-		property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "mustache");
+		property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/mustache");
 		register(MustacheMvcFeature.class);
 		register(MvcFeature.class);
 		
@@ -172,7 +174,11 @@ public class JerseyApplicationConfig extends ResourceConfig {
 
 		
 //		Register Jersey Servlet
-		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/*");
+		Set<Class<?>> set = new HashSet<Class<?>>();
+		set.add(JerseyApplicationConfig.class);
+		
+		//new JerseyServletContainerInitializer().onStartup(set, ctx);
+		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
 
 		ctx.deploy(server);
 		

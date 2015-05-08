@@ -86,6 +86,12 @@ public class DoxiUser implements Principal {
 	public void setRoles(List<DoxiRole> roles) {
 		this.roles = roles;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return username + " (Roles: " + roles + " --- Prefix: " + prefix + ")";
+	}
 
 
 

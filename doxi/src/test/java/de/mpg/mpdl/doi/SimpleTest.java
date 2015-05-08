@@ -9,10 +9,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import net.sf.saxon.functions.Data;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.servlet.WebappContext;
@@ -24,14 +20,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
-import de.mpg.mpdl.doi.exception.DoiRegisterException;
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
 
 public class SimpleTest { 
 
-	private Logger logger = LogManager.getLogger(SimpleTest.class);
+	private Logger logger = LoggerFactory.getLogger(SimpleTest.class);
 
 	private String testDoi = "10.15771/doxi7";
 	private String url = "http://qa-pubman.mpdl.mpg.de/pubman/item/escidoc:2123284";
