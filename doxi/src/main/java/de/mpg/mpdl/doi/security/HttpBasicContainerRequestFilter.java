@@ -10,6 +10,7 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 
 import org.glassfish.jersey.internal.util.Base64;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +39,23 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 				EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
 				
 				
-				TypedQuery<DoxiUser> qu = em.createQuery("select u from users u where u.username=?1 and u.password=?2", DoxiUser.class);
+				TypedQuery<DoxiUser> qu = em.createQuery("select u from users u where u.username=?1", DoxiUser.class);
 				qu.setParameter(1, values[0]);
-				qu.setParameter(2, values[1]);
 				authenticatedUser = qu.getSingleResult();
 				em.close();
-				requestContext.setSecurityContext(new Authorizer(authenticatedUser));
-				return;
+				
+				boolean authenticated = BCrypt.checkpw(values[1], authenticatedUser.getPassword());
+				if(authenticated)
+				{
+					requestContext.setSecurityContext(new Authorizer(authenticatedUser));
+					return;
+				}
+				else
+				{
+					logger.error("User " + values[0] + " provided a wrong password");
+				}
+				
+				
 			} catch (Exception e) {
 				logger.error("ERROR with Http basic authentication", e);
 				//throw new ForbiddenException("Wrong credentials!");

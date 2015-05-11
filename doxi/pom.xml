@@ -170,11 +170,19 @@
 			<version>2.6.0</version>
 		</dependency>
 		
+		<dependency>
+			  <groupId>org.mindrot</groupId>
+			  <artifactId>jbcrypt</artifactId>
+			  <version>0.3m</version>
+		</dependency>
+		
 
 		<dependency>
 			<groupId>org.glassfish.jersey.ext</groupId>
 			<artifactId>jersey-mvc-mustache</artifactId>
 		</dependency>
+		
+		
 
         
 		<!-- 

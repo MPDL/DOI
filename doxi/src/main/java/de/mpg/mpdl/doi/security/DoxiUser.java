@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -20,7 +21,7 @@ public class DoxiUser implements Principal {
 	private String username;
 	
 	@Column(name="password", nullable=false)
-	
+	@Convert(converter=PasswordCryptoConverter.class)
 	private String password;
 	
 	@Column(name="email")
