@@ -37,11 +37,7 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 				final String[] values = credentials.split(":",2);
 				//EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 				EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
-				
-				
-				TypedQuery<DoxiUser> qu = em.createQuery("select u from users u where u.username=?1", DoxiUser.class);
-				qu.setParameter(1, values[0]);
-				authenticatedUser = qu.getSingleResult();
+				authenticatedUser = em.find(DoxiUser.class, values[0]);
 				em.close();
 				
 				boolean authenticated = BCrypt.checkpw(values[1], authenticatedUser.getPassword());
@@ -52,12 +48,12 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 				}
 				else
 				{
-					logger.error("User " + values[0] + " provided a wrong password");
+					logger.warn("User " + values[0] + " provided a wrong password, proceeding with anonymous");
 				}
 				
 				
 			} catch (Exception e) {
-				logger.error("ERROR with Http basic authentication", e);
+				logger.warn("ERROR with Http basic authentication, proceeding with anonymous", e);
 				//throw new ForbiddenException("Wrong credentials!");
 			}
 	        

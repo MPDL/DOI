@@ -36,6 +36,7 @@ public class UserEditorResource {
 	@RolesAllowed("admin")
 	public ViewUserDB createUser(@FormParam("username") String username, @FormParam("email") String email, @FormParam("password") String password, @FormParam("prefix") String prefix, @FormParam("role") String role)
 	{
+
 		DoxiUser doxiUser = new DoxiUser();
 		doxiUser.setUsername(username);
 		doxiUser.setEmail(email);
