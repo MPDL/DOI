@@ -74,17 +74,15 @@ public class DOIResource {
 
 	@Path("{doi:10\\..+/.+}")
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_XML)
 	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
 	public Response updateDOI(@PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml)
 			throws DoxiException {
 
-		String resultDoi = doiController.updateDOI(doi, url, metadataXml)
-				.getDoi();
-		Response r = Response.status(Status.CREATED).entity(resultDoi).build();
-		return r;
+		DOI resultDoi = doiController.updateDOI(doi, url, metadataXml);
+		return Response.status(Status.OK).entity(resultDoi.getMetadata()).header(HttpHeaders.LOCATION, resultDoi.getUrl().toString()).build();
 	}
 
 	@Path("{doi:10\\..+/.+}")
