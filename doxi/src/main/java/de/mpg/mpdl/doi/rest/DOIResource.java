@@ -13,8 +13,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.StatusType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +38,8 @@ public class DOIResource {
 
 	@Path("{doi:10\\..+/.+}")
 	@PUT
-	@Produces("text/plain")
-	@Consumes({ "text/xml", "application/xml" })
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
 	public Response create(@PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml) throws Exception {
@@ -48,8 +52,8 @@ public class DOIResource {
 	}
 
 	@PUT
-	@Produces("text/plain")
-	@Consumes({ "text/xml", "application/xml" })
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
 	public Response createAutoOrSuffix(@QueryParam("url") String url,
 			@QueryParam("suffix") String suffix, String metadataXml)
@@ -70,8 +74,8 @@ public class DOIResource {
 
 	@Path("{doi:10\\..+/.+}")
 	@POST
-	@Produces("text/plain")
-	@Consumes({ "text/xml", "application/xml" })
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
 	public Response updateDOI(@PathParam("doi") String doi,
 			@QueryParam("url") String url, String metadataXml)
@@ -85,16 +89,16 @@ public class DOIResource {
 
 	@Path("{doi:10\\..+/.+}")
 	@GET
-	@Produces("text/plain")
+	@Produces(MediaType.APPLICATION_XML)
 	@RolesAllowed("user")
-	public String getDOI(@PathParam("doi") String doi) throws DoxiException {
+	public Response getDOI(@PathParam("doi") String doi) throws DoxiException {
 
 		DOI resultDoi = doiController.getDOI(doi);
-		return resultDoi.getDoi();
+		return Response.status(Status.OK).entity(resultDoi.getMetadata()).header(HttpHeaders.LOCATION, resultDoi.getUrl().toString()).build();
 	}
 
 	@GET
-	@Produces("text/plain")
+	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed("user")
 	public Response getDOIList() throws DoxiException {
 		// TODO prefix depending on current user
@@ -111,7 +115,7 @@ public class DOIResource {
 
 	@Path("{doi:10\\..+/.+}")
 	@DELETE
-	@Produces("text/plain")
+	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed("user")
 	public void inactivate(@PathParam("doi") String doi) throws DoxiException {
 
