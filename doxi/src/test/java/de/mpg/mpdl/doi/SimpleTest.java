@@ -174,7 +174,7 @@ public class SimpleTest {
 		Response result = target.path(testDoi).queryParam("url", url).request()
 				.post(Entity.xml(updatedMetadata));
 		logger.info("Status: " + result.getStatus() + " expected 200\nEntity: " + result.readEntity(String.class));
-		Assert.assertEquals(200, result.getStatus());
+		Assert.assertEquals(201, result.getStatus());
 
 		logger.info("--------------------- FINISHED testUpdateMd ---------------------");
 	}

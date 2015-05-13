@@ -82,7 +82,7 @@ public class DOIResource {
 			throws DoxiException {
 
 		DOI resultDoi = doiController.updateDOI(doi, url, metadataXml);
-		return Response.status(Status.OK).entity(resultDoi.getMetadata()).header(HttpHeaders.LOCATION, resultDoi.getUrl().toString()).build();
+		return Response.status(Status.CREATED).entity(resultDoi.getMetadata()).header(HttpHeaders.LOCATION, resultDoi.getUrl().toString()).build();
 	}
 
 	@Path("{doi:10\\..+/.+}")
