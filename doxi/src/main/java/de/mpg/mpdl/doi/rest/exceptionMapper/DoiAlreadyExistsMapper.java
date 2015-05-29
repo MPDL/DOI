@@ -14,7 +14,6 @@ public class DoiAlreadyExistsMapper implements javax.ws.rs.ext.ExceptionMapper<D
 
 	@Override
 	public Response toResponse(DoiAlreadyExistsException exception) {
-		System.out.println(exception.getMessage());
 		return Response.status(Status.CONFLICT).type(MediaType.TEXT_PLAIN_TYPE).entity(exception.getMessage()).build();
 	}
 	
