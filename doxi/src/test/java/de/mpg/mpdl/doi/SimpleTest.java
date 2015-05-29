@@ -25,13 +25,14 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doi.controller.DataciteAPIController;
 import de.mpg.mpdl.doi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doi.util.PropertyReader;
 
 public class SimpleTest { 
 
 	private Logger logger = LoggerFactory.getLogger(SimpleTest.class);
 
-	private String testDoi = "10.15771/doxi7";
-	private String url = "http://qa-pubman.mpdl.mpg.de/pubman/item/escidoc:2123284";
+	private String testDoi = "10.15771/pure.844691";
+	private String url = "http://dev-pubman.mpdl.mpg.de/pubman/item/escidoc:844691";
 	
 	private InputStream updatedMetadata = SimpleTest.class
 			.getResourceAsStream("/doi_update_metadata.xml");
@@ -97,7 +98,7 @@ public class SimpleTest {
 
 		
 //		Register Jersey Servlet
-		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/*");
+		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
 
 		ctx.deploy(server);
 		
@@ -107,10 +108,10 @@ public class SimpleTest {
 		clientConfig.register(new CsrfProtectionFilter("doxi test"));
 		
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
-			    .credentials("admin", "admin").build();
+			    .credentials(PropertyReader.getProperty("doxi.admin.user"), PropertyReader.getProperty("doxi.admin.password")).build();
 		clientConfig.register(feature);
 		
-		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/doi/rest");
+		this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/rest/doi");
 	}
 	
 	@After

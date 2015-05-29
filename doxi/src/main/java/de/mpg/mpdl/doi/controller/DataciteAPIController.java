@@ -177,10 +177,12 @@ public class DataciteAPIController implements DoiControllerInterface {
 		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
 				|| getResp.getStatus() == Response.Status.NO_CONTENT
 						.getStatusCode()) {
-			logger.error("DOI " + doi + " already exists: "
+			String resp = getResp.readEntity(String.class);
+			String message = "DOI " + doi + " already exists. It points to: " + resp;
+			logger.error(message
 					+ getResp.getStatusInfo() + getResp.getStatus() + " -- "
-					+ getResp.readEntity(String.class));
-			throw new DoiAlreadyExistsException(getResp.getStatus());
+					+ resp);
+			throw new DoiAlreadyExistsException(getResp.getStatus(), message);
 		} else if (getResp.getStatus() == Response.Status.NOT_FOUND
 				.getStatusCode()) {
 

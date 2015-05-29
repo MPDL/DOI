@@ -1,5 +1,7 @@
 package de.mpg.mpdl.doi.rest.exceptionMapper;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
@@ -12,7 +14,8 @@ public class DoiAlreadyExistsMapper implements javax.ws.rs.ext.ExceptionMapper<D
 
 	@Override
 	public Response toResponse(DoiAlreadyExistsException exception) {
-		return Response.status(Status.CONFLICT).entity(exception.getMessage()).build();
+		System.out.println(exception.getMessage());
+		return Response.status(Status.CONFLICT).type(MediaType.TEXT_PLAIN_TYPE).entity(exception.getMessage()).build();
 	}
 	
 }
