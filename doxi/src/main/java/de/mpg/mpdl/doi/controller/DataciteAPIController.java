@@ -32,8 +32,10 @@ import net.sf.saxon.TransformerFactoryImpl;
 
 
 
+
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +79,15 @@ public class DataciteAPIController implements DoiControllerInterface {
 								.getProperty("datacite.api.login.password"));
 		clientConfig.register(authFeature);
 		Client client = ClientBuilder.newClient(clientConfig);
+		client.register(new LoggingFilter(java.util.logging.Logger.getLogger("de.mpg.mpdl.doi.controller.DataciteAPIController"), true));
 		this.dataciteTarget = client.target(PropertyReader
 				.getProperty("datacite.api.url"));
+		
+		String testMode = PropertyReader.getProperty("datacite.api.testmode");
+		if(testMode !=null && testMode.equals("true") )
+		{
+			this.dataciteTarget = dataciteTarget.queryParam("testMode", "true");
+		}
 	}
 
 	/*

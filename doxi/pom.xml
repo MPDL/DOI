@@ -214,6 +214,7 @@
 		<datacite.api.url></datacite.api.url>
 		<datacite.api.login.user></datacite.api.login.user>
 		<datacite.api.login.password></datacite.api.login.password>
+		<datacite.api.testmode>false</datacite.api.testmode>
 	</properties>
 	<profiles>
 		<profile>			
