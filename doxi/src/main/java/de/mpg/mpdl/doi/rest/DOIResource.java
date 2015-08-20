@@ -46,7 +46,7 @@ public class DOIResource {
 	private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();
 	
 
-	@ApiOperation(value="Register a DOI with known value", notes="Registers and mints a concrete DOI.")
+	@ApiOperation(value="Register a DOI with known value", notes="Registers and mints a concrete DOI. The DOi in the given metadata XML is overwritten with the one provided in the path.")
 	@ApiResponses({
 		@ApiResponse(code=201, message="DOI sucessfully created.", response=String.class),
 		@ApiResponse(code=409, message="DOI already exists."),
@@ -70,7 +70,7 @@ public class DOIResource {
 	}
 
 	
-	@ApiOperation(value="Generate and register a DOI", notes="Generates, registers and mints a new DOI. If a certain suffix is required, it can be optionally provided.")
+	@ApiOperation(value="Generate and register a DOI", notes="Generates, registers and mints a new DOI. If a certain suffix is required, it can be optionally provided. The DOi in the given metadata XML is overwritten with the generated one.")
 	@ApiResponses({
 		@ApiResponse(code=201, message="DOI sucessfully created.", response=String.class),
 		@ApiResponse(code=409, message="DOI already exists."),
