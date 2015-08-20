@@ -1,5 +1,13 @@
 package de.mpg.mpdl.doi.rest;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.ResponseHeader;
+
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -27,7 +35,9 @@ import de.mpg.mpdl.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doi.exception.DoxiException;
 import de.mpg.mpdl.doi.model.DOI;
 
+
 @Path("doi")
+@Api(value="MPDL DOXI REST API")
 public class DOIResource {
 
 	private static Logger logger = LoggerFactory.getLogger(DOIResource.class);
@@ -36,13 +46,21 @@ public class DOIResource {
 	private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();
 	
 
+	@ApiOperation(value="Register a DOI with known value", notes="Registers and mints a concrete DOI.")
+	@ApiResponses({
+		@ApiResponse(code=201, message="DOI sucessfully created.", response=String.class),
+		@ApiResponse(code=409, message="DOI already exists."),
+		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
+		
+		})
 	@Path("{doi:10\\..+/.+}")
 	@PUT
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
-	public Response create(@PathParam("doi") String doi,
-			@QueryParam("url") String url, String metadataXml) throws Exception {
+	public Response create(@ApiParam(value="the DOI to be registered", required=true) @PathParam("doi") String doi,
+			@ApiParam(value="the URL to which this DOI should point", required=true) @QueryParam("url") String url,
+			@ApiParam(value="the metadata of this DOI in XML format", required=true) String metadataXml) throws Exception {
 
 
 		String resultDoi = doiController.createDOI(doi, url, metadataXml)
@@ -51,12 +69,21 @@ public class DOIResource {
 		return r;
 	}
 
+	
+	@ApiOperation(value="Generate and register a DOI", notes="Generates, registers and mints a new DOI. If a certain suffix is required, it can be optionally provided.")
+	@ApiResponses({
+		@ApiResponse(code=201, message="DOI sucessfully created.", response=String.class),
+		@ApiResponse(code=409, message="DOI already exists."),
+		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
+		
+		})
 	@PUT
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
-	public Response createAutoOrSuffix(@QueryParam("url") String url,
-			@QueryParam("suffix") String suffix, String metadataXml)
+	public Response createAutoOrSuffix(@ApiParam(value="the URL to which this DOI should point", required=true) @QueryParam("url") String url,
+			@ApiParam(value="an optional suffix", required=false) @QueryParam("suffix") String suffix, 
+			@ApiParam(value="the metadata of this DOI in XML format", required=true) String metadataXml)
 			throws DoxiException {
 
 		String resultDoi = "";
@@ -72,29 +99,49 @@ public class DOIResource {
 		return r;
 	}
 
+	
+	@ApiOperation(value="Update an existing DOI", notes="Updates an existing DOI with a new URL or/and new metadata.")
+	@ApiResponses({
+		@ApiResponse(code=200, message="DOI sucessfully retrieved.", response=String.class, responseHeaders={@ResponseHeader(name="Location",description="the URL of this DOI", response=String.class)}),
+		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
+		
+		})
 	@Path("{doi:10\\..+/.+}")
 	@POST
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
-	public Response updateDOI(@PathParam("doi") String doi,
-			@QueryParam("url") String url, String metadataXml)
+	public Response updateDOI(@ApiParam(value="the DOI to be updated", required=true) @PathParam("doi") String doi,
+			@ApiParam(value="the new URL", required=false) @QueryParam("url") String url, 
+			@ApiParam(value="the new metadata", required=false) String metadataXml)
 			throws DoxiException {
 
 		DOI resultDoi = doiController.updateDOI(doi, url, metadataXml);
 		return Response.status(Status.CREATED).entity(resultDoi.getMetadata()).header(HttpHeaders.LOCATION, resultDoi.getUrl().toString()).build();
 	}
 
+	
+	@ApiOperation(value="Get Metadata and URL of a DOI")
+	@ApiResponses({
+		@ApiResponse(code=200, message="DOI sucessfully retrieved.", response=String.class, responseHeaders={@ResponseHeader(name="Location",description="the URL of this DOI", response=String.class)}),
+		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
+		})
 	@Path("{doi:10\\..+/.+}")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@RolesAllowed("user")
-	public Response getDOI(@PathParam("doi") String doi) throws DoxiException {
+	public Response getDOI(@ApiParam(value="the DOI", required=true) @PathParam("doi") String doi) throws DoxiException {
 
 		DOI resultDoi = doiController.getDOI(doi);
 		return Response.status(Status.OK).entity(resultDoi.getMetadata()).header(HttpHeaders.LOCATION, resultDoi.getUrl().toString()).build();
 	}
 
+	
+	@ApiOperation(value="Get a list of registered DOIs")
+	@ApiResponses({
+		@ApiResponse(code=200, message="DOIs sucessfully retrieved.", response=String.class),
+		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
+		})
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed("user")
@@ -111,11 +158,12 @@ public class DOIResource {
 		return Response.status(Status.OK).entity(sb.toString()).build();
 	}
 
+	@ApiOperation(value="Deactivate a DOI")
 	@Path("{doi:10\\..+/.+}")
 	@DELETE
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed("user")
-	public void inactivate(@PathParam("doi") String doi) throws DoxiException {
+	public void inactivate(@ApiParam(value="the DOI to be inactivated", required=true) @PathParam("doi") String doi) throws DoxiException {
 
 		doiController.inactivateDOI(doi);
 

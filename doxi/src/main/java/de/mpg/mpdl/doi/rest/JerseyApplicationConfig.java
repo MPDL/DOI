@@ -1,5 +1,10 @@
 package de.mpg.mpdl.doi.rest;
 
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.jaxrs.listing.SwaggerSerializers;
+import io.swagger.jersey.listing.ApiListingResourceJSON;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,13 +15,17 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.ApplicationPath;
 
+import org.glassfish.grizzly.http.server.DefaultErrorPageGenerator;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
+import org.glassfish.grizzly.servlet.ServletHandler;
 import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.glassfish.jersey.server.mvc.mustache.MustacheMvcFeature;
@@ -56,6 +65,8 @@ public class JerseyApplicationConfig extends ResourceConfig {
 	    //property("contextConfigLocation", "classpath:applicationContext.xml");
 	    packages(true,"de.mpg.mpdl.doi");
 		
+	    property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, "true");
+	    
 		property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/mustache");
 		register(MustacheMvcFeature.class);
 		register(MvcFeature.class);
@@ -76,8 +87,17 @@ public class JerseyApplicationConfig extends ResourceConfig {
 		registerInstances(new LoggingFilter(java.util.logging.Logger.getLogger("test"), true));
 		
 		register(RolesAllowedDynamicFeature.class);
-
 		
+		
+		register(ApiListingResource.class);
+		register(SwaggerSerializers.class);
+		BeanConfig beanConfig = new BeanConfig();
+        beanConfig.setVersion("1.0.0");
+        //beanConfig.setSchemes(new String[]{"https", "http"});
+        //beanConfig.setHost("localhost:8081");
+        beanConfig.setBasePath("/doxi/rest");
+        beanConfig.setResourcePackage("de.mpg.mpdl.doi.rest");
+        beanConfig.setScan(true);
 		
 		
 		try {
@@ -153,11 +173,9 @@ public class JerseyApplicationConfig extends ResourceConfig {
 		HttpServer server = new HttpServer();
 		NetworkListener listener = new NetworkListener("grizzly2", "localhost", 8081);
 		server.addListener(listener);
+		server.getServerConfiguration().addHttpHandler(new StaticHttpHandler("src/main/webapp"), "/doxi/");
+		WebappContext ctx = new WebappContext("ctx","/doxi");
 		
-		server.getServerConfiguration().addHttpHandler(
-		        new StaticHttpHandler("src/main/webapp/resources/"), "/resources");
-		
-		WebappContext ctx = new WebappContext("ctx","/");       
 		
 		
 		//If Java-config should be used, create a class SecurityWebApplicationInitializer extends AbstractSecurityWebApplicationInitializer
@@ -180,6 +198,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
 		//new JerseyServletContainerInitializer().onStartup(set, ctx);
 		ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig", new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
 
+		
 		ctx.deploy(server);
 		
 		server.start();

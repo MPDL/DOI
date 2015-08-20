@@ -171,9 +171,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * de.mpg.mpdl.doi.controller.DoiControllerInterface#createDOI(java.lang
 	 * .String, java.lang.String, java.lang.String)
 	 */
-	public DOI createDOI(String doi, String url, String metadataXml)
-			throws DoxiException, DoiAlreadyExistsException,
-			MetadataInvalidException, DoiRegisterException {
+	public DOI createDOI(String doi, String url, String metadataXml) throws DoxiException, DoiAlreadyExistsException, MetadataInvalidException, DoiRegisterException 
+	{
 
 		logger.info("User " + secContext.getUserPrincipal() + " requests createDoi() with doi " + doi + " and url " + url);
 		logger.info("Metadata: " + metadataXml);
@@ -183,68 +182,85 @@ public class DataciteAPIController implements DoiControllerInterface {
 		}
 		
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
-		if (getResp.getStatus() == Response.Status.OK.getStatusCode()
-				|| getResp.getStatus() == Response.Status.NO_CONTENT
-						.getStatusCode()) {
+		if (getResp.getStatus() == Response.Status.OK.getStatusCode() || getResp.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) 
+		{
 			String resp = getResp.readEntity(String.class);
-			String message = "DOI " + doi + " already exists. It points to: " + resp;
+			String message = "DOI " + doi + " already exists.";
+			if(getResp.getStatus() == Response.Status.OK.getStatusCode())
+			{
+				message = message +  " It points to: " + resp;
+			}
+			else
+			{
+				message = message + " It is not minted yet, means it has no URL attached.";
+			}
+			
 			logger.error(message
 					+ getResp.getStatusInfo() + getResp.getStatus() + " -- "
 					+ resp);
 			throw new DoiAlreadyExistsException(getResp.getStatus(), message);
-		} else if (getResp.getStatus() == Response.Status.NOT_FOUND
-				.getStatusCode()) {
+		} 
+		else if (getResp.getStatus() == Response.Status.NOT_FOUND .getStatusCode()) 
+		{
 
-			// TODO URL check
-
-			try {
-				metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,
-						doi);
-				Response mdResp = createOrUpdateMetadata(metadataXml);
-				if (mdResp.getStatus() == Response.Status.CREATED
-						.getStatusCode()) {
-					String metaDataResponseEntity = mdResp
-							.readEntity(String.class);
-					logger.info("Metadata uploaded successfully"
-							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + metaDataResponseEntity);
-					DOI resultDoi = new DOI();
-					resultDoi.setDoi(doi);
-					resultDoi.setMetadata(metaDataResponseEntity);
-					String entity = "doi=" + doi + "\nurl=" + url;
-					Response doiResp = createOrUpdateUrl(entity);
-
-					if (doiResp.getStatus() == Response.Status.CREATED
-							.getStatusCode()) {
-						logger.info("URL uploaded successfully "
-								+ doiResp.getStatusInfo() + doiResp.getStatus()
-								+ " -- " + doiResp.readEntity(String.class));
-						resultDoi.setUrl(URI.create(url));
-						logger.info("createDoi() successfully returned with doi " + resultDoi.getDoi());
-						return resultDoi;
-					} else {
-						String doiResponseEntity = doiResp
-								.readEntity(String.class);
-						logger.error("Problem with url upload "
-								+ doiResp.getStatusInfo() + doiResp.getStatus()
-								+ " -- " + doiResponseEntity);
-						throw new DoiRegisterException(doiResp.getStatus(),
-								doiResponseEntity);
-					}
-
-				} else {
-					String metaDataResponseEntity = mdResp
-							.readEntity(String.class);
-					logger.error("Problem with metadata "
-							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + metaDataResponseEntity);
-					throw new MetadataInvalidException(metadataXml,
-							mdResp.getStatus(), metaDataResponseEntity);
-				}
+			try 
+			{
+				metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,doi);
 			} catch (Exception e) {
 				logger.error("Problem replacing DOI in metadata", e);
-				throw new DoxiException("Problem replacing DOI in metadata");
+				throw new DoxiException("Problem replacing DOI in metadata", e);
 			}
+			
+			
+			Response mdResp;
+			try 
+			{
+				mdResp = createOrUpdateMetadata(metadataXml);
+			} catch (Exception e) {
+				logger.error("Problem while uploading metadata", e);
+				throw new DoxiException("Problem while uploading metadata", e);
+			}
+				
+				
+			if (mdResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
+				String metaDataResponseEntity = mdResp.readEntity(String.class);
+				logger.info("Metadata uploaded successfully" + mdResp.getStatusInfo() + mdResp.getStatus() + " -- " + metaDataResponseEntity);
+				DOI resultDoi = new DOI();
+				resultDoi.setDoi(doi);
+				resultDoi.setMetadata(metaDataResponseEntity);
+				String entity = "doi=" + doi + "\nurl=" + url;
+				
+				
+				Response doiResp;
+				try 
+				{
+					doiResp = createOrUpdateUrl(entity);
+				} catch (Exception e) {
+					logger.error("Problem while minting DOI", e);
+					throw new DoxiException("Problem while minting DOI", e);
+				}
+				
+				if (doiResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
+					logger.info("URL uploaded successfully "
+							+ doiResp.getStatusInfo() + doiResp.getStatus()
+							+ " -- " + doiResp.readEntity(String.class));
+					resultDoi.setUrl(URI.create(url));
+					logger.info("createDoi() successfully returned with doi " + resultDoi.getDoi());
+					return resultDoi;
+				} else {
+					String doiResponseEntity = doiResp.readEntity(String.class);
+					logger.error("Problem with url upload "
+							+ doiResp.getStatusInfo() + doiResp.getStatus()
+							+ " -- " + doiResponseEntity);
+					throw new DoiRegisterException(doiResp.getStatus(),doiResponseEntity);
+				}
+
+			} else {
+				String metaDataResponseEntity = mdResp.readEntity(String.class);
+				logger.error("Problem with metadata "+ mdResp.getStatusInfo() + mdResp.getStatus()+ " -- " + metaDataResponseEntity);
+				throw new MetadataInvalidException(metadataXml, mdResp.getStatus(), metaDataResponseEntity);
+			}
+			
 
 		} else {
 			String getDoiResponseEntity = getResp.readEntity(String.class);
@@ -307,67 +323,66 @@ public class DataciteAPIController implements DoiControllerInterface {
 		logger.info("Metadata: " + metadataXml);
 		Response getResp = dataciteTarget.path("doi").path(doi).request().get();
 		if (getResp.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-			logger.error("DOI " + doi + " is not existing: "
-					+ getResp.getStatusInfo() + getResp.getStatus() + " -- "
-					+ getResp.readEntity(String.class));
+			logger.error("DOI " + doi + " does not exist: "+ getResp.getStatusInfo() + getResp.getStatus() + " -- "+ getResp.readEntity(String.class));
 			throw new DoiNotFoundException(getResp.getStatus());
-		} else if (getResp.getStatus() == Response.Status.OK.getStatusCode()
-				|| getResp.getStatus() == Response.Status.NO_CONTENT
-						.getStatusCode()) {
+		} else if (getResp.getStatus() == Response.Status.OK.getStatusCode() || getResp.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
+			
 			try {
-				metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,
-						doi);
+				metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,doi);
+			} catch (Exception e) {
+				logger.error("Problem replacing DOI in metadata", e);
+				throw new DoxiException("Problem replacing DOI in metadata", e);
+			}
+			
+				Response mdResp;
+				try 
+				{
+					mdResp = createOrUpdateMetadata(metadataXml);
+				} catch (Exception e) {
+					logger.error("Problem while uploading metadata", e);
+					throw new DoxiException("Problem while uploading metadata", e);
+				}
+				
 
-				Response mdResp = createOrUpdateMetadata(metadataXml);
-
-				if (mdResp.getStatus() == Response.Status.CREATED
-						.getStatusCode()) {
-					String metadataResponseEntity = mdResp
-							.readEntity(String.class);
-					logger.info("Metadata uploaded successfully"
-							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + metadataResponseEntity);
+				if (mdResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
+					String metadataResponseEntity = mdResp.readEntity(String.class);
+					logger.info("Metadata uploaded successfully" + mdResp.getStatusInfo() + mdResp.getStatus() + " -- " + metadataResponseEntity);
 					DOI resultDoi = new DOI();
 					resultDoi.setDoi(doi);
 					resultDoi.setMetadata(metadataResponseEntity);
 					String entity = "doi=" + doi + "\nurl=" + url;
-					Response doiResp = createOrUpdateUrl(entity);
+					
+					
+					Response doiResp;
+					try 
+					{
+						doiResp = createOrUpdateUrl(entity);
+					} catch (Exception e) {
+						logger.error("Problem while minting DOI/applying URL", e);
+						throw new DoxiException("Problem while minting DOI/applying URL", e);
+					}
+					
 
-					if (doiResp.getStatus() == Response.Status.CREATED
-							.getStatusCode()) {
-						logger.info("URL uploaded successfully "
-								+ doiResp.getStatusInfo() + doiResp.getStatus()
-								+ " -- " + doiResp.readEntity(String.class));
+					if (doiResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
+						logger.info("URL uploaded successfully " + doiResp.getStatusInfo() + doiResp.getStatus() + " -- " + doiResp.readEntity(String.class));
 						resultDoi.setUrl(URI.create(url));
 						logger.info("updateDoi() successfully returned with doi " + resultDoi.getDoi());
 						return resultDoi;
 					} else {
 						String registerDoiResponseEntity = doiResp
 								.readEntity(String.class);
-						logger.error("Problem with url upload "
-								+ doiResp.getStatusInfo() + doiResp.getStatus()
-								+ " -- " + registerDoiResponseEntity);
-						throw new DoiRegisterException(doiResp.getStatus(),
-								registerDoiResponseEntity);
+						logger.error("Problem with url upload " + doiResp.getStatusInfo() + doiResp.getStatus() + " -- " + registerDoiResponseEntity);
+						throw new DoiRegisterException(doiResp.getStatus(), registerDoiResponseEntity);
 					}
 				} else {
-					String metadataResponseEntity = mdResp
-							.readEntity(String.class);
-					logger.error("Problem with metadata "
-							+ mdResp.getStatusInfo() + mdResp.getStatus()
-							+ " -- " + metadataResponseEntity);
-					throw new MetadataInvalidException(metadataXml,
-							mdResp.getStatus(), metadataResponseEntity);
+					String metadataResponseEntity = mdResp.readEntity(String.class);
+					logger.error("Problem with metadata " + mdResp.getStatusInfo() + mdResp.getStatus() + " -- " + metadataResponseEntity);
+					throw new MetadataInvalidException(metadataXml, mdResp.getStatus(), metadataResponseEntity);
 				}
-			} catch (Exception e) {
-				logger.error("Problem replacing DOI in metadata", e);
-				throw new DoxiException("Problem replacing DOI in metadata");
-			}
+			
 		} else {
 			String getDoiEntity = getResp.readEntity(String.class);
-			logger.error("Problem with get DOI " + doi + " "
-					+ getResp.getStatusInfo() + getResp.getStatus() + " -- "
-					+ getDoiEntity);
+			logger.error("Problem with get DOI " + doi + " "+ getResp.getStatusInfo() + getResp.getStatus() + " -- "+ getDoiEntity);
 			throw new DoxiException(getResp.getStatus(), getDoiEntity);
 		}
 
