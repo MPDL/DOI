@@ -22,7 +22,8 @@
   <script src='/doxi/resources/swagger/lib/swagger-oauth.js' type='text/javascript'></script>
 
   <script type="text/javascript">
-  	
+
+
    $(function () {
       var url  = "/doxi/rest/swagger.json";
      
@@ -56,17 +57,27 @@
         validatorUrl: null
       });
 
-     
-
+      
       window.swaggerUi.load();
 
-
+      
       function log() {
         if ('console' in window) {
           console.log.apply(console, arguments);
         }
       }
+      
   });
+
+
+   /*
+   var updateAuth = function(user, password) {
+ 		console.log('update auth ' + user + " -- " + password );
+  		var auth = "Basic " + btoa(user + ":" + password);
+  		swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("Authorization", auth, "header")); 
+ 	};
+ 	*/
+   
   </script>
 </head>
 

@@ -4,6 +4,7 @@
   <title>MPDL Doxi</title>
     <link href="/doxi/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/doxi/resources/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+   <script src='/doxi/resources/swagger/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
 
    <style type="text/css">
     	body {
@@ -13,6 +14,46 @@
     
     
     </style>
+    
+    <script>
+  //Basic Auth
+	
+  
+  		/*
+	  	$('#input_user').change(updateAuth);
+	    $('#input_pass').change(updateAuth);
+	    $('#input_button').click(updateAuth);
+		*/
+
+		function logout() {
+		    $.ajax({
+		        type: "GET",
+		    url: "/doxi/rest/doi",
+		    dataType: 'json',
+		    async: true,
+		    username: "user",
+		    password: "any_stupid_password"
+		})
+		//In our case, we WANT to get access denied, so a success would be a failure.
+		.done(function(){
+		    alert("Error while logging out");
+		})
+		//Likewise, a failure *usually* means we succeeded.
+		//set window.location to redirect the user to wherever you want them to go
+		.fail(function(data){
+			if(data.status==401)
+			{
+				alert("Logout successful");
+			}
+			else
+			{
+				alert("Error while logging out");
+			}
+		    //window.location = "/doxi";
+		    });
+		}
+
+    </script>
 </head>
 
 <body role="document">
@@ -34,13 +75,27 @@
             <li><a href="/doxi/rest/useradmin">User Administration</a></li>
             <li><a href="http://doi.mpdl.mpg.de">MPDL DOI Service</a></li>
           </ul>
+           <form class="navbar-form navbar-right" role="search">
+	            <!-- 
+	            <div class="form-group">
+	                <input id="input_user" type="text" class="form-control" name="username" placeholder="Username">
+	            </div>
+	            <div class="form-group">
+	                <input id="input_pass" type="password" class="form-control" name="password" placeholder="Password">
+	            </div>
+	            <button id="input_button" type="button" class="btn btn-default" onclick="window.frames[0].updateAuth($('#input_user').val(), $('#input_pass').val());">Sign In</button>
+	            -->
+	             <button id="logout_button" type="button" class="btn btn-default" onclick="logout()">Try logging out current user</button>
+            </form>
+          
+          
         </div><!--/.nav-collapse -->
       </div>
     </nav>
   
   <div class="container theme-showcase" role="main">
    <div class="embed-responsive embed-responsive-4by3">
- 		<iframe class="embed-responsive-item" src="/doxi/swagger-api.html"></iframe>
+ 		<iframe id="swagger_frame" class="embed-responsive-item" src="/doxi/swagger-api.html"></iframe>
  	</div>
  </div>
 </body>

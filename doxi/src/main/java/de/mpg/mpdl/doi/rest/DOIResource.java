@@ -100,7 +100,7 @@ public class DOIResource {
 	}
 
 	
-	@ApiOperation(value="Update an existing DOI", notes="Updates an existing DOI with a new URL or/and new metadata.")
+	@ApiOperation(value="Update an existing DOI", notes="Updates an existing DOI with a new URL and new metadata.")
 	@ApiResponses({
 		@ApiResponse(code=200, message="DOI sucessfully retrieved.", response=String.class, responseHeaders={@ResponseHeader(name="Location",description="the URL of this DOI", response=String.class)}),
 		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
@@ -112,8 +112,8 @@ public class DOIResource {
 	@Consumes({ MediaType.TEXT_XML, MediaType.APPLICATION_XML })
 	@RolesAllowed("user")
 	public Response updateDOI(@ApiParam(value="the DOI to be updated", required=true) @PathParam("doi") String doi,
-			@ApiParam(value="the new URL", required=false) @QueryParam("url") String url, 
-			@ApiParam(value="the new metadata", required=false) String metadataXml)
+			@ApiParam(value="the new URL", required=true) @QueryParam("url") String url, 
+			@ApiParam(value="the new metadata", required=true) String metadataXml)
 			throws DoxiException {
 
 		DOI resultDoi = doiController.updateDOI(doi, url, metadataXml);
