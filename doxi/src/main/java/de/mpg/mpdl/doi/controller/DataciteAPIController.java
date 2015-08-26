@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -29,6 +30,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
+
 
 
 
@@ -150,7 +152,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
 			for (String listItem : response.readEntity(String.class)
 					.split("\n")) {
-				if (listItem.startsWith(prefix)) {
+				if (listItem!=null && listItem.toUpperCase(Locale.ENGLISH).startsWith(prefix.toUpperCase(Locale.ENGLISH))) {
 					DOI doi = new DOI();
 					doi.setDoi(listItem);
 					doiList.add(doi);
@@ -176,7 +178,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 
 		logger.info("User " + secContext.getUserPrincipal() + " requests createDoi() with doi " + doi + " and url " + url);
 		logger.info("Metadata: " + metadataXml);
-		if(doi==null || !doi.startsWith(getDoiPrefix()))
+		if(doi==null || !doi.toUpperCase(Locale.ENGLISH).startsWith(getDoiPrefix().toUpperCase(Locale.ENGLISH)))
 		{
 			throw new DoiInvalidException("Prefix not allowed for this user");
 		}
