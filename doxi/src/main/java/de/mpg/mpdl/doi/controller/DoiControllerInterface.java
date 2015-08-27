@@ -103,6 +103,6 @@ public interface DoiControllerInterface {
 	 * @param doi
 	 * @throws DoxiException
 	 */
-	public void inactivateDOI(String doi) throws DoxiException;
+	public DOI inactivateDOI(String doi) throws DoxiException;
 
 }

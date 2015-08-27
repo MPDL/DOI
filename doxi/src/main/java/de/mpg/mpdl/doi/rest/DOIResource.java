@@ -102,7 +102,7 @@ public class DOIResource {
 	
 	@ApiOperation(value="Update an existing DOI", notes="Updates an existing DOI with a new URL and new metadata.")
 	@ApiResponses({
-		@ApiResponse(code=200, message="DOI sucessfully retrieved.", response=String.class, responseHeaders={@ResponseHeader(name="Location",description="the URL of this DOI", response=String.class)}),
+		@ApiResponse(code=201, message="DOI sucessfully updated.", response=String.class, responseHeaders={@ResponseHeader(name="Location",description="the URL of this DOI", response=String.class)}),
 		@ApiResponse(code=400, message="DOI, URL or provided metadata have invalid format.")
 		
 		})
@@ -159,13 +159,18 @@ public class DOIResource {
 	}
 
 	@ApiOperation(value="Deactivate a DOI")
+	@ApiResponses({
+		@ApiResponse(code=200, message="DOI sucessfully inactivated.", response=String.class),
+		@ApiResponse(code=400, message="Problem with inactivation.")
+		})
 	@Path("{doi:10\\..+/.+}")
 	@DELETE
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_XML)
 	@RolesAllowed("user")
-	public void inactivate(@ApiParam(value="the DOI to be inactivated", required=true) @PathParam("doi") String doi) throws DoxiException {
+	public Response inactivate(@ApiParam(value="the DOI to be inactivated", required=true) @PathParam("doi") String doi) throws DoxiException {
 
-		doiController.inactivateDOI(doi);
+		DOI resultDoi = doiController.inactivateDOI(doi);
+		return Response.status(Status.OK).entity(resultDoi.getMetadata()).build();
 
 	}
 

@@ -311,10 +311,23 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * lang.String)
 	 */
 	@Override
-	public void inactivateDOI(String doi) throws DoxiException {
+	public DOI inactivateDOI(String doi) throws DoxiException {
 		logger.info("User " + secContext.getUserPrincipal() + " requests inactivateDoi() with doi " + doi);
-		dataciteTarget.path("doi").path(doi).request().delete();
-		logger.info("inactivateDOI() successfully inactivated doi " + doi);
+		Response resp  = dataciteTarget.path("metadata").path(doi).request().delete();
+		String respMessage = resp.readEntity(String.class);
+		if(resp.getStatus() == Response.Status.OK.getStatusCode())
+		{
+			logger.info("inactivateDOI() successfully inactivated doi " + doi);
+			DOI retDoi = new DOI();
+			retDoi.setMetadata(respMessage);
+			retDoi.setDoi(doi);
+			return retDoi;
+		}
+		else
+		{
+			throw new DoxiException(resp.getStatus(), respMessage);
+		}
+		
 	}
 
 	@Override
