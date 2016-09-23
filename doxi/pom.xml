@@ -16,6 +16,32 @@
 	    <url>https://github.com/MPDL/DOI</url>
 	    <tag>HEAD</tag>
 	</scm>
+	
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<url>http://rd.mpdl.mpg.de/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Nexus Managed Releases</name>
+			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Nexus Managed Snapshots</name>
+			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<build>
 		<finalName>doxi</finalName>
