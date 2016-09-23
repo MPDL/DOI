@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.mpg.mdpl.doi</groupId>
 	<artifactId>doxi</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>doxi</name>
 
 
@@ -14,7 +13,7 @@
 		<connection>scm:git:https://github.com/MPDL/DOI.git</connection>
 		<developerConnection>scm:git:https://github.com/MPDL/DOI.git</developerConnection>
 	    <url>https://github.com/MPDL/DOI</url>
-	    <tag>HEAD</tag>
+	    <tag>doxi-1.0</tag>
 	</scm>
 	
 	<repositories>
@@ -247,9 +246,9 @@
 		<jdk.version>1.7</jdk.version>
 		<jersey.version>2.21</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<datacite.api.url></datacite.api.url>
-		<datacite.api.login.user></datacite.api.login.user>
-		<datacite.api.login.password></datacite.api.login.password>
+		<datacite.api.url />
+		<datacite.api.login.user />
+		<datacite.api.login.password />
 		<datacite.api.testmode>false</datacite.api.testmode>
 	</properties>
 	<profiles>
