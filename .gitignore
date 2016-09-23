@@ -44,3 +44,4 @@ Temporary Items
 doxi/.settings/
 doxi/.classpath
 doxi/.project
+doxi/target/*

@@ -11,7 +11,8 @@
 
 
 	<scm>
-		<developerConnection>scm:git:ssh://github.com/MPDL/DOI.git</developerConnection>
+		<connection>scm:git:https://github.com/MPDL/DOI.git</connection>
+		<developerConnection>scm:git:git@github.com:MPDL/DOI.git</developerConnection>
 	    <url>https://github.com/MPDL/DOI</url>
 	    <tag>HEAD</tag>
 	</scm>
