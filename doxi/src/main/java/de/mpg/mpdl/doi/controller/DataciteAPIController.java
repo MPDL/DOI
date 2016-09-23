@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -34,6 +35,9 @@ import net.sf.saxon.TransformerFactoryImpl;
 
 
 
+
+import net.sf.saxon.expr.instruct.Message;
+import net.sf.saxon.expr.instruct.TerminationException;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -205,15 +209,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 		else if (getResp.getStatus() == Response.Status.NOT_FOUND .getStatusCode()) 
 		{
 
-			try 
-			{
-				metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,doi);
-			} catch (Exception e) {
-				logger.error("Problem replacing DOI in metadata", e);
-				throw new DoxiException("Problem replacing DOI in metadata", e);
-			}
-			
-			
+			metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,doi);
+
 			Response mdResp;
 			try 
 			{
@@ -342,13 +339,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 			throw new DoiNotFoundException(getResp.getStatus());
 		} else if (getResp.getStatus() == Response.Status.OK.getStatusCode() || getResp.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
 			
-			try {
+		
 				metadataXml = replaceDOIIdentifierInMetadataXml(metadataXml,doi);
-			} catch (Exception e) {
-				logger.error("Problem replacing DOI in metadata", e);
-				throw new DoxiException("Problem replacing DOI in metadata", e);
-			}
-			
+
 				Response mdResp;
 				try 
 				{
@@ -436,28 +429,32 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * @throws TransformerException
 	 */
 	private String replaceDOIIdentifierInMetadataXml(String metadataXml,
-			String doi) throws TransformerConfigurationException,
-			TransformerException {
-		TransformerFactory transFact = new TransformerFactoryImpl();
-		InputStream stylesheet = DataciteAPIController.class
-				.getResourceAsStream("/replace-doi.xsl");
-		Transformer trans = transFact.newTransformer(new StreamSource(
-				stylesheet));
-		trans.setParameter("doi", doi);
-
+			String doi) throws DoxiException {
+		
 		StringWriter writer = new StringWriter();
-		trans.transform(new StreamSource(new StringReader(metadataXml)),
-				new StreamResult(writer));
+		
+		
+		try {
+			TransformerFactory transFact = new TransformerFactoryImpl();
+			InputStream stylesheet = DataciteAPIController.class
+					.getResourceAsStream("/replace-doi.xsl");
+			Transformer trans = transFact.newTransformer(new StreamSource(
+					stylesheet));
+			trans.setParameter("doi", doi);
+			trans.transform(new StreamSource(new StringReader(metadataXml)),
+					new StreamResult(writer));
+		} catch (TerminationException e) {
+			logger.error("The DOI identifier tag in the provided metadata xml must either be empty or match the provided DOI from the URL.", e);
+			throw new DoxiException("The DOI identifier tag in the provided metadata xml must either be empty or match the provided DOI from the URL.", e);
+		} catch (Exception e) {
+			logger.error("The provided metadata xml is not well-formed.", e);
+			throw new DoxiException("The provided metadata xml is not well-formed.", e);
+		}
+		
+		
 		return writer.toString();
 
-		/*
-		 * Processor proc = new Processor(false); XdmNode node =
-		 * proc.newDocumentBuilder().build(new StreamSource(new
-		 * StringReader(metadataXml)));
-		 * 
-		 * XQueryCompiler compiler = proc.newXQueryCompiler();
-		 * compiler.setEncoding("UTF-8"); String query = ""
-		 */
+
 
 	}
 
@@ -467,12 +464,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 	 * @return a not yet registered DOI
 	 * @throws Exception
 	 */
-	// TODO generate DOI (BASE36 encoded key stored in the db)
 	private String generateDoi() throws DoiRegisterException {
-		// Base36 encoding as Datacite DOI service is case insensitive
-//		String doiSuffix = Long.toString(uniqueInkrementIdDao.getNextDoi(), 36);
-		String doiSuffix = null;
-
 		return getDoiPrefix() + getNextDoiSuffix();
 	}
 	
@@ -507,7 +499,6 @@ public class DataciteAPIController implements DoiControllerInterface {
 	private String getDoiPrefix() {
 		DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
 		return currentUser.getPrefix();
-		//return "10.5072";
 	}
 
 }

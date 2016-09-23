@@ -60,7 +60,7 @@ public class DOIResource {
 	@RolesAllowed("user")
 	public Response create(@ApiParam(value="the DOI to be registered", required=true) @PathParam("doi") String doi,
 			@ApiParam(value="the URL to which this DOI should point", required=true) @QueryParam("url") String url,
-			@ApiParam(value="the metadata of this DOI in XML format", required=true) String metadataXml) throws Exception {
+			@ApiParam(value="the metadata of this DOI in XML format. The identifier tag in the XML must either match the provided DOI or be empty (will be filled with provided DOI).", required=true) String metadataXml) throws Exception {
 
 
 		String resultDoi = doiController.createDOI(doi, url, metadataXml)
@@ -83,7 +83,7 @@ public class DOIResource {
 	@RolesAllowed("user")
 	public Response createAutoOrSuffix(@ApiParam(value="the URL to which this DOI should point", required=true) @QueryParam("url") String url,
 			@ApiParam(value="an optional suffix", required=false) @QueryParam("suffix") String suffix, 
-			@ApiParam(value="the metadata of this DOI in XML format", required=true) String metadataXml)
+			@ApiParam(value="the metadata of this DOI in XML format. The identifier tag in the XML must be empty, it will automatically be filled with the generated DOI.", required=true) String metadataXml)
 			throws DoxiException {
 
 		String resultDoi = "";
