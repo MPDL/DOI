@@ -2,7 +2,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>de.mpg.mdpl.doi</groupId>
+	<groupId>de.mpg.mpdl.doi</groupId>
 	<artifactId>doxi</artifactId>
 	<packaging>war</packaging>
 	<version>1.1-SNAPSHOT</version>
