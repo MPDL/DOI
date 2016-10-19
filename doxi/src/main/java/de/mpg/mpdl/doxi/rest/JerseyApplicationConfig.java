@@ -61,7 +61,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
 
   public JerseyApplicationConfig() {
     // property("contextConfigLocation", "classpath:applicationContext.xml");
-    packages(true, "de.mpg.mpdl.doi");
+    packages(true, "de.mpg.mpdl.doxi");
 
     property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, "true");
 
@@ -93,7 +93,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
     // beanConfig.setSchemes(new String[]{"https", "http"});
     // beanConfig.setHost("localhost:8081");
     beanConfig.setBasePath("/doxi/rest");
-    beanConfig.setResourcePackage("de.mpg.mpdl.doi.rest");
+    beanConfig.setResourcePackage("de.mpg.mpdl.doxi.rest");
     beanConfig.setScan(true);
 
 
@@ -189,7 +189,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
     set.add(JerseyApplicationConfig.class);
 
     // new JerseyServletContainerInitializer().onStartup(set, ctx);
-    ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig",
+    ctx.addServlet("de.mpg.mpdl.doxi.rest.JerseyApplicationConfig",
         new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
 
 
