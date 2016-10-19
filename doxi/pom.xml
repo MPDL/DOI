@@ -1,19 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>de.mpg.mpdl.doi</groupId>
 	<artifactId>doxi</artifactId>
 	<packaging>war</packaging>
 	<version>1.1-SNAPSHOT</version>
 	<name>doxi</name>
-
-
+	
 	<scm>
 		<connection>scm:git:https://github.com/MPDL/DOI.git</connection>
 		<developerConnection>scm:git:https://github.com/MPDL/DOI.git</developerConnection>
-	    <url>https://github.com/MPDL/DOI</url>
-	    <tag>HEAD</tag>
+		<url>https://github.com/MPDL/DOI</url>
+		<tag>HEAD</tag>
 	</scm>
 	
 	<repositories>
@@ -28,28 +25,30 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
+	
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
 			<name>Nexus Managed Releases</name>
 			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/releases</url>
 		</repository>
+		
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Managed Snapshots</name>
 			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-
+	
 	<build>
 		<finalName>doxi</finalName>
 		<resources>
-	      <resource>
-	        <directory>src/main/resources</directory>
-	        <filtering>true</filtering>
-	      </resource>
-	    </resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -61,42 +60,24 @@
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-war-plugin</artifactId>
-		        <version>2.6</version>
-		        <configuration>
-		          <packagingExcludes>**/doxi.properties</packagingExcludes>
-		        </configuration>
-      		</plugin>
-      		<plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-release-plugin</artifactId>
-		        <version>2.5.3</version>
-     		 </plugin>
-			<!-- 
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<packagingExcludes>**/doxi.properties</packagingExcludes>
+				</configuration>
+			</plugin>
+			
 			<plugin>
-		        <groupId>org.codehaus.mojo</groupId>
-		        <artifactId>properties-maven-plugin</artifactId>
-		        <version>1.0-alpha-2</version>
-		        <executions>
-		          <execution>
-		            <phase>generate-resources</phase>
-		            <goals>
-		              <goal>write-project-properties</goal>
-		            </goals>
-		            <configuration>
-		              <outputFile>
-		                ${project.build.outputDirectory}/doxi.properties
-		              </outputFile>
-		            </configuration>
-		          </execution>
-		        </executions>
-      		</plugin>
-			-->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
 		</plugins>
 	</build>
-
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -106,69 +87,83 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-	        <dependency>
-	            <groupId>org.springframework</groupId>
-	            <artifactId>spring-framework-bom</artifactId>
-	            <version>4.1.6.RELEASE</version>
-	            <type>pom</type>
-	            <scope>import</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.springframework.security</groupId>
-	            <artifactId>spring-security-bom</artifactId>
-	            <version>4.0.1.RELEASE</version>
-	            <type>pom</type>
-	            <scope>import</scope>
-	        </dependency>
-	        
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>4.1.6.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-bom</artifactId>
+				<version>4.0.1.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	
 	<dependencies>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jersey2-jaxrs</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.5.1-8</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-grizzly2-servlet</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
 		</dependency>
 		
-		<!-- uncomment this to get JSON support <dependency> <groupId>org.glassfish.jersey.media</groupId> 
-			<artifactId>jersey-media-moxy</artifactId> </dependency> -->
-
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-mvc-mustache</artifactId>
+		</dependency>
 		
 		<dependency>
-		    <groupId>org.glassfish.jersey.containers</groupId>
-		    <artifactId>jersey-container-grizzly2-servlet</artifactId>
-		</dependency>
-		 <!-- 
-		<dependency>
-		    <groupId>org.glassfish.jersey.containers</groupId>
-		    <artifactId>jersey-container-jetty-http</artifactId>
-		</dependency>
-		-->
-<!-- 
-		<dependency>
-		    <groupId>org.eclipse.jetty</groupId>
-		    <artifactId>jetty-server</artifactId>
-		    <version>9.2.10.v20150310</version>
-		</dependency>
-		-->
-		<!-- 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.2</version>
-		</dependency>
-				<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-jul</artifactId>
-			<version>2.2</version>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+			<scope>test</scope>
 		</dependency>
 		
-		-->
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.3m</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4-1201-jdbc41</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -180,100 +175,41 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.12</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>net.sf.saxon</groupId>
-			<artifactId>Saxon-HE</artifactId>
-			<version>9.5.1-8</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.postgresql</groupId>
-		    <artifactId>postgresql</artifactId>
-		    <version>9.4-1201-jdbc41</version>
-		</dependency>
-
-         <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-          <version>1.1.1</version>
-        </dependency>
-        
-        <dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>2.6.0</version>
-		</dependency>
-		
-		<dependency>
-			  <groupId>org.mindrot</groupId>
-			  <artifactId>jbcrypt</artifactId>
-			  <version>0.3m</version>
-		</dependency>
-		
-
-		<dependency>
-			<groupId>org.glassfish.jersey.ext</groupId>
-			<artifactId>jersey-mvc-mustache</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-jersey2-jaxrs</artifactId>
-			<version>1.5.3</version>
-		</dependency>
-		
-		
-
-        
-		<!-- 
-		<dependency>
-			<groupId>nl.bstoi.jersey.test-framework</groupId>
-			<artifactId>jersey-spring-exposed-test-framework-core</artifactId>
-			<version>2.15</version>
-			<scope>test</scope>
-		</dependency>
-		-->
-		
-		<dependency>
-		    <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-		    <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-		    <scope>test</scope>
-		</dependency>
-		
 	</dependencies>
+	
 	<properties>
 		<jdk.version>1.7</jdk.version>
 		<jersey.version>2.21</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<datacite.api.url />
-		<datacite.api.login.user />
-		<datacite.api.login.password />
+		<datacite.api.url/>
+		<datacite.api.login.user/>
+		<datacite.api.login.password/>
 		<datacite.api.testmode>false</datacite.api.testmode>
 	</properties>
+	
 	<profiles>
-		<profile>			
-				<id>env-jrebel-build</id>
-				<activation>
-					<activeByDefault>false</activeByDefault>
-				</activation>
-				<build>
-					<plugins>
-						<plugin>
-							<groupId>org.zeroturnaround</groupId>
-							<artifactId>jrebel-maven-plugin</artifactId>
-							<executions>
-								<execution>
-									<id>generate-rebel-xml</id>
-									<phase>process-resources</phase>
-									<goals>
-										<goal>generate</goal>
-									</goals>
-								</execution>
-							</executions>
-						</plugin>
-					</plugins>
-				</build>
-			</profile>
-		</profiles>
+		<profile>
+			<id>env-jrebel-build</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.zeroturnaround</groupId>
+						<artifactId>jrebel-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-rebel-xml</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
