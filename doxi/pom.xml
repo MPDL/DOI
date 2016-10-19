@@ -178,13 +178,9 @@
 	</dependencies>
 	
 	<properties>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<jersey.version>2.21</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<datacite.api.url/>
-		<datacite.api.login.user/>
-		<datacite.api.login.password/>
-		<datacite.api.testmode>false</datacite.api.testmode>
 	</properties>
 	
 	<profiles>
