@@ -18,9 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.mpg.mpdl.doxi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.model.DOI;
@@ -31,13 +28,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
 
-
 @Path("doi")
 @Api(value = "MPDL DOXI REST API")
 public class DOIResource {
-
-  private static Logger logger = LoggerFactory.getLogger(DOIResource.class);
-
   @Inject
   private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();
 

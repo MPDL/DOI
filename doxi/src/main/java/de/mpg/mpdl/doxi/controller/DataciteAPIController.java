@@ -51,15 +51,9 @@ import net.sf.saxon.expr.instruct.TerminationException;
  * @author walter
  * 
  */
-
 public class DataciteAPIController implements DoiControllerInterface {
-
-
-
-  private final int RETRY_TIMEOUT = 1000; // Timeout until retrying request in
-                                          // milliseconds
-
   private static Logger logger = LoggerFactory.getLogger(DataciteAPIController.class);
+  
   private WebTarget dataciteTarget;
 
   @Context
@@ -90,7 +84,6 @@ public class DataciteAPIController implements DoiControllerInterface {
    */
 
   public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException {
-
     logger.info("User " + secContext.getUserPrincipal() + " requests getDoi() with doi " + doi);
 
     DOI doiObject = new DOI();
@@ -415,11 +408,7 @@ public class DataciteAPIController implements DoiControllerInterface {
       throw new DoxiException("The provided metadata xml is not well-formed.", e);
     }
 
-
     return writer.toString();
-
-
-
   }
 
   /**
@@ -465,5 +454,4 @@ public class DataciteAPIController implements DoiControllerInterface {
     DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
     return currentUser.getPrefix();
   }
-
 }
