@@ -5,7 +5,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 	<servlet>
-		<servlet-name>Main Jersey Servlet</servlet-name>
+		<servlet-name>MainDoxiJerseyServlet</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>jersey.config.server.provider.packages</param-name>
@@ -21,7 +21,7 @@
 	</servlet>
 	
 	<servlet-mapping>
-		<servlet-name>MainServlet</servlet-name>
+		<servlet-name>MainDoxiJerseyServlet</servlet-name>
 		<url-pattern>/doxiservice/*</url-pattern>
 	</servlet-mapping>
 </web-app>
