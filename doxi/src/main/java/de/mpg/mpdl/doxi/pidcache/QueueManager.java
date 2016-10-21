@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import de.mpg.mpdl.doxi.model.Pid;
-import de.mpg.mpdl.doxi.model.PidID;
-
 public class QueueManager {
   private final PidQueueDAO pidQueueDAO;
 

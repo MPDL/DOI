@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import de.mpg.mpdl.doxi.model.PidID;
-
 public class PidQueueDAO {
   private final EntityManager em;
 

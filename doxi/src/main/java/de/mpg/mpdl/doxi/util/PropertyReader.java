@@ -26,28 +26,24 @@ public class PropertyReader {
   public static final String DOXI_JDBC_URL = "doxi.jdbc.url";
   public static final String DOXI_JDBC_USER = "doxi.jdbc.user";
   
-  public static final String DOXI_PIDCACHE_CACHE_SIZE_MAX = "doxi.pidcache.cache.size.max";
-  public static final String DOXI_PIDCACHE_DUMMY_URL = "doxi.pidcache.dummy.url";
-  public static final String DOXI_PIDCACHE_EMPTY_INTERVAL = "doxi.pidcache.empty.interval";
-  public static final String DOXI_PIDCACHE_EMPTY_BLOCKSIZE = "doxi.pidcache.empty.blocksize";
-  public static final String DOXI_PIDCACHE_REFRESH_INTERVAL = "doxi.pidcache.refresh.interval";
-  public static final String DOXI_PIDCACHE_REFRESH_BLOCKSIZE = "doxi.pidcache.refresh.blocksize";
-//  public static final String DOXI_PIDCACHE_USER_NAME = "doxi.pidcache.user.name";
-//  public static final String DOXI_PIDCACHE_USER_PASSWORD = "doxi.pidcache.user.password";
+  public static final String DOXI_PID_CACHE_CACHE_SIZE_MAX = "doxi.pid.cache.cache.size.max";
+  public static final String DOXI_PID_CACHE_DUMMY_URL = "doxi.pid.cache.dummy.url";
+  public static final String DOXI_PID_CACHE_EMPTY_BLOCKSIZE = "doxi.pid.cache.empty.blocksize";
+  public static final String DOXI_PID_CACHE_EMPTY_INTERVAL = "doxi.pid.cache.empty.interval";
+  public static final String DOXI_PID_CACHE_REFRESH_BLOCKSIZE = "doxi.pid.cache.refresh.blocksize";
+  public static final String DOXI_PID_CACHE_REFRESH_INTERVAL = "doxi.pid.cache.refresh.interval";
+  public static final String DOXI_PID_CACHE_USER_NAME = "doxi.pid.cache.user.name"; // TODO
+  public static final String DOXI_PID_CACHE_USER_PASSWORD = "doxi.pid.cache.user.password"; // TODO
   
-//  public static final String DOXI_PID_HANDLES_ACTIVATED = "doxi.pid.handles.activated";
-  
-//  public static final String DOXI_PID_PIDCACHE_SERVICE_URL = "doxi.pid.pidcache.service.url";
-  
-  public static final String DOXI_PID_GWDG_SERVICE_URL = "doxi.pid.gwdg.service.url";
-//public static final String DOXI_PID_GWDG_TIMEOUT = "doxi.pid.gwdg.timeout";
-  public static final String DOXI_PID_GWDG_USER_LOGIN = "doxi.pid.gwdg.user.login";
-  public static final String DOXI_PID_GWDG_USER_PASSWORD = "doxi.pid.gwdg.user.password";
   public static final String DOXI_PID_GWDG_SERVICE_CREATE_PATH = "doxi.pid.gwdg.service.create.path";
   public static final String DOXI_PID_GWDG_SERVICE_DELETE_PATH = "doxi.pid.gwdg.service.delete.path";
   public static final String DOXI_PID_GWDG_SERVICE_SEARCH_PATH = "doxi.pid.gwdg.service.search.path";
   public static final String DOXI_PID_GWDG_SERVICE_UPDATE_PATH = "doxi.pid.gwdg.service.update.path";
+  public static final String DOXI_PID_GWDG_SERVICE_URL = "doxi.pid.gwdg.service.url";
   public static final String DOXI_PID_GWDG_SERVICE_VIEW_PATH = "doxi.pid.gwdg.service.view.path";
+  public static final String DOXI_PID_GWDG_TIMEOUT = "doxi.pid.gwdg.timeout"; // TODO
+  public static final String DOXI_PID_GWDG_USER_LOGIN = "doxi.pid.gwdg.user.login";
+  public static final String DOXI_PID_GWDG_USER_PASSWORD = "doxi.pid.gwdg.user.password";
   
   private static Properties properties = null;
   private static Properties messages = null;

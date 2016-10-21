@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.controller.GwdgController;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
@@ -18,11 +17,11 @@ public class CacheTask extends Thread {
     try {
       this.setName("PidCache Refresh Task");
 
-      final int timeout = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PIDCACHE_REFRESH_INTERVAL)) * 1000;
-      final int blockSize = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PIDCACHE_REFRESH_BLOCKSIZE));
+      final int timeout = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_INTERVAL)) * 1000;
+      final int blockSize = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_BLOCKSIZE));
 
       final EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
-      final GwdgController controller = new GwdgController();
+      final GwdgClient controller = new GwdgClient();
       final CacheProcess process = new CacheProcess(em, controller);
 
       LOG.info("Starting refresh of pid cache databases.");

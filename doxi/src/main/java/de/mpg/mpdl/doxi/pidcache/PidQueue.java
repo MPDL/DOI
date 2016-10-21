@@ -7,8 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import de.mpg.mpdl.doxi.model.PidID;
-
 @Entity(name = "pid_queue")
 public class PidQueue {
   @Id

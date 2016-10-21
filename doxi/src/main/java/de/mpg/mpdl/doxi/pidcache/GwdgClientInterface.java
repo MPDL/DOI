@@ -1,13 +1,11 @@
-package de.mpg.mpdl.doxi.controller;
+package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
-import de.mpg.mpdl.doxi.model.Pid;
-import de.mpg.mpdl.doxi.model.PidID;
 
-public interface GwdgControllerInterface {
+public interface GwdgClientInterface {
   /**
    * Calls GWDG PID manager interface:
    * 

@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.model;
+package de.mpg.mpdl.doxi.pidcache;
 
 public class PidID extends AbstractID {
   private final String id;

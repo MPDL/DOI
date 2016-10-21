@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import de.mpg.mpdl.doxi.model.PidID;
-
 @Entity(name = "pid_cache")
 public class PidCache {
   @Id

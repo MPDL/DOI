@@ -7,17 +7,15 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.controller.GwdgController;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
-import de.mpg.mpdl.doxi.model.Pid;
 
 public class QueueProcess {
   private static final Logger LOG = LoggerFactory.getLogger(QueueProcess.class);
 
   private final QueueManager queueManager;
-  private final GwdgController gwdgController;
+  private final GwdgClient gwdgController;
 
-  public QueueProcess(EntityManager em, GwdgController gwdgController) {
+  public QueueProcess(EntityManager em, GwdgClient gwdgController) {
     this.queueManager = new QueueManager(em);
     this.gwdgController = gwdgController;
   }

@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.controller;
+package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
 
@@ -19,12 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
-import de.mpg.mpdl.doxi.model.Pid;
-import de.mpg.mpdl.doxi.model.PidID;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
-public class GwdgController implements GwdgControllerInterface {
-  private static final Logger LOG = LoggerFactory.getLogger(GwdgController.class);
+public class GwdgClient implements GwdgClientInterface {
+  private static final Logger LOG = LoggerFactory.getLogger(GwdgClient.class);
   
   private final String gwdgPidServiceCreate;
   private final String gwdgPidServiceView;
@@ -37,7 +35,7 @@ public class GwdgController implements GwdgControllerInterface {
   @Context
   private SecurityContext secContext;
 
-  public GwdgController() {
+  public GwdgClient() {
     ClientConfig clientConfig = new ClientConfig();
     
     HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.basic( //

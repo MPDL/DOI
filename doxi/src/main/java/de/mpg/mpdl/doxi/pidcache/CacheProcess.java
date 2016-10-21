@@ -8,9 +8,7 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.controller.GwdgController;
 import de.mpg.mpdl.doxi.exception.DoxiException;
-import de.mpg.mpdl.doxi.model.Pid;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class CacheProcess {
@@ -18,12 +16,12 @@ public class CacheProcess {
 
   private final String dummyUrl;
   private final CacheManager cacheManager;
-  private final GwdgController gwdgController;
+  private final GwdgClient gwdgController;
 
-  public CacheProcess(EntityManager em, GwdgController gwdgController) {
+  public CacheProcess(EntityManager em, GwdgClient gwdgController) {
     this.cacheManager = new CacheManager(em);
     this.gwdgController = gwdgController;
-    this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PIDCACHE_DUMMY_URL);
+    this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL);
   }
 
   public void fill(int anzahl) {

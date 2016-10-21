@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import de.mpg.mpdl.doxi.model.PidID;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class CacheManager {
@@ -12,7 +11,7 @@ public class CacheManager {
   private final PidCacheDAO pidCacheDAO;
 
   public CacheManager(EntityManager em) {
-    this.sizeMax = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PIDCACHE_CACHE_SIZE_MAX));
+    this.sizeMax = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SIZE_MAX));
     this.pidCacheDAO = new PidCacheDAO(em);
   }
 

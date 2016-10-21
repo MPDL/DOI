@@ -9,22 +9,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.controller.GwdgController;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
-import de.mpg.mpdl.doxi.model.Pid;
-import de.mpg.mpdl.doxi.model.PidID;
 
-public class PidCacheService implements PidCacheServiceInterface {
-  private static final Logger LOG = LoggerFactory.getLogger(PidCacheService.class);
+public class PidService implements PidCacheServiceInterface {
+  private static final Logger LOG = LoggerFactory.getLogger(PidService.class);
 
   private final CacheManager cacheManager;
   private final QueueManager queueManager;
-  private final GwdgController gwdgController;
+  private final GwdgClient gwdgController;
 
   private int status = HttpServletResponse.SC_OK;
   private String location = "http://hdl.handle.net/XXX_LOCATION_XXX?noredirect";
 
-  public PidCacheService(EntityManager em, GwdgController gwdgController) {
+  public PidService(EntityManager em, GwdgClient gwdgController) {
     this.cacheManager = new CacheManager(em);
     this.queueManager = new QueueManager(em);
     this.gwdgController = gwdgController;

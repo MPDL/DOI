@@ -26,13 +26,13 @@ public class PidResource {
   @Inject
   private PidCacheServiceInterface pidCacheService;
 
-  @ApiOperation(value = "Register a Pid with known value",
-      notes = "Registers and mints a concrete Pid. The Pid in the given metadata XML is overwritten with the one provided in the path.")
+  @ApiOperation(//
+      value = "Register a Pid with known URL.",
+      notes = "Register a Pid with known URL.")
   @ApiResponses({
       @ApiResponse(code = 201, message = "PID sucessfully created.", response = String.class),
       @ApiResponse(code = 409, message = "URL already exists."),
       @ApiResponse(code = 400, message = "URL has invalid format.")})
-  @Path("{pid:10\\..+/.+}")
   @PUT
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})

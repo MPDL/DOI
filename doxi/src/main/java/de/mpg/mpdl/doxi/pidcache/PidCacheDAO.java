@@ -2,8 +2,6 @@ package de.mpg.mpdl.doxi.pidcache;
 
 import javax.persistence.EntityManager;
 
-import de.mpg.mpdl.doxi.model.PidID;
-
 public class PidCacheDAO {
   private final EntityManager em;
 
