@@ -18,7 +18,6 @@ public class InitializerServlet extends HttpServlet {
   }
 
   public void destroy() {
-    super.destroy();
     this.cacheTask.terminate();
     this.queueTask.terminate();
   }

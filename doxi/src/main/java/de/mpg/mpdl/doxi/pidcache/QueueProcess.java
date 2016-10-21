@@ -30,7 +30,7 @@ public class QueueProcess {
 
     for (Pid pid : pids) {
       try {
-        this.gwdgController.updatePid(pid);
+        this.gwdgController.update(pid);
         this.queueManager.remove(pid.getPidID());
       } catch (PidNotFoundException e) {
         // TODO

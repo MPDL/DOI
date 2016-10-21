@@ -60,74 +60,74 @@ public class GwdgController implements GwdgControllerInterface {
   }
 
   @Override
-  public Pid createPid(URI url) throws DoxiException {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests createPid() with url " + url);
+  public Pid create(URI url) throws DoxiException {
+    LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
 
     final Response response = gwdgTarget.path(this.gwdgPidServiceCreate).request(MediaType.TEXT_PLAIN_TYPE).post(Entity.text(url));
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         Pid pid = new Pid(PidID.create(response.readEntity(String.class)), url); 
-        LOG.info("createPid() successfully returned pid " + pid);
+        LOG.info("create successfully returned pid " + pid);
         return pid;
     } else {
-      LOG.error("Error createPid()");
+      LOG.error("Error create");
       throw new DoxiException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid retrievePid(PidID pidID) throws PidNotFoundException  {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests retrievePid() with ID " + pidID);
+  public Pid retrieve(PidID pidID) throws PidNotFoundException  {
+    LOG.info("User " + secContext.getUserPrincipal() + " requests retrieve with ID " + pidID);
 
     final Response response = gwdgTarget.path(this.gwdgPidServiceView).path(pidID.getIdAsString()).request().get();
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         Pid pid = new Pid(pidID, URI.create(response.readEntity(String.class))); 
-        LOG.info("retrievePid() successfully returned pid " + pid);
+        LOG.info("retrieve successfully returned pid " + pid);
         return pid;
     } else {
-      LOG.error("Error retrievePid()");
+      LOG.error("Error retrieve");
       throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid searchPid(URI url) throws PidNotFoundException  {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests searchPid() with url " + url);
+  public Pid search(URI url) throws PidNotFoundException  {
+    LOG.info("User " + secContext.getUserPrincipal() + " requests search with url " + url);
 
     final Response response = gwdgTarget.path(this.gwdgPidServiceSearch).path(url.toString()).request().get();
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         Pid pid = new Pid(PidID.create(response.readEntity(String.class)), url); 
-        LOG.info("searchPid() successfully returned pid " + pid);
+        LOG.info("search successfully returned pid " + pid);
         return pid;
     } else {
-      LOG.error("Error searchPid()");
+      LOG.error("Error search");
       throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid updatePid(Pid pid) throws PidNotFoundException {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests updatePid() with pid " + pid);
+  public Pid update(Pid pid) throws PidNotFoundException {
+    LOG.info("User " + secContext.getUserPrincipal() + " requests update with pid " + pid);
 
     final Response response = gwdgTarget.path(this.gwdgPidServiceUpdate).path(pid.getPidID().getIdAsString()).request().get();
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         Pid _pid = new Pid(pid.getPidID(), URI.create(response.readEntity(String.class))); 
-        LOG.info("retrievePid() successfully returned pid " + _pid);
+        LOG.info("retrieve successfully returned pid " + _pid);
         return _pid;
     } else {
-      LOG.error("Error updatePid()");
+      LOG.error("Error update");
       throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public void deletePid(PidID pidID) throws DoxiException  {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests deletePid() with identifier " + pidID);
+  public void delete(PidID pidID) throws DoxiException  {
+    LOG.info("User " + secContext.getUserPrincipal() + " requests delete() with identifier " + pidID);
     
     final Response response = gwdgTarget.path(this.gwdgPidServiceDelete).path(pidID.getIdAsString()).request().delete();
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-      LOG.info("deletePid() successfully deleted pid " + pidID);
+      LOG.info("delete successfully deleted pid " + pidID);
     } else {
-      LOG.error("Error deletePid()");
+      LOG.error("Error delete");
       throw new DoxiException(response.getStatus(), response.readEntity(String.class));
     }
   }

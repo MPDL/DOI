@@ -44,9 +44,9 @@ public class PidQueueDAO {
     return this.em.createQuery(query, PidQueue.class).setMaxResults(anz).getResultList();
   }
   
-  public long getSize() {
+  public int getSize() {
     String query = "SELECT count(*) FROM pid_cache";
     
-    return this.em.createQuery(query, Long.class).getSingleResult();
+    return this.em.createQuery(query, Integer.class).getSingleResult();
   }
 }

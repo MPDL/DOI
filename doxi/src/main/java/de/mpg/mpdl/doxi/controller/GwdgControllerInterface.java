@@ -16,7 +16,7 @@ public interface GwdgControllerInterface {
    * @param url:
    * @return
    */
-  public Pid createPid(URI url) throws DoxiException;
+  public Pid create(URI url) throws DoxiException;
 
   /**
    * Calls GWDG PID manager interface:
@@ -25,7 +25,7 @@ public interface GwdgControllerInterface {
    * 
    * @return
    */
-  public Pid retrievePid(PidID pidID) throws PidNotFoundException;
+  public Pid retrieve(PidID pidID) throws PidNotFoundException;
 
   /**
    * Calls GWDG PID manager interface via:
@@ -35,7 +35,7 @@ public interface GwdgControllerInterface {
    * @param url
    * @return
    */
-  public Pid searchPid(URI url) throws PidNotFoundException;
+  public Pid search(URI url) throws PidNotFoundException;
 
   /**
    * Calls GWDG PID manager interface:
@@ -46,7 +46,7 @@ public interface GwdgControllerInterface {
    * @throws PidNotFoundException 
    * @throws Exception
    */
-  public Pid updatePid(Pid pid) throws PidNotFoundException;
+  public Pid update(Pid pid) throws PidNotFoundException;
 
   /**
    * Calls GWDG PID manager interface:
@@ -55,7 +55,7 @@ public interface GwdgControllerInterface {
    * 
    * @return
    */
-  public void deletePid(PidID pidID) throws DoxiException;
+  public void delete(PidID pidID) throws DoxiException;
 
   /**
    * True if GWDG PID service is available. False if not.

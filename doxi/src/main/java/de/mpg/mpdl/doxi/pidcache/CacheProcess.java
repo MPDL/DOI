@@ -18,11 +18,11 @@ public class CacheProcess {
 
   private final String dummyUrl;
   private final CacheManager cacheManager;
-  private final GwdgController controller;
+  private final GwdgController gwdgController;
 
-  public CacheProcess(EntityManager em, GwdgController controller) {
+  public CacheProcess(EntityManager em, GwdgController gwdgController) {
     this.cacheManager = new CacheManager(em);
-    this.controller = controller;
+    this.gwdgController = gwdgController;
     this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PIDCACHE_DUMMY_URL);
   }
 
@@ -32,7 +32,7 @@ public class CacheProcess {
     while (this.cacheManager.isFull() == false && current != new Date().getTime() && i < anzahl) {
       current = new Date().getTime();
       try {
-        final Pid pid = controller.createPid(URI.create(this.dummyUrl.concat(Long.toString(current))));
+        final Pid pid = gwdgController.create(URI.create(this.dummyUrl.concat(Long.toString(current))));
         this.cacheManager.add(pid.getPidID());
       } catch (DoxiException e) {
         // TODO

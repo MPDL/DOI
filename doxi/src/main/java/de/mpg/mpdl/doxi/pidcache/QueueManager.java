@@ -29,6 +29,15 @@ public class QueueManager {
     }
   }
 
+  public Pid retrieve(PidID pidID) {
+    final PidQueue pidQueue = this.pidQueueDAO.find(pidID);
+    if (pidQueue != null) {
+      return new Pid(pidQueue.getID(), pidQueue.getUrl());
+    }
+    
+    return null;
+  }
+  
   public Pid getFirst() {
     final PidQueue pidQueue = this.pidQueueDAO.getFirst();
     if (pidQueue != null) {
@@ -59,7 +68,7 @@ public class QueueManager {
     return null;
   }
   
-  public long size() {
+  public int size() {
     return this.pidQueueDAO.getSize();
   }
   
