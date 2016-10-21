@@ -52,7 +52,7 @@ import net.sf.saxon.expr.instruct.TerminationException;
  * 
  */
 public class DataciteAPIController implements DoiControllerInterface {
-  private static Logger logger = LoggerFactory.getLogger(DataciteAPIController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DataciteAPIController.class);
   
   private WebTarget dataciteTarget;
 
@@ -61,17 +61,20 @@ public class DataciteAPIController implements DoiControllerInterface {
 
   public DataciteAPIController() {
     ClientConfig clientConfig = new ClientConfig();
-    HttpAuthenticationFeature authFeature =
-        HttpAuthenticationFeature.basic(PropertyReader.getProperty("datacite.api.login.user"),
-            PropertyReader.getProperty("datacite.api.login.password"));
+    
+    HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.basic( //
+        PropertyReader.getProperty(PropertyReader.DOXI_DOI_DATACITE_API_LOGIN_USER),
+        PropertyReader.getProperty(PropertyReader.DOXI_DOI_DATACITE_API_LOGIN_PASSWORD));
     clientConfig.register(authFeature);
+    
     Client client = ClientBuilder.newClient(clientConfig);
     client.register(new LoggingFilter(
-        java.util.logging.Logger.getLogger("de.mpg.mpdl.doi.controller.DataciteAPIController"),
+        java.util.logging.Logger.getLogger("de.mpg.mpdl.doxi.controller.DataciteAPIController"),
         true));
-    this.dataciteTarget = client.target(PropertyReader.getProperty("datacite.api.url"));
+    
+    this.dataciteTarget = client.target(PropertyReader.getProperty(PropertyReader.DOXI_DOI_DATACITE_API_URL));
 
-    String testMode = PropertyReader.getProperty("datacite.api.testmode");
+    String testMode = PropertyReader.getProperty(PropertyReader.DOXI_DOI_DATACITE_API_TESTMODE);
     if (testMode != null && testMode.equals("true")) {
       this.dataciteTarget = dataciteTarget.queryParam("testMode", "true");
     }
@@ -82,9 +85,8 @@ public class DataciteAPIController implements DoiControllerInterface {
    * 
    * @see de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOI(java.lang.String )
    */
-
   public DOI getDOI(String doi) throws DoxiException, DoiNotFoundException {
-    logger.info("User " + secContext.getUserPrincipal() + " requests getDoi() with doi " + doi);
+    LOG.info("User " + secContext.getUserPrincipal() + " requests getDoi() with doi " + doi);
 
     DOI doiObject = new DOI();
     doiObject.setDoi(doi);
@@ -97,19 +99,19 @@ public class DataciteAPIController implements DoiControllerInterface {
         if (doiMetaDataResponse.getStatus() == Response.Status.OK.getStatusCode()) {
           doiObject.setMetadata(doiMetaDataResponse.readEntity(String.class));
         } else {
-          logger.error("Error getting DOI metadata");
+          LOG.error("Error getting DOI metadata");
           // TODO maybe another exception type?
           throw new DoxiException(doiResponse.getStatus(), doiResponse.readEntity(String.class));
         }
       } catch (URISyntaxException e) {
-        logger.error("Error setting URL", e);
+        LOG.error("Error setting URL", e);
         throw new DoxiException(e);
       }
     } else {
-      logger.error("Error getting DOI");
+      LOG.error("Error getting DOI");
       throw new DoiNotFoundException(doiResponse.getStatus(), doiResponse.readEntity(String.class));
     }
-    logger.info("getDoi() successfully returned doi " + doiObject.getDoi());
+    LOG.info("getDoi() successfully returned doi " + doiObject.getDoi());
     return doiObject;
   }
 
@@ -119,7 +121,7 @@ public class DataciteAPIController implements DoiControllerInterface {
    * @see de.mpg.mpdl.doi.controller.DoiControllerInterface#getDOIList()
    */
   public List<DOI> getDOIList() throws DoxiException {
-    logger.info("User " + secContext.getUserPrincipal() + " requests getDoiList()");
+    LOG.info("User " + secContext.getUserPrincipal() + " requests getDoiList()");
 
     List<DOI> doiList = new ArrayList<DOI>();
     Response response = dataciteTarget.path("doi").request().get();
@@ -137,7 +139,7 @@ public class DataciteAPIController implements DoiControllerInterface {
     } else {
       throw new DoxiException(response.getStatus(), response.getStatusInfo().toString());
     }
-    logger.info("getDoiList() successfully returned dois ");
+    LOG.info("getDoiList() successfully returned dois ");
     return doiList;
   }
 
@@ -148,11 +150,11 @@ public class DataciteAPIController implements DoiControllerInterface {
    * java.lang.String, java.lang.String)
    */
   public DOI createDOI(String doi, String url, String metadataXml) throws DoxiException,
-      DoiAlreadyExistsException, MetadataInvalidException, DoiRegisterException {
+      DoiAlreadyExistsException,  DoiRegisterException {
 
-    logger.info("User " + secContext.getUserPrincipal() + " requests createDoi() with doi " + doi
+    LOG.info("User " + secContext.getUserPrincipal() + " requests createDoi() with doi " + doi
         + " and url " + url);
-    logger.info("Metadata: " + metadataXml);
+    LOG.info("Metadata: " + metadataXml);
     if (doi == null || !doi.toUpperCase(Locale.ENGLISH)
         .startsWith(getDoiPrefix().toUpperCase(Locale.ENGLISH))) {
       throw new DoiInvalidException("Prefix not allowed for this user");
@@ -169,7 +171,7 @@ public class DataciteAPIController implements DoiControllerInterface {
         message = message + " It is not minted yet, means it has no URL attached.";
       }
 
-      logger.error(message + getResp.getStatusInfo() + getResp.getStatus() + " -- " + resp);
+      LOG.error(message + getResp.getStatusInfo() + getResp.getStatus() + " -- " + resp);
       throw new DoiAlreadyExistsException(getResp.getStatus(), message);
     } else if (getResp.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
 
@@ -179,14 +181,14 @@ public class DataciteAPIController implements DoiControllerInterface {
       try {
         mdResp = createOrUpdateMetadata(metadataXml);
       } catch (Exception e) {
-        logger.error("Problem while uploading metadata", e);
+        LOG.error("Problem while uploading metadata", e);
         throw new DoxiException("Problem while uploading metadata", e);
       }
 
 
       if (mdResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
         String metaDataResponseEntity = mdResp.readEntity(String.class);
-        logger.info("Metadata uploaded successfully" + mdResp.getStatusInfo() + mdResp.getStatus()
+        LOG.info("Metadata uploaded successfully" + mdResp.getStatusInfo() + mdResp.getStatus()
             + " -- " + metaDataResponseEntity);
         DOI resultDoi = new DOI();
         resultDoi.setDoi(doi);
@@ -198,26 +200,26 @@ public class DataciteAPIController implements DoiControllerInterface {
         try {
           doiResp = createOrUpdateUrl(entity);
         } catch (Exception e) {
-          logger.error("Problem while minting DOI", e);
+          LOG.error("Problem while minting DOI", e);
           throw new DoxiException("Problem while minting DOI", e);
         }
 
         if (doiResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
-          logger.info("URL uploaded successfully " + doiResp.getStatusInfo() + doiResp.getStatus()
+          LOG.info("URL uploaded successfully " + doiResp.getStatusInfo() + doiResp.getStatus()
               + " -- " + doiResp.readEntity(String.class));
           resultDoi.setUrl(URI.create(url));
-          logger.info("createDoi() successfully returned with doi " + resultDoi.getDoi());
+          LOG.info("createDoi() successfully returned with doi " + resultDoi.getDoi());
           return resultDoi;
         } else {
           String doiResponseEntity = doiResp.readEntity(String.class);
-          logger.error("Problem with url upload " + doiResp.getStatusInfo() + doiResp.getStatus()
+          LOG.error("Problem with url upload " + doiResp.getStatusInfo() + doiResp.getStatus()
               + " -- " + doiResponseEntity);
           throw new DoiRegisterException(doiResp.getStatus(), doiResponseEntity);
         }
 
       } else {
         String metaDataResponseEntity = mdResp.readEntity(String.class);
-        logger.error("Problem with metadata " + mdResp.getStatusInfo() + mdResp.getStatus() + " -- "
+        LOG.error("Problem with metadata " + mdResp.getStatusInfo() + mdResp.getStatus() + " -- "
             + metaDataResponseEntity);
         throw new MetadataInvalidException(metadataXml, mdResp.getStatus(), metaDataResponseEntity);
       }
@@ -225,11 +227,10 @@ public class DataciteAPIController implements DoiControllerInterface {
 
     } else {
       String getDoiResponseEntity = getResp.readEntity(String.class);
-      logger.error("Problem with get DOI " + doi + " " + getResp.getStatusInfo()
+      LOG.error("Problem with get DOI " + doi + " " + getResp.getStatusInfo()
           + getResp.getStatus() + " -- " + getDoiResponseEntity);
       throw new DoxiException(getResp.getStatus(), getDoiResponseEntity);
     }
-
   }
 
   /*
@@ -264,12 +265,12 @@ public class DataciteAPIController implements DoiControllerInterface {
    */
   @Override
   public DOI inactivateDOI(String doi) throws DoxiException {
-    logger.info(
+    LOG.info(
         "User " + secContext.getUserPrincipal() + " requests inactivateDoi() with doi " + doi);
     Response resp = dataciteTarget.path("metadata").path(doi).request().delete();
     String respMessage = resp.readEntity(String.class);
     if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
-      logger.info("inactivateDOI() successfully inactivated doi " + doi);
+      LOG.info("inactivateDOI() successfully inactivated doi " + doi);
       DOI retDoi = new DOI();
       retDoi.setMetadata(respMessage);
       retDoi.setDoi(doi);
@@ -277,18 +278,17 @@ public class DataciteAPIController implements DoiControllerInterface {
     } else {
       throw new DoxiException(resp.getStatus(), respMessage);
     }
-
   }
 
   @Override
   public DOI updateDOI(String doi, String url, String metadataXml)
       throws DoxiException, DoiNotFoundException, MetadataInvalidException, DoiRegisterException {
-    logger.info("User " + secContext.getUserPrincipal() + " requests updateDoi() with doi " + doi
+    LOG.info("User " + secContext.getUserPrincipal() + " requests updateDoi() with doi " + doi
         + " and url " + url);
-    logger.info("Metadata: " + metadataXml);
+    LOG.info("Metadata: " + metadataXml);
     Response getResp = dataciteTarget.path("doi").path(doi).request().get();
     if (getResp.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-      logger.error("DOI " + doi + " does not exist: " + getResp.getStatusInfo()
+      LOG.error("DOI " + doi + " does not exist: " + getResp.getStatusInfo()
           + getResp.getStatus() + " -- " + getResp.readEntity(String.class));
       throw new DoiNotFoundException(getResp.getStatus());
     } else if (getResp.getStatus() == Response.Status.OK.getStatusCode()
@@ -301,14 +301,14 @@ public class DataciteAPIController implements DoiControllerInterface {
       try {
         mdResp = createOrUpdateMetadata(metadataXml);
       } catch (Exception e) {
-        logger.error("Problem while uploading metadata", e);
+        LOG.error("Problem while uploading metadata", e);
         throw new DoxiException("Problem while uploading metadata", e);
       }
 
 
       if (mdResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
         String metadataResponseEntity = mdResp.readEntity(String.class);
-        logger.info("Metadata uploaded successfully" + mdResp.getStatusInfo() + mdResp.getStatus()
+        LOG.info("Metadata uploaded successfully" + mdResp.getStatusInfo() + mdResp.getStatus()
             + " -- " + metadataResponseEntity);
         DOI resultDoi = new DOI();
         resultDoi.setDoi(doi);
@@ -320,37 +320,36 @@ public class DataciteAPIController implements DoiControllerInterface {
         try {
           doiResp = createOrUpdateUrl(entity);
         } catch (Exception e) {
-          logger.error("Problem while minting DOI/applying URL", e);
+          LOG.error("Problem while minting DOI/applying URL", e);
           throw new DoxiException("Problem while minting DOI/applying URL", e);
         }
 
 
         if (doiResp.getStatus() == Response.Status.CREATED.getStatusCode()) {
-          logger.info("URL uploaded successfully " + doiResp.getStatusInfo() + doiResp.getStatus()
+          LOG.info("URL uploaded successfully " + doiResp.getStatusInfo() + doiResp.getStatus()
               + " -- " + doiResp.readEntity(String.class));
           resultDoi.setUrl(URI.create(url));
-          logger.info("updateDoi() successfully returned with doi " + resultDoi.getDoi());
+          LOG.info("updateDoi() successfully returned with doi " + resultDoi.getDoi());
           return resultDoi;
         } else {
           String registerDoiResponseEntity = doiResp.readEntity(String.class);
-          logger.error("Problem with url upload " + doiResp.getStatusInfo() + doiResp.getStatus()
+          LOG.error("Problem with url upload " + doiResp.getStatusInfo() + doiResp.getStatus()
               + " -- " + registerDoiResponseEntity);
           throw new DoiRegisterException(doiResp.getStatus(), registerDoiResponseEntity);
         }
       } else {
         String metadataResponseEntity = mdResp.readEntity(String.class);
-        logger.error("Problem with metadata " + mdResp.getStatusInfo() + mdResp.getStatus() + " -- "
+        LOG.error("Problem with metadata " + mdResp.getStatusInfo() + mdResp.getStatus() + " -- "
             + metadataResponseEntity);
         throw new MetadataInvalidException(metadataXml, mdResp.getStatus(), metadataResponseEntity);
       }
 
     } else {
       String getDoiEntity = getResp.readEntity(String.class);
-      logger.error("Problem with get DOI " + doi + " " + getResp.getStatusInfo()
+      LOG.error("Problem with get DOI " + doi + " " + getResp.getStatusInfo()
           + getResp.getStatus() + " -- " + getDoiEntity);
       throw new DoxiException(getResp.getStatus(), getDoiEntity);
     }
-
   }
 
   /**
@@ -397,14 +396,14 @@ public class DataciteAPIController implements DoiControllerInterface {
       trans.setParameter("doi", doi);
       trans.transform(new StreamSource(new StringReader(metadataXml)), new StreamResult(writer));
     } catch (TerminationException e) {
-      logger.error(
+      LOG.error(
           "The DOI identifier tag in the provided metadata xml must either be empty or match the provided DOI from the URL.",
           e);
       throw new DoxiException(
           "The DOI identifier tag in the provided metadata xml must either be empty or match the provided DOI from the URL.",
           e);
     } catch (Exception e) {
-      logger.error("The provided metadata xml is not well-formed.", e);
+      LOG.error("The provided metadata xml is not well-formed.", e);
       throw new DoxiException("The provided metadata xml is not well-formed.", e);
     }
 

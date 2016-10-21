@@ -10,7 +10,6 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  *
  */
 public class MetadataInvalidException extends DoxiException {
-
   private String metadataXml;
 
   public MetadataInvalidException(String metadataXml) {

@@ -10,7 +10,6 @@ import de.mpg.mpdl.doxi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doxi.model.DOI;
 
 public interface DoiControllerInterface {
-
   /**
    * returns the URL and metadata for a specific DOI
    * 
@@ -41,7 +40,6 @@ public interface DoiControllerInterface {
    * @throws MetadataInvalidException
    * @throws DoiRegisterException
    */
-
   public DOI createDOI(String doi, String url, String metadataXml) throws DoxiException,
       DoiAlreadyExistsException, MetadataInvalidException, DoiRegisterException;
 
@@ -97,5 +95,4 @@ public interface DoiControllerInterface {
    * @throws DoxiException
    */
   public DOI inactivateDOI(String doi) throws DoxiException;
-
 }

@@ -11,8 +11,6 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  *
  */
 public class DoiAlreadyExistsException extends DoxiException {
-
-
   public DoiAlreadyExistsException() {
     super(PropertyReader.getMessage("DOI_ALREADY_EXISTS_EXCEPTION"));
   }

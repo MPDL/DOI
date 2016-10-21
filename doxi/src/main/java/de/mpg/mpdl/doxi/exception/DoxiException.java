@@ -7,7 +7,6 @@ package de.mpg.mpdl.doxi.exception;
  *
  */
 public class DoxiException extends Exception {
-
   private int statusCode;
 
   public DoxiException() {

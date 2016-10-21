@@ -5,9 +5,7 @@ import java.net.URI;
 public class DOI {
 
   private String doi;
-
   private URI url;
-
   private String metadata;
 
   public String getDoi() {
@@ -33,7 +31,4 @@ public class DOI {
   public void setMetadata(String metadata) {
     this.metadata = metadata;
   }
-
-
-
 }

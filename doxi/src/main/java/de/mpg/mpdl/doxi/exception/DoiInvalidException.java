@@ -10,8 +10,6 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  *
  */
 public class DoiInvalidException extends DoxiException {
-
-
   public DoiInvalidException() {
     super(PropertyReader.getMessage("DOI_INVALID_EXCEPTION"));
   }

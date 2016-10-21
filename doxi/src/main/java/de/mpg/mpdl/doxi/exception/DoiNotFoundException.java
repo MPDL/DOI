@@ -10,10 +10,8 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  *
  */
 public class DoiNotFoundException extends DoxiException {
-
-
   public DoiNotFoundException() {
-    super(PropertyReader.getMessage("DOI_ALREADY_EXISTS_EXCEPTION"));
+    super(PropertyReader.getMessage("DOI_NOT_FOUND_EXCEPTION"));
   }
 
   public DoiNotFoundException(String message) {
