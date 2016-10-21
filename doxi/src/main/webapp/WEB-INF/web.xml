@@ -13,13 +13,15 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
 	<servlet>
 		<servlet-name>InitializerServlet</servlet-name>
 		<servlet-class>de.mpg.mpdl.doxi.pidcache.InitializerServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>MainServlet</servlet-name>
-		<url-pattern>/handle/*</url-pattern>
+		<url-pattern>/doxiservice/*</url-pattern>
 	</servlet-mapping>
 </web-app>
