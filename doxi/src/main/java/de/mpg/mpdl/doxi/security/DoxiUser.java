@@ -16,9 +16,8 @@ import javax.persistence.OneToMany;
 @Entity(name = "users")
 @Cacheable(false)
 public class DoxiUser implements Principal {
-
-  @Column(name = "username", nullable = false)
   @Id
+  @Column(name = "username", nullable = false)
   private String username;
 
   @Column(name = "password", nullable = false)
@@ -35,8 +34,6 @@ public class DoxiUser implements Principal {
   @JoinColumn(name = "username", referencedColumnName = "username")
   private List<DoxiRole> roles = new ArrayList<DoxiRole>();
 
-
-
   @Override
   public String getName() {
     return username;
@@ -46,36 +43,29 @@ public class DoxiUser implements Principal {
     return username;
   }
 
-
   public void setUsername(String username) {
     this.username = username;
   }
-
 
   public String getPassword() {
     return password;
   }
 
-
   public void setPassword(String password) {
     this.password = password;
   }
-
 
   public String getEmail() {
     return email;
   }
 
-
   public void setEmail(String email) {
     this.email = email;
   }
 
-
   public String getPrefix() {
     return prefix;
   }
-
 
   public void setPrefix(String prefix) {
     this.prefix = prefix;
@@ -93,7 +83,4 @@ public class DoxiUser implements Principal {
   public String toString() {
     return username + " (Roles: " + roles + " --- Prefix: " + prefix + ")";
   }
-
-
-
 }

@@ -12,13 +12,13 @@ public class ViewUserDB {
 
   public List<DoxiUser> userList;
 
-
   public ViewUserDB() {
-    EntityManager manager = JerseyApplicationConfig.emf.createEntityManager();
-    TypedQuery<DoxiUser> query = manager.createQuery("select u from users u", DoxiUser.class);
+    EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
+    TypedQuery<DoxiUser> query = em.createQuery("select u from users u", DoxiUser.class);
 
     setUserList(query.getResultList());
-    manager.close();
+    
+    em.close();
   }
 
   public List<DoxiUser> getUserList() {
@@ -28,5 +28,4 @@ public class ViewUserDB {
   public void setUserList(List<DoxiUser> userList) {
     this.userList = userList;
   }
-
 }

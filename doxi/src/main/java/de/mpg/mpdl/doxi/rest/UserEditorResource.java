@@ -19,14 +19,12 @@ import de.mpg.mpdl.doxi.view.ViewUserDB;
 @Path("useradmin")
 public class UserEditorResource {
 
-
   @GET
   @Template(name = "/viewUserDB.html.mustache")
   @RolesAllowed("admin")
   public ViewUserDB viewUserDB() {
     return new ViewUserDB();
   }
-
 
   @POST
   @Template(name = "/viewUserDB.html.mustache")
@@ -54,6 +52,5 @@ public class UserEditorResource {
     em.close();
 
     return new ViewUserDB();
-
   }
 }

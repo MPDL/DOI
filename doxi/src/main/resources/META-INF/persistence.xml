@@ -1,31 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0"
-    xmlns="http://java.sun.com/xml/ns/persistence"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
-                        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-<persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
-  <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
- 
-  <exclude-unlisted-classes>false</exclude-unlisted-classes>
-  
-  <properties>
-         <!-- 
-      <property name="eclipselink.ddl-generation"      value="create-tables" />
-   
-      <property name="eclipselink.create-ddl-jdbc-file-name"      value="META-INF/create_tables.sql" />
-      -->
-      
-      <property name="eclipselink.logging.level" value="INFO"/>
-      
-      
-      
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
-      <property name="javax.persistence.schema-generation.create-source" value="script"/>
-      <property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create_tables.sql"/>
-      <property name="javax.persistence.sql-load-script-source" value="META-INF/insert_database_content.sql"/>
-      
-      
-  </properties>
-</persistence-unit>
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="eclipselink.logging.level" value="INFO"/>
+			<property name="javax.persistence.schema-generation.database.action" value="create"/>
+			<property name="javax.persistence.schema-generation.create-source" value="script"/>
+			<property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create_tables.sql"/>
+			<property name="javax.persistence.sql-load-script-source" value="META-INF/insert_database_content.sql"/>
+		</properties>
+	</persistence-unit>
 </persistence>

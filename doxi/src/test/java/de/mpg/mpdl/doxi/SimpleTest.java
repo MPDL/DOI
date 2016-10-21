@@ -110,9 +110,9 @@ public class SimpleTest {
     ClientConfig clientConfig = new ClientConfig();
     clientConfig.register(new CsrfProtectionFilter("doxi test"));
 
-    HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
-        .credentials(PropertyReader.getProperty("doxi.admin.user"),
-            PropertyReader.getProperty("doxi.admin.password"))
+    HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder().credentials(
+        PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_USER),
+        PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_PASSWORD))
         .build();
     clientConfig.register(feature);
 

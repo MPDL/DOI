@@ -6,18 +6,15 @@ import javax.persistence.Id;
 
 @Entity(name = "roles")
 public class DoxiRole {
-
-  @Column(name = "role", nullable = false)
   @Id
+  @Column(name = "role", nullable = false)
   private String role;
-
 
   @Id
   @Column(name = "username", nullable = false)
   private String username;
 
   public DoxiRole() {
-
   }
 
   public DoxiRole(String role, String username) {
@@ -41,12 +38,8 @@ public class DoxiRole {
     this.username = username;
   }
 
-
   @Override
   public String toString() {
     return role;
   }
-
-
-
 }

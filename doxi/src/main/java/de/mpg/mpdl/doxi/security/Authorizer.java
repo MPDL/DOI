@@ -7,7 +7,6 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 public class Authorizer implements SecurityContext {
-
   @Context
   UriInfo uriInfo;
 
