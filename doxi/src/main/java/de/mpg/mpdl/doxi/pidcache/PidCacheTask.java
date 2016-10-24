@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
-public class CacheTask extends Thread {
-  private static final Logger LOG = LoggerFactory.getLogger(CacheTask.class);
+public class PidCacheTask extends Thread {
+  private static final Logger LOG = LoggerFactory.getLogger(PidCacheTask.class);
 
   private boolean signal = false;
 
@@ -17,22 +17,20 @@ public class CacheTask extends Thread {
     try {
       this.setName("PidCache Refresh Task");
 
-      final int timeout = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_INTERVAL)) * 1000;
+      final long refreshInterval = Long.parseLong(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_INTERVAL));
       final int blockSize = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_BLOCKSIZE));
 
       final EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
-      final GwdgClient controller = new GwdgClient();
-      final CacheProcess process = new CacheProcess(em, controller);
+      final GwdgClient gwdgClient = new GwdgClient();
+      final PidCacheProcess process = new PidCacheProcess(gwdgClient, em);
 
       LOG.info("Starting refresh of pid cache databases.");
 
       while (!this.signal) {
-        if (controller.serviceAvailable()) {
-          em.getTransaction().begin();
+        if (gwdgClient.serviceAvailable()) {
           process.fill(blockSize);
-          em.getTransaction().commit();
         }
-        Thread.sleep(Long.parseLong(Integer.toString(timeout)));
+        Thread.sleep(refreshInterval);
       }
     } catch (Exception e) {
       // TODO

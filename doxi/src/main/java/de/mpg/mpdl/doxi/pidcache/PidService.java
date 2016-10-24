@@ -10,21 +10,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 
 public class PidService implements PidCacheServiceInterface {
   private static final Logger LOG = LoggerFactory.getLogger(PidService.class);
 
-  private final CacheManager cacheManager;
-  private final QueueManager queueManager;
-  private final GwdgClient gwdgController;
+  private final EntityManager em;
+  private final PidCacheService pidCacheService;
+  private final PidQueueService pidQueueService;
+  private final GwdgClient gwdgClient;
 
   private int status = HttpServletResponse.SC_OK;
   private String location = "http://hdl.handle.net/XXX_LOCATION_XXX?noredirect";
 
-  public PidService(EntityManager em, GwdgClient gwdgController) {
-    this.cacheManager = new CacheManager(em);
-    this.queueManager = new QueueManager(em);
-    this.gwdgController = gwdgController;
+  public PidService(GwdgClient gwdgController) {
+    this.em = JerseyApplicationConfig.emf.createEntityManager();
+    this.pidCacheService = new PidCacheService(this.em);
+    this.pidQueueService = new PidQueueService(this.em);
+    this.gwdgClient = gwdgController;
   }
 
   /**
@@ -32,14 +35,14 @@ public class PidService implements PidCacheServiceInterface {
    * the PID in the queue - Delete the PID from the cache - Return the PID
    * 
    * Notes: - The actual editing of the PID in the GWDG service will be proceed from the queue - The
-   * cache will be completed by a new PID generated from {@link CacheProcess}
+   * cache will be completed by a new PID generated from {@link PidCacheProcess}
    **/
   @Override
   public String create(URI url) {
-    PidID pidID = this.cacheManager.getFirst();
+    PidID pidID = this.pidCacheService.getFirst();
     Pid pid = new Pid(pidID, url);
-    this.queueManager.add(pid);
-    this.cacheManager.remove(pidID);
+    this.pidQueueService.add(pid);
+    this.pidCacheService.remove(pidID);
     this.status = HttpServletResponse.SC_CREATED;
 
     // TODO
@@ -54,7 +57,7 @@ public class PidService implements PidCacheServiceInterface {
    */
   @Override
   public String retrieve(PidID pidID) throws PidNotFoundException {
-    Pid pid = this.queueManager.retrieve(pidID);
+    Pid pid = this.pidQueueService.retrieve(pidID);
     if (pid != null) {
       // TODO
       // return transformToPidServiceResponse(pid, "view");
@@ -62,7 +65,7 @@ public class PidService implements PidCacheServiceInterface {
     }
 
     // TODO
-    return this.gwdgController.retrieve(pidID).toString();
+    return this.gwdgClient.retrieve(pidID).toString();
   }
 
   /**
@@ -72,7 +75,7 @@ public class PidService implements PidCacheServiceInterface {
    */
   @Override
   public String search(URI url) throws PidNotFoundException {
-    Pid pid = this.queueManager.search(url);
+    Pid pid = this.pidQueueService.search(url);
     if (pid != null) {
       // TODO
       // return transformToPidServiceResponse(pid, "view");
@@ -80,7 +83,7 @@ public class PidService implements PidCacheServiceInterface {
     }
 
     // TODO
-    return this.gwdgController.search(url).toString();
+    return this.gwdgClient.search(url).toString();
   }
 
   /**
@@ -88,7 +91,7 @@ public class PidService implements PidCacheServiceInterface {
    */
   @Override
   public String update(Pid pid) {
-    this.queueManager.add(pid);
+    this.pidQueueService.add(pid);
     this.status = HttpServletResponse.SC_OK;
 
     // TODO
@@ -121,12 +124,12 @@ public class PidService implements PidCacheServiceInterface {
 
   @Override
   public int getCacheSize() {
-    return this.cacheManager.size();
+    return this.pidCacheService.size();
   }
 
   @Override
   public int getQueueSize() {
-    return this.queueManager.size();
+    return this.pidQueueService.size();
   }
 
   @Override

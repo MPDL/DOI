@@ -41,7 +41,7 @@ public class PropertyReader {
   public static final String DOXI_PID_GWDG_SERVICE_UPDATE_PATH = "doxi.pid.gwdg.service.update.path";
   public static final String DOXI_PID_GWDG_SERVICE_URL = "doxi.pid.gwdg.service.url";
   public static final String DOXI_PID_GWDG_SERVICE_VIEW_PATH = "doxi.pid.gwdg.service.view.path";
-  public static final String DOXI_PID_GWDG_TIMEOUT = "doxi.pid.gwdg.timeout"; // TODO
+  public static final String DOXI_PID_GWDG_TIMEOUT = "doxi.pid.gwdg.timeout";
   public static final String DOXI_PID_GWDG_USER_LOGIN = "doxi.pid.gwdg.user.login";
   public static final String DOXI_PID_GWDG_USER_PASSWORD = "doxi.pid.gwdg.user.password";
   

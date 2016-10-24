@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
@@ -44,9 +45,8 @@ public class GwdgClient implements GwdgClientInterface {
     clientConfig.register(authFeature);
     
     Client client = ClientBuilder.newClient(clientConfig);
-    client.register(new LoggingFilter(
-        java.util.logging.Logger.getLogger("de.mpg.mpdl.doxi.controller.GwdgAPIController"),
-        true));
+    client.property(ClientProperties.CONNECT_TIMEOUT, Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_TIMEOUT)));
+    client.register(new LoggingFilter(java.util.logging.Logger.getLogger("de.mpg.mpdl.doxi.pidcache.GwdgClient"), true));
     
     this.gwdgTarget = client.target(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));
     

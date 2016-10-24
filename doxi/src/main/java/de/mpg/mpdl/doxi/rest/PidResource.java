@@ -31,8 +31,7 @@ public class PidResource {
       notes = "Register a Pid with known URL.")
   @ApiResponses({
       @ApiResponse(code = 201, message = "PID sucessfully created.", response = String.class),
-      @ApiResponse(code = 409, message = "URL already exists."),
-      @ApiResponse(code = 400, message = "URL has invalid format.")})
+      @ApiResponse(code = 400, message = "PID not created.")})
   @PUT
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})

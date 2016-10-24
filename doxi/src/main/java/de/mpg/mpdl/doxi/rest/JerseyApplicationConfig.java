@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.controller.DataciteAPIController;
 import de.mpg.mpdl.doxi.controller.DoiControllerInterface;
+import de.mpg.mpdl.doxi.pidcache.GwdgClient;
+import de.mpg.mpdl.doxi.pidcache.GwdgClientInterface;
 import de.mpg.mpdl.doxi.security.DoxiRole;
 import de.mpg.mpdl.doxi.security.DoxiUser;
 import de.mpg.mpdl.doxi.util.PropertyReader;
@@ -55,26 +57,33 @@ public class JerseyApplicationConfig extends ResourceConfig {
 
   public JerseyApplicationConfig() {
     // property("contextConfigLocation", "classpath:applicationContext.xml");
-    packages(true, "de.mpg.mpdl.doxi");
-
-    property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, "true");
-    property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/mustache");
     
+    // packages(true, "de.mpg.mpdl.doxi"); -> siehe web.xml
+
+    // Server Properties
+    property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, "true");
+    
+    // Mustache
+    property(MustacheMvcFeature.TEMPLATE_BASE_PATH, "/mustache");
     register(MustacheMvcFeature.class);
     register(MvcFeature.class);
 
+    // Interfaces
     register(new AbstractBinder() {
-
       @Override
       protected void configure() {
         bind(DataciteAPIController.class).to(DoiControllerInterface.class);
-
+        bind(GwdgClient.class).to(GwdgClientInterface.class);
       }
     });
 
-    // register(HttpBasicContainerRequestFilter.class);
+    // Logging
     registerInstances(new LoggingFilter(java.util.logging.Logger.getLogger("test"), true));
+    
+    // Verwendung von Rollen -> @RolesAllowed
     register(RolesAllowedDynamicFeature.class);
+    
+    // Swagger
     register(ApiListingResource.class);
     register(SwaggerSerializers.class);
     BeanConfig beanConfig = new BeanConfig();
@@ -93,29 +102,6 @@ public class JerseyApplicationConfig extends ResourceConfig {
     } catch (Exception e) {
       LOG.error("Error while creating admin user", e);
     }
-
-    // register(SecurityConfig.class);
-    // register(SecurityWebApplicationInitializer.class);
-
-    // ApplicationContext appCon = ContextLoader.getCurrentWebApplicationContext();
-    // logger.info(appCon);
-
-    /*
-     * 
-     * packages(true,"de.mpg");
-     * 
-     * 
-     * 
-     * register(DOIResource.class); register(DoiAlreadyExistsMapper.class);
-     */
-    // packages(true,"de.mpg.mpdl.doi.rest");//.packages("de.mpg.mpdl.doi.security.spring.config");
-    /*
-     * .register(DOIResource.class);
-     * 
-     * //property("contextConfigLocation", )
-     * 
-     * 
-     */
   }
 
   private void createAdminUser() throws Exception {

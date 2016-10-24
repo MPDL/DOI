@@ -6,13 +6,13 @@ import javax.persistence.EntityManager;
 
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
-public class CacheManager {
+public class PidCacheService {
   private final int sizeMax;
   private final PidCacheDAO pidCacheDAO;
 
-  public CacheManager(EntityManager em) {
-    this.sizeMax = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SIZE_MAX));
+  public PidCacheService(EntityManager em) {
     this.pidCacheDAO = new PidCacheDAO(em);
+    this.sizeMax = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SIZE_MAX));
   }
 
   public void add(PidID pidID) {

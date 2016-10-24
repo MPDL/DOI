@@ -7,10 +7,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-public class QueueManager {
+public class PidQueueService {
   private final PidQueueDAO pidQueueDAO;
 
-  public QueueManager(EntityManager em) {
+  public PidQueueService(EntityManager em) {
     this.pidQueueDAO = new PidQueueDAO(em);
   }
 
