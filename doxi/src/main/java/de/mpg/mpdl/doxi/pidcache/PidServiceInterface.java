@@ -4,7 +4,7 @@ import java.net.URI;
 
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 
-public interface PidCacheServiceInterface {
+public interface PidServiceInterface {
   public int getCacheSize();
 
   public String getLocation();

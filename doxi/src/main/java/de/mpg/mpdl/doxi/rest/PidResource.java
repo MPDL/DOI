@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import de.mpg.mpdl.doxi.pidcache.PidCacheServiceInterface;
+import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = "MPDL DOXI PID REST API")
 public class PidResource {
   @Inject
-  private PidCacheServiceInterface pidCacheService;
+  private PidServiceInterface pidService;
 
   @ApiOperation(//
       value = "Register a Pid with known URL.",
@@ -40,7 +40,7 @@ public class PidResource {
       @ApiParam(value = "the URL to which the PID should point", required = true) //
       @QueryParam("url") String url) //
       throws Exception {
-    final String resultPid = pidCacheService.create(URI.create(url));
+    final String resultPid = pidService.create(URI.create(url));
     final Response r = Response.status(Status.CREATED).entity(resultPid).build();
 
     return r;

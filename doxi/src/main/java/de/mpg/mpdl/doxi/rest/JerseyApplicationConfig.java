@@ -29,6 +29,8 @@ import de.mpg.mpdl.doxi.controller.DataciteAPIController;
 import de.mpg.mpdl.doxi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doxi.pidcache.GwdgClient;
 import de.mpg.mpdl.doxi.pidcache.GwdgClientInterface;
+import de.mpg.mpdl.doxi.pidcache.PidService;
+import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
 import de.mpg.mpdl.doxi.security.DoxiRole;
 import de.mpg.mpdl.doxi.security.DoxiUser;
 import de.mpg.mpdl.doxi.util.PropertyReader;
@@ -74,6 +76,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
       protected void configure() {
         bind(DataciteAPIController.class).to(DoiControllerInterface.class);
         bind(GwdgClient.class).to(GwdgClientInterface.class);
+        bind(PidService.class).to(PidServiceInterface.class);
       }
     });
 

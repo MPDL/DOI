@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 
-public class PidService implements PidCacheServiceInterface {
+public class PidService implements PidServiceInterface {
   private static final Logger LOG = LoggerFactory.getLogger(PidService.class);
 
   private final EntityManager em;
