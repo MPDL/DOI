@@ -1,108 +1,78 @@
 package de.mpg.mpdl.doxi.pidcache;
 
-/**
- * Response of the PID services (GWDG service and PID cache service).
- * 
- * @author saquet
- *
- */
-public class PidServiceResponseVO
-{
-	private String action;
-	protected String identifier;
-	protected String url;
-	private String creator;
-	private String userUid;
-	private String message;
-	private String institute;
-	private String contact;
-	
-	/**
-	 * Default constructor.
-	 */
-	public PidServiceResponseVO() 
-	{
-		super();
-	}
-	
-	public String getAction() 
-	{
-		return action;
-	}
-	
-	public void setAction(String action) 
-	{
-		this.action = action;
-	}
-	
-	public String getUrl() 
-	{
-		return url;
-	}
+public class PidServiceResponseVO {
+  private String action;
+  protected String identifier;
+  protected String url;
+  private String creator;
+  private String userUid;
+  private String message;
+  private String institute;
+  private String contact;
 
-	public void setUrl(String url) 
-	{
-		this.url = url;
-	}
-	
-	public String getIdentifier() 
-	{
-		return identifier;
-	}
-	
-	public void setIdentifier(String identifier) 
-	{
-		this.identifier = identifier;
-	}
-	
-	public String getCreator() 
-	{
-		return creator;
-	}
-	
-	public void setCreator(String creator) 
-	{
-		this.creator = creator;
-	}
-	
-	public String getUserUid() 
-	{
-		return userUid;
-	}
-	
-	public void setUserUid(String userUid) 
-	{
-		this.userUid = userUid;
-	}
-	
-	public String getMessage() 
-	{
-		return message;
-	}
+  public PidServiceResponseVO() {}
 
-	public void setMessage(String message) 
-	{
-		this.message = message;
-	}
+  public String getAction() {
+    return this.action;
+  }
 
-	public String getInstitute() 
-	{
-		return institute;
-	}
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-	public void setInstitute(String institute) 
-	{
-		this.institute = institute;
-	}
+  public String getUrl() {
+    return this.url;
+  }
 
-	public String getContact() 
-	{
-		return contact;
-	}
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-	public void setContact(String contact) 
-	{
-		this.contact = contact;
-	}
+  public String getIdentifier() {
+    return this.identifier;
+  }
 
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
+  public String getCreator() {
+    return this.creator;
+  }
+
+  public void setCreator(String creator) {
+    this.creator = creator;
+  }
+
+  public String getUserUid() {
+    return this.userUid;
+  }
+
+  public void setUserUid(String userUid) {
+    this.userUid = userUid;
+  }
+
+  public String getMessage() {
+    return this.message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public String getInstitute() {
+    return this.institute;
+  }
+
+  public void setInstitute(String institute) {
+    this.institute = institute;
+  }
+
+  public String getContact() {
+    return this.contact;
+  }
+
+  public void setContact(String contact) {
+    this.contact = contact;
+  }
 }

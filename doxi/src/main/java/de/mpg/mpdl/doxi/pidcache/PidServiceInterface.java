@@ -7,8 +7,6 @@ import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 public interface PidServiceInterface {
   public int getCacheSize();
 
-  public String getLocation();
-
   public int getQueueSize();
 
   public int getStatus();

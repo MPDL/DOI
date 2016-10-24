@@ -14,10 +14,12 @@ public class PidQueueProcess {
 
   private final PidQueueService pidQueueService;
   private final GwdgClient gwdgClient;
+  private final EntityManager em;
 
-  public PidQueueProcess(EntityManager em, GwdgClient gwdgClient) {
-    this.pidQueueService = new PidQueueService(em);
+  public PidQueueProcess(GwdgClient gwdgClient, EntityManager em) {
     this.gwdgClient = gwdgClient;
+    this.em = em;
+    this.pidQueueService = new PidQueueService(em);
   }
 
   public void empty(int anzahl) {
@@ -28,8 +30,10 @@ public class PidQueueProcess {
 
     for (Pid pid : pids) {
       try {
+        this.em.getTransaction().begin();
         this.gwdgClient.update(pid);
         this.pidQueueService.remove(pid.getPidID());
+        this.em.getTransaction().commit();
       } catch (PidNotFoundException e) {
         // TODO
       }

@@ -36,6 +36,8 @@ public class GwdgClient implements GwdgClientInterface {
 
   private final WebTarget gwdgTarget;
   private final XMLTransforming xmlTransforming;
+  
+  private final String gwdgUser;
 
   @Context
   private SecurityContext secContext;
@@ -43,14 +45,17 @@ public class GwdgClient implements GwdgClientInterface {
   public GwdgClient() {
     ClientConfig clientConfig = new ClientConfig();
 
+    this.gwdgUser = PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_LOGIN); 
     HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.basic( //
-        PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_LOGIN),
-        PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_PASSWORD));
+        this.gwdgUser, PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_PASSWORD));
     clientConfig.register(authFeature);
-
+    
     Client client = ClientBuilder.newClient(clientConfig);
-    client.property(ClientProperties.CONNECT_TIMEOUT,
-        Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_TIMEOUT)));
+    
+    final int timeout = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_TIMEOUT)); 
+    client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
+    client.property(ClientProperties.READ_TIMEOUT, timeout);
+    
     client.register(new LoggingFilter(
         java.util.logging.Logger.getLogger("de.mpg.mpdl.doxi.pidcache.GwdgClient"), true));
 
@@ -178,5 +183,10 @@ public class GwdgClient implements GwdgClientInterface {
       LOG.error("Error: Service not available");
       return false;
     }
+  }
+  
+  @Override
+  public String getGwdgUser() {
+    return this.gwdgUser;
   }
 }

@@ -16,10 +16,10 @@ public class XMLTransforming {
   public PidServiceResponseVO transformToVO(String xml) {
     if (xml == null) {
       throw new IllegalArgumentException(getClass().getSimpleName()
-          + ":transformToPidServiceResponse: pidServiceResponseXml is null");
+          + ":transformToVO: pidServiceResponseXml is null");
     }
+    
     PidServiceResponseVO pidServiceResponseVO = null;
-
     try {
       IBindingFactory bfact = BindingDirectory.getFactory(PidServiceResponseVO.class);
       IUnmarshallingContext uctx = bfact.createUnmarshallingContext();
@@ -38,8 +38,9 @@ public class XMLTransforming {
   public String transformToXML(PidServiceResponseVO pidServiceResponseVO) {
     if (pidServiceResponseVO == null) {
       throw new IllegalArgumentException(getClass().getSimpleName()
-          + "transformToPidServiceResponse:pidServiceResponseVO is null");
+          + "transformToXML:pidServiceResponseVO is null");
     }
+    
     String utf8container = null;
     try {
       IBindingFactory bfact = BindingDirectory.getFactory(PidServiceResponseVO.class);
@@ -48,7 +49,7 @@ public class XMLTransforming {
       StringWriter sw = new StringWriter();
       mctx.setOutput(sw);
       mctx.marshalDocument(pidServiceResponseVO, "UTF-8", null, sw);
-      // use the following call to omit the leading "<?xml" tag of the generated XML
+      // use the following call to omit the leading "<?xml" tag of the generated XML:
       // mctx.marshalDocument(containerVO);
       utf8container = sw.toString().trim();
     } catch (JiBXException e) {
@@ -57,5 +58,4 @@ public class XMLTransforming {
 
     return utf8container;
   }
-
 }

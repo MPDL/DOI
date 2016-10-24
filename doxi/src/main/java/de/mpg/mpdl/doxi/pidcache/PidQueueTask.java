@@ -22,15 +22,13 @@ public class PidQueueTask extends Thread {
 
       final EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
       final GwdgClient gwdgClient = new GwdgClient();
-      final PidQueueProcess process = new PidQueueProcess(em, gwdgClient);
+      final PidQueueProcess process = new PidQueueProcess(gwdgClient, em);
 
       LOG.info("Starting emtpying of pid queue...");
 
       while (!this.signal) {
         if (gwdgClient.serviceAvailable()) {
-          em.getTransaction().begin();
           process.empty(blockSize);
-          em.getTransaction().commit();
         }
         Thread.sleep(emptyInterval);
       }
