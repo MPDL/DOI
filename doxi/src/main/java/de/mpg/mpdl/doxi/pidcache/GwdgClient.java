@@ -72,13 +72,19 @@ public class GwdgClient implements GwdgClientInterface {
 
   @Override
   public Pid create(URI url) throws DoxiException {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
+    // TODO
+    if (secContext != null) {
+      LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
+    } else {
+      LOG.info("User ? requests create with url " + url);
+    }
 
     final Response response = gwdgTarget //
-        .path(this.gwdgPidServiceCreate)
-        .request(MediaType.TEXT_PLAIN_TYPE).post(Entity.text(url.toString()));
+        .path(this.gwdgPidServiceCreate) //
+        .queryParam(URL, url.toString())
+        .request(MediaType.TEXT_PLAIN_TYPE).post(null); // leerer Body ?
     
-    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+    if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
       String xml = response.readEntity(String.class);
       PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
       Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
@@ -94,7 +100,7 @@ public class GwdgClient implements GwdgClientInterface {
   public Pid retrieve(PidID pidID) throws PidNotFoundException {
     LOG.info("User " + secContext.getUserPrincipal() + " requests retrieve with ID " + pidID);
 
-    final Response response = gwdgTarget //
+    final Response response = this.gwdgTarget //
         .path(this.gwdgPidServiceView) //
         .queryParam(PID, pidID.getIdAsString())
         .request().get();
@@ -115,7 +121,7 @@ public class GwdgClient implements GwdgClientInterface {
   public Pid search(URI url) throws PidNotFoundException {
     LOG.info("User " + secContext.getUserPrincipal() + " requests search with url " + url);
 
-    final Response response = gwdgTarget //
+    final Response response = this.gwdgTarget //
         .path(this.gwdgPidServiceSearch) //
         .queryParam(URL, url.toString())
         .request().get();
@@ -136,10 +142,10 @@ public class GwdgClient implements GwdgClientInterface {
   public Pid update(Pid pid) throws PidNotFoundException {
     LOG.info("User " + secContext.getUserPrincipal() + " requests update with pid " + pid);
 
-    final Response response = gwdgTarget //
+    final Response response = this.gwdgTarget //
         .path(this.gwdgPidServiceUpdate)
         .queryParam(PID, pid.getPidID().getIdAsString())
-        .request(MediaType.TEXT_PLAIN_TYPE).post(Entity.text(pid.getUrl().toString()));
+        .request(MediaType.TEXT_PLAIN_TYPE).post(Entity.json(pid.getUrl().toString()));
     
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
       String xml = response.readEntity(String.class);
@@ -157,7 +163,7 @@ public class GwdgClient implements GwdgClientInterface {
   public void delete(PidID pidID) throws DoxiException {
     LOG.info("User " + secContext.getUserPrincipal() + " requests delete() with identifier " + pidID);
 
-    final Response response = gwdgTarget //
+    final Response response = this.gwdgTarget //
         .path(this.gwdgPidServiceDelete) //
         .queryParam(PID, pidID.getIdAsString())
         .request().delete();
@@ -172,9 +178,14 @@ public class GwdgClient implements GwdgClientInterface {
 
   @Override
   public boolean serviceAvailable() {
-    LOG.info("User " + secContext.getUserPrincipal() + " requests serviceAvailable() + ");
+    // TODO
+    if (secContext != null) {
+      LOG.info("User " + secContext.getUserPrincipal() + " requests serviceAvailable() + ");
+    } else {
+      LOG.info("User ? requests serviceAvailable() + ");
+    }
 
-    final Response response = gwdgTarget.request().get();
+    final Response response = this.gwdgTarget.request().get();
     
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
       LOG.info("serviceAvailable() successfully");

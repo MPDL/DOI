@@ -65,7 +65,7 @@ public class PidQueueService {
     return null;
   }
   
-  public int size() {
+  public long size() {
     return this.pidQueueDAO.getSize();
   }
   

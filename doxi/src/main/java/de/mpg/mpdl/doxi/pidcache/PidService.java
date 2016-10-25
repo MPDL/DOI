@@ -112,12 +112,12 @@ public class PidService implements PidServiceInterface {
   }
 
   @Override
-  public int getCacheSize() {
+  public long getCacheSize() {
     return this.pidCacheService.size();
   }
 
   @Override
-  public int getQueueSize() {
+  public long getQueueSize() {
     return this.pidQueueService.size();
   }
 

@@ -22,12 +22,12 @@ public class PidCacheDAO {
   }
   
   public PidCache getFirst() {
-    final String query = "SELECT p FROM pid_cache p ORDER BY p.created DESC";
+    final String query = "SELECT c FROM pid_cache c ORDER BY c.created DESC";
     return this.em.createQuery(query, PidCache.class).getSingleResult();
   }
   
-  public int getSize() {
-    final String query = "SELECT count(*) FROM pid_cache";
-    return this.em.createQuery(query, Integer.class).getSingleResult();
+  public long getSize() {
+    final String query = "SELECT count(c) FROM pid_cache c";
+    return this.em.createQuery(query, Long.class).getSingleResult();
   }
 }

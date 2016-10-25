@@ -36,7 +36,7 @@ public class PidCacheService {
     return null;
   }
 
-  public int size() {
+  public long size() {
     return this.pidCacheDAO.getSize();
   }
 

@@ -8,8 +8,11 @@ import org.jibx.runtime.IBindingFactory;
 import org.jibx.runtime.IMarshallingContext;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XMLTransforming {
+  private static final Logger LOG = LoggerFactory.getLogger(XMLTransforming.class);
 
   public XMLTransforming() {}
 
@@ -27,6 +30,8 @@ public class XMLTransforming {
       Object unmarshalledObject = uctx.unmarshalDocument(sr, null);
       pidServiceResponseVO = (PidServiceResponseVO) unmarshalledObject;
     } catch (JiBXException e) {
+      // TODO
+      LOG.error("ERROR: " + e);
       // // throw a new UnmarshallingException, log the root cause of the JiBXException first
       // logger.error(e.getRootCause());
       // throw new UnmarshallingException(pidServiceResponseXml, e);
@@ -53,6 +58,8 @@ public class XMLTransforming {
       // mctx.marshalDocument(containerVO);
       utf8container = sw.toString().trim();
     } catch (JiBXException e) {
+      LOG.error("ERROR: " + e);
+      // TODO
       // throw new MarshallingException(pidServiceResponseVO.getClass().getSimpleName(), e);
     }
 

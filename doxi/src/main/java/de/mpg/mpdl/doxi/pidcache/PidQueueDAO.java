@@ -25,26 +25,26 @@ public class PidQueueDAO {
   }
   
   public PidQueue findByUrl(URI url) {
-    final String query = "SELECT p FROM pid_queue p where p.url= ?1";
+    final String query = "SELECT q FROM pid_queue q where q.url= ?1";
     
     return this.em.createQuery(query, PidQueue.class).setParameter(1, url.toString()).getSingleResult();
   }
   
   public PidQueue getFirst() {
-    final String query = "SELECT p FROM pid_queue p ORDER BY p.created DESC";
+    final String query = "SELECT q FROM pid_queue q ORDER BY q.created DESC";
     
     return this.em.createQuery(query, PidQueue.class).getSingleResult();
   }
   
   public List<PidQueue> getFirst(int anz) {
-    final String query = "SELECT p FROM pid_queue p ORDER BY p.created DESC";
+    final String query = "SELECT q FROM pid_queue q ORDER BY q.created DESC";
     
     return this.em.createQuery(query, PidQueue.class).setMaxResults(anz).getResultList();
   }
   
-  public int getSize() {
-    String query = "SELECT count(*) FROM pid_cache";
+  public long getSize() {
+    String query = "SELECT count(q) FROM pid_queue q";
     
-    return this.em.createQuery(query, Integer.class).getSingleResult();
+    return this.em.createQuery(query, Long.class).getSingleResult();
   }
 }

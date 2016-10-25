@@ -5,9 +5,9 @@ import java.net.URI;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 
 public interface PidServiceInterface {
-  public int getCacheSize();
+  public long getCacheSize();
 
-  public int getQueueSize();
+  public long getQueueSize();
 
   public int getStatus();
 

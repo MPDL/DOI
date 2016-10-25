@@ -11,36 +11,39 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
 public class PidQueueTask extends Thread {
   private static final Logger LOG = LoggerFactory.getLogger(PidQueueTask.class);
 
-  private boolean signal = false;
+  private boolean terminate = false;
 
   public void run() {
     try {
-      this.setName("PidQueue Empty Task");
+      this.setName("PidQueueTask");
 
-      final long emptyInterval = Long.parseLong(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_INTERVAL));
-      final int blockSize = Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_BLOCKSIZE));
+      final long emptyInterval =
+          Long.parseLong(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_INTERVAL));
+      final int blockSize = Integer
+          .parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_BLOCKSIZE));
 
-      final EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
       final GwdgClient gwdgClient = new GwdgClient();
+      final EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
       final PidQueueProcess process = new PidQueueProcess(gwdgClient, em);
 
-      LOG.info("Starting emtpying of pid queue...");
+      LOG.info("Starting PidQueueTask");
 
-      while (!this.signal) {
+      while (!this.terminate) {
         if (gwdgClient.serviceAvailable()) {
+          LOG.info("Gwdg Service available.");
           process.empty(blockSize);
+        } else {
+          LOG.warn("Gwdg Service not available.");
         }
         Thread.sleep(emptyInterval);
       }
+    } catch (InterruptedException e) {
+      LOG.warn("PidQueueTask InterruptedException angefordert.");
+      this.terminate = true;
     } catch (Exception e) {
       // TODO
-      LOG.error("Error initializing PidQueue Empty Task", e);
+      LOG.error("PidQueueTask", e);
     }
-    LOG.info("PidQueue Empty Task terminated.");
-  }
-
-  public void terminate() {
-    LOG.warn("PidQueue Empty Task signalled to terminate.");
-    this.signal = true;
+    LOG.info("PidQueueTask terminated.");
   }
 }

@@ -15,7 +15,7 @@ import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 
 public class InitializerServlet extends HttpServlet {
   private static final Logger LOG = LoggerFactory.getLogger(InitializerServlet.class);
-  
+
   private PidCacheTask pidCacheTask;
   private PidQueueTask pidQueueTask;
 
@@ -31,26 +31,28 @@ public class InitializerServlet extends HttpServlet {
 
   public void destroy() {
     super.destroy();
-    
-    this.pidCacheTask.terminate();
-    this.pidQueueTask.terminate();
 
+    this.pidCacheTask.interrupt();
+    this.pidQueueTask.interrupt();
+
+    // TODO
     // Close factory - necessary for proper restart
     if (JerseyApplicationConfig.emf != null && JerseyApplicationConfig.emf.isOpen()) {
       LOG.info("closing EntityManagerFactory");
       JerseyApplicationConfig.emf.close();
     }
-    
+
+    // TODO
     // Deregister database driver - necessary for proper resource management
     Enumeration<Driver> drivers = DriverManager.getDrivers();
     while (drivers.hasMoreElements()) {
-        Driver driver = drivers.nextElement();
-        try {
-            DriverManager.deregisterDriver(driver);
-            LOG.info(String.format("deregistering jdbc driver: %s", driver));
-        } catch (SQLException e) {
-            LOG.error(String.format("Error deregistering driver %s", driver), e);
-        }
-    }    
+      Driver driver = drivers.nextElement();
+      try {
+        DriverManager.deregisterDriver(driver);
+        LOG.info(String.format("deregistering jdbc driver: %s", driver));
+      } catch (SQLException e) {
+        LOG.error(String.format("Error deregistering driver %s", driver), e);
+      }
+    }
   }
 }
