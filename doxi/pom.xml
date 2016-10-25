@@ -5,14 +5,12 @@
 	<packaging>war</packaging>
 	<version>1.1-SNAPSHOT</version>
 	<name>doxi</name>
-	
 	<scm>
 		<connection>scm:git:https://github.com/MPDL/DOI.git</connection>
 		<developerConnection>scm:git:https://github.com/MPDL/DOI.git</developerConnection>
 		<url>https://github.com/MPDL/DOI</url>
 		<tag>HEAD</tag>
 	</scm>
-	
 	<repositories>
 		<repository>
 			<id>nexus</id>
@@ -25,21 +23,18 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
 			<name>Nexus Managed Releases</name>
 			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/releases</url>
 		</repository>
-		
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Managed Snapshots</name>
 			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
 	<build>
 		<finalName>doxi</finalName>
 		<resources>
@@ -48,7 +43,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -60,7 +54,6 @@
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -69,56 +62,50 @@
 					<packagingExcludes>**/doxi.properties</packagingExcludes>
 				</configuration>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
 			</plugin>
-			
 			<plugin>
-			  <groupId>org.jibx</groupId>
-			  <artifactId>jibx-maven-plugin</artifactId>
-			  <version>1.2.6</version>
-			   <configuration>
-				    <schemaBindingDirectory>${project.build.outputDirectory}/jibx</schemaBindingDirectory>
-				    <includeSchemaBindings>
-				    	<includeSchemaBinding>PidServiceResponse_binding.xml</includeSchemaBinding>
-				    </includeSchemaBindings>
-			  </configuration>
+				<groupId>org.jibx</groupId>
+				<artifactId>jibx-maven-plugin</artifactId>
+				<version>1.2.6</version>
+				<configuration>
+					<schemaBindingDirectory>${project.build.outputDirectory}/jibx</schemaBindingDirectory>
+					<includeSchemaBindings>
+						<includeSchemaBindings>*_binding.xml</includeSchemaBindings>
+					</includeSchemaBindings>
+					<verbose>true</verbose>
+				</configuration>
 				<executions>
-				    <execution>
-				    	<phase>process-classes</phase>
+					<execution>
 						<goals>
 							<goal>bind</goal>
 						</goals>
-				    </execution>
-				  </executions>
-				 
-				  <dependencies>
-	               <dependency>
-	                  <groupId>org.apache.bcel</groupId>
-	                  <artifactId>bcel</artifactId>
-	                  <version>6.0-SNAPSHOT</version>
-	               </dependency>
-	               
-	               <dependency>
-	                  <groupId>org.jibx</groupId>
-	                  <artifactId>jibx-bind</artifactId>
-	                  <version>1.2.6</version>
-	                  <exclusions>
-	                     <exclusion>
-	                        <artifactId>bcel</artifactId>
-	                        <groupId>bcel</groupId>
-	                     </exclusion>
-	                  </exclusions>
-	               </dependency>
-				  </dependencies>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.jibx</groupId>
+						<artifactId>jibx-bind</artifactId>
+						<version>1.2.5</version>
+						<exclusions>
+							<exclusion>
+								<artifactId>bcel</artifactId>
+								<groupId>bcel</groupId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.bcel</groupId>
+						<artifactId>bcel</artifactId>
+						<version>6.0-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
 			</plugin>
-			
 		</plugins>
 	</build>
-	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -128,7 +115,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-framework-bom</artifactId>
@@ -136,7 +122,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-bom</artifactId>
@@ -146,102 +131,85 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.bcel</groupId>
+			<artifactId>bcel</artifactId>
+			<version>6.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-jersey2-jaxrs</artifactId>
 			<version>1.5.3</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.jibx</groupId>
-			<artifactId>jibx-extras</artifactId>
-			<version>1.2.6</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.jibx</groupId>
-			<artifactId>jibx-bind</artifactId>
-			<version>1.2.6</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.jibx</groupId>
 			<artifactId>jibx-run</artifactId>
 			<version>1.2.6</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.jibx</groupId>
+			<artifactId>jibx-extras</artifactId>
+			<version>1.2.6</version>
+		</dependency>
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>Saxon-HE</artifactId>
 			<version>9.5.1-8</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
 			<version>2.6.0</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-grizzly2-servlet</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.glassfish.jersey.ext</groupId>
 			<artifactId>jersey-mvc-mustache</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.mindrot</groupId>
 			<artifactId>jbcrypt</artifactId>
 			<version>0.3m</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.4-1201-jdbc41</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.12</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.12</version>
 		</dependency>
 	</dependencies>
-	
 	<properties>
 		<jdk.version>1.8</jdk.version>
 		<jersey.version>2.21</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
 	<profiles>
 		<profile>
 			<id>env-jrebel-build</id>
