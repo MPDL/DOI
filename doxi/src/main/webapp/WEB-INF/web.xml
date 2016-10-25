@@ -5,23 +5,8 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 	<servlet>
-		<servlet-name>MainDoxiJerseyServlet</servlet-name>
-		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>jersey.config.server.provider.packages</param-name>
-			<param-value>de.mpg.mpdl.doxi</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	
-	<servlet>
 		<servlet-name>InitializerServlet</servlet-name>
 		<servlet-class>de.mpg.mpdl.doxi.pidcache.InitializerServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>MainDoxiJerseyServlet</servlet-name>
-		<url-pattern>/doxiservice/*</url-pattern>
-	</servlet-mapping>
 </web-app>

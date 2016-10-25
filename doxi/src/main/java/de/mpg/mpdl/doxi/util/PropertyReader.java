@@ -19,7 +19,7 @@ public class PropertyReader {
   public static final String DOXI_DOI_DATACITE_API_LOGIN_PASSWORD = "doxi.doi.datacite.api.login.password";
   public static final String DOXI_DOI_DATACITE_API_LOGIN_USER = "doxi.doi.datacite.api.login.user";
   public static final String DOXI_DOI_DATACITE_API_TESTMODE = "doxi.doi.datacite.api.testmode";
-  public static final String DOXI_DOI_DATACITE_API_URL = "doxi.datacite.api.url";
+  public static final String DOXI_DOI_DATACITE_API_URL = "doxi.doi.datacite.api.url";
   
   public static final String DOXI_JDBC_DRIVER = "doxi.jdbc.driver";
   public static final String DOXI_JDBC_PASSWORD = "doxi.jdbc.password";

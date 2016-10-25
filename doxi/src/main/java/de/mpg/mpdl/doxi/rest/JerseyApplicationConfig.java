@@ -60,7 +60,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
   public JerseyApplicationConfig() {
     // property("contextConfigLocation", "classpath:applicationContext.xml");
     
-    // packages(true, "de.mpg.mpdl.doxi"); -> siehe web.xml
+    packages(true, "de.mpg.mpdl.doxi");
 
     // Server Properties
     property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, "true");
