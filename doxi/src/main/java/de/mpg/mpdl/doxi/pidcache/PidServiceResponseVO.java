@@ -1,9 +1,9 @@
 package de.mpg.mpdl.doxi.pidcache;
 
-public class PidServiceResponseVO {
+public class PidServiceResponseVO extends AbstractVO {
   private String action;
-  protected String identifier;
-  protected String url;
+  private String identifier;
+  private String url;
   private String creator;
   private String userUid;
   private String message;

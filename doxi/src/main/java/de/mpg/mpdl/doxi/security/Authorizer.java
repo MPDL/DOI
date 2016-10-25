@@ -35,6 +35,7 @@ public class Authorizer implements SecurityContext {
         }
       }
     }
+    
     return false;
   }
 
@@ -48,7 +49,7 @@ public class Authorizer implements SecurityContext {
     if (principal == null) {
       return null;
     }
+    
     return SecurityContext.BASIC_AUTH;
   }
-
 }

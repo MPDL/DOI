@@ -2,7 +2,7 @@ package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
 
-public class Pid extends AbstractID {
+public class Pid extends AbstractVO {
   private final PidID pidID;
   private final URI url;
 

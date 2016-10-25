@@ -43,24 +43,13 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
           requestContext.setSecurityContext(new Authorizer(authenticatedUser));
           return;
         } else {
-          logger
-              .warn("User " + values[0] + " provided a wrong password, proceeding with anonymous");
+          logger.warn("User " + values[0] + " provided a wrong password, proceeding with anonymous");
         }
-
-
       } catch (Exception e) {
         logger.warn("ERROR with Http basic authentication, proceeding with anonymous", e);
         // throw new ForbiddenException("Wrong credentials!");
       }
-
-
-
     }
-
     requestContext.setSecurityContext(new Authorizer(null));
-
   }
-
-
-
 }
