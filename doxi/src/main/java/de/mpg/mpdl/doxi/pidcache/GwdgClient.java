@@ -7,6 +7,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -18,8 +19,6 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.exception.DoxiException;
-import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class GwdgClient implements GwdgClientInterface {
@@ -71,7 +70,7 @@ public class GwdgClient implements GwdgClientInterface {
   }
 
   @Override
-  public Pid create(URI url) throws DoxiException {
+  public Pid create(URI url) throws GwdgException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
@@ -82,7 +81,7 @@ public class GwdgClient implements GwdgClientInterface {
     final Response response = gwdgTarget //
         .path(this.gwdgPidServiceCreate) //
         .queryParam(URL, url.toString())
-        .request(MediaType.TEXT_PLAIN_TYPE).post(null); // leerer Body ?
+        .request(MediaType.TEXT_PLAIN_TYPE).post(null); // leerer Body
     
     if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
       String xml = response.readEntity(String.class);
@@ -92,12 +91,12 @@ public class GwdgClient implements GwdgClientInterface {
       return pid;
     } else { // TODO
       LOG.error("Error create");
-      throw new DoxiException(response.getStatus(), response.readEntity(String.class));
+      throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid retrieve(PidID pidID) throws PidNotFoundException {
+  public Pid retrieve(PidID pidID) throws GwdgException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests retrieve with ID " + pidID);
@@ -108,7 +107,7 @@ public class GwdgClient implements GwdgClientInterface {
     final Response response = this.gwdgTarget //
         .path(this.gwdgPidServiceView) //
         .queryParam(PID, pidID.getIdAsString())
-        .request().get();
+        .request(MediaType.TEXT_PLAIN_TYPE).get();
     
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
       String xml = response.readEntity(String.class);
@@ -118,12 +117,12 @@ public class GwdgClient implements GwdgClientInterface {
       return pid;
     } else { // TODO
       LOG.error("Error retrieve");
-      throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
+      throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid search(URI url) throws PidNotFoundException {
+  public Pid search(URI url) throws GwdgException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests search with url " + url);
@@ -134,7 +133,7 @@ public class GwdgClient implements GwdgClientInterface {
     final Response response = this.gwdgTarget //
         .path(this.gwdgPidServiceSearch) //
         .queryParam(URL, url.toString())
-        .request().get();
+        .request(MediaType.TEXT_PLAIN_TYPE).get();
     
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
       String xml = response.readEntity(String.class);
@@ -144,12 +143,12 @@ public class GwdgClient implements GwdgClientInterface {
       return pid;
     } else { // TODO
       LOG.error("Error search");
-      throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
+      throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid update(Pid pid) throws PidNotFoundException {
+  public Pid update(Pid pid) throws GwdgException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests update with pid " + pid);
@@ -157,25 +156,28 @@ public class GwdgClient implements GwdgClientInterface {
       LOG.info("User requests update with pid " + pid);
     }
 
-    final Response response = this.gwdgTarget //
-        .path(this.gwdgPidServiceUpdate)
+    Form form = new Form();
+    form.param(URL, pid.getUrl().toString());
+    
+    final Response response = gwdgTarget //
+        .path(this.gwdgPidServiceUpdate) //
         .queryParam(PID, pid.getPidID().getIdAsString())
-        .request(MediaType.TEXT_PLAIN_TYPE).post(Entity.json(pid.getUrl().toString()));
+        .request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(form));
     
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
       String xml = response.readEntity(String.class);
       PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
       Pid _pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-      LOG.info("retrieve successfully returned pid " + _pid);
+      LOG.info("update successfully returned pid " + _pid);
       return _pid;
     } else { // TODO
       LOG.error("Error update");
-      throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
+      throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public void delete(PidID pidID) throws DoxiException {
+  public Pid delete(PidID pidID) throws GwdgException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests delete() with identifier " + pidID);
@@ -189,10 +191,14 @@ public class GwdgClient implements GwdgClientInterface {
         .request().delete();
     
     if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
-      LOG.info("delete successfully deleted pid " + pidID);
+      String xml = response.readEntity(String.class);
+      PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
+      Pid _pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
+      LOG.info("delete successfully deleted pid " + _pid);
+      return _pid;
     } else { // TODO
       LOG.error("Error delete");
-      throw new DoxiException(response.getStatus(), response.readEntity(String.class));
+      throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class PidCacheProcess {
@@ -25,21 +26,25 @@ public class PidCacheProcess {
     this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL);
   }
 
-  public void fill(int anzahl) {
+  public void fill(int anzahl) throws DoxiException {
     long current = 0;
     int i = 0;
-    while (this.pidCacheService.isFull() == false && current != new Date().getTime() && i <= anzahl) {
-      current = new Date().getTime();
-      try {
-        this.em.getTransaction().begin();
-        final Pid pid = gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(current))));
-        this.pidCacheService.add(pid.getPidID());
-        this.em.getTransaction().commit();
-      } catch (Exception e) { // TODO
-        LOG.error("ERROR: " + e );
-        this.em.getTransaction().rollback();
+    try {
+      while (this.pidCacheService.isFull() == false && current != new Date().getTime() && i <= anzahl) {
+        current = new Date().getTime();
+        try {
+          this.em.getTransaction().begin();
+          final Pid pid = gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(current))));
+          this.pidCacheService.add(pid.getPidID());
+          this.em.getTransaction().commit();
+        } catch (Exception e) { // TODO
+          LOG.error("ERROR: " + e );
+          this.em.getTransaction().rollback();
+        }
+        i++;
       }
-      i++;
+    } catch (PidCacheServiceException e) { // TODO
+      throw new DoxiException(e);
     }
   }
 }

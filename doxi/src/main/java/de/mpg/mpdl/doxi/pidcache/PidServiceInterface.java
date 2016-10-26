@@ -2,22 +2,18 @@ package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
 
-import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.exception.DoxiException;
 
 public interface PidServiceInterface {
-  public long getCacheSize();
+  public long getCacheSize() throws DoxiException;;
 
-  public long getQueueSize();
+  public long getQueueSize() throws DoxiException;;
 
-  public int getStatus();
+  public String update(Pid pid) throws DoxiException;
 
-  public String delete(String id);
+  public String search(URI url) throws DoxiException;
 
-  public String update(Pid pid);
+  public String retrieve(PidID pidID) throws DoxiException;
 
-  public String search(URI url) throws PidNotFoundException;
-
-  public String retrieve(PidID pidID) throws PidNotFoundException;
-
-  public String create(URI url);
+  public String create(URI url) throws DoxiException;
 }

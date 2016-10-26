@@ -4,12 +4,11 @@ import java.net.URI;
 import java.util.Queue;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 
 public class PidService implements PidServiceInterface {
@@ -20,8 +19,6 @@ public class PidService implements PidServiceInterface {
   private final PidQueueService pidQueueService;
   private final GwdgClient gwdgClient;
   private final XMLTransforming xmlTransforming;
-
-  private int status = HttpServletResponse.SC_OK;
 
   public PidService() {
     this.em = JerseyApplicationConfig.emf.createEntityManager();
@@ -37,93 +34,103 @@ public class PidService implements PidServiceInterface {
    * 
    * Notes: - The actual editing of the PID in the GWDG service will be proceed from the queue - The
    * cache will be completed by a new PID generated from {@link PidCacheProcess}
+   * 
+   * @throws DoxiException
    **/
   @Override
-  public String create(URI url) {
-    PidID pidID = this.pidCacheService.getFirst();
-    Pid pid = new Pid(pidID, url);
+  public String create(URI url) throws DoxiException {
+    try {
+      // TODO Cache gefüllt?
+      PidID pidID = this.pidCacheService.getFirst();
+      Pid pid = new Pid(pidID, url);
 
-    this.em.getTransaction().begin();
-    this.pidQueueService.add(pid);
-    this.pidCacheService.remove(pidID);
-    this.em.getTransaction().commit();
+      this.em.getTransaction().begin();
+      this.pidQueueService.add(pid);
+      this.pidCacheService.remove(pidID);
+      this.em.getTransaction().commit();
 
-    this.status = HttpServletResponse.SC_CREATED;
-
-    // TODO Rollback
-    return transformToPidServiceResponse(pid, "create");
+      return transformToPidServiceResponse(pid, "create");
+    } catch (PidCacheServiceException | PidQueueServiceException e) {
+      if (this.em.getTransaction().isActive()) {
+        this.em.getTransaction().rollback();
+      }
+      throw new DoxiException(e);
+    }
   }
 
   /**
    * Retrieve a PID from the GWDG PID service: - Check if PID still in queue, if yes, return it -
    * Check if GWDG PID service available, if no throw Exception
    * 
-   * @throws PidNotFoundException
+   * @throws DoxiException
    */
   @Override
-  public String retrieve(PidID pidID) throws PidNotFoundException {
-    Pid pid = this.pidQueueService.retrieve(pidID);
-    if (pid != null) {
-      return transformToPidServiceResponse(pid, "view");
+  public String retrieve(PidID pidID) throws DoxiException {
+    try {
+      Pid pid = this.pidQueueService.retrieve(pidID);
+      if (pid != null) {
+        return transformToPidServiceResponse(pid, "view");
+      }
+      return this.gwdgClient.retrieve(pidID).toString();
+    } catch (PidQueueServiceException | GwdgException e) {
+      throw new DoxiException(e);
     }
-
-    // TODO
-    return this.gwdgClient.retrieve(pidID).toString();
   }
 
   /**
    * Search a PID: - Search first in {@link Queue} if PID still in it - Check then if GWDG service
    * available - Search with GWDG service.
    * 
-   * @throws PidNotFoundException
+   * @throws DoxiException
    */
   @Override
-  public String search(URI url) throws PidNotFoundException {
-    Pid pid = this.pidQueueService.search(url);
-    if (pid != null) {
-      return transformToPidServiceResponse(pid, "view");
+  public String search(URI url) throws DoxiException {
+    try {
+      Pid pid = this.pidQueueService.search(url);
+      if (pid != null) {
+        return transformToPidServiceResponse(pid, "view");
+      }
+      return this.gwdgClient.search(url).toString();
+    } catch (PidQueueServiceException | GwdgException e) {
+      throw new DoxiException(e);
     }
-
-    // TODO
-    return this.gwdgClient.search(url).toString();
   }
 
   /**
    * Update a PID
    */
   @Override
-  public String update(Pid pid) {
-    this.em.getTransaction().begin();
-    this.pidQueueService.add(pid);
-    this.em.getTransaction().commit();
+  public String update(Pid pid) throws DoxiException {
+    try {
+      this.em.getTransaction().begin();
+      this.pidQueueService.add(pid);
+      this.em.getTransaction().commit();
 
-    this.status = HttpServletResponse.SC_OK;
-
-    // TODO Rollback
-    return transformToPidServiceResponse(pid, "modify");
-  }
-
-  /**
-   * Should a PID be removable?
-   */
-  @Override
-  public String delete(String id) {
-    return "Delete not possible for a PID";
+      return transformToPidServiceResponse(pid, "modify");
+    } catch (PidQueueServiceException e) {
+      if (this.em.getTransaction().isActive()) {
+        this.em.getTransaction().rollback();
+      }
+      throw new DoxiException(e);
+    }
   }
 
   @Override
-  public long getCacheSize() {
-    return this.pidCacheService.size();
+  public long getCacheSize() throws DoxiException {
+    try {
+      return this.pidCacheService.getSize();
+    } catch (PidCacheServiceException e) {
+      throw new DoxiException(e);
+    }
   }
 
   @Override
-  public long getQueueSize() {
-    return this.pidQueueService.size();
-  }
-
-  @Override
-  public int getStatus() {
-    return this.status;
+  public long getQueueSize() throws DoxiException {
+    try {
+      return this.pidQueueService.getSize();
+    } catch (PidQueueServiceException e) {
+      throw new DoxiException(e);
+    }
   }
 
   private String transformToPidServiceResponse(Pid pid, String action) {
@@ -136,6 +143,7 @@ public class PidService implements PidServiceInterface {
     pidServiceResponseVO.setInstitute("dummyInstitute");
     pidServiceResponseVO.setContact("dummyContact");
     pidServiceResponseVO.setMessage("dummyMessage");
+    pidServiceResponseVO.setMatches("dummyMatches");
 
     return xmlTransforming.transformToXML(pidServiceResponseVO);
   }

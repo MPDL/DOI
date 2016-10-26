@@ -59,7 +59,9 @@ public class PropertyReader {
   private static void loadProperties() {
     try {
       // First try to load from from internal
-      InputStream is = PropertyReader.class.getResourceAsStream("/doxi.properties");
+      // TODO
+//      InputStream is = PropertyReader.class.getResourceAsStream("/doxi.properties");
+      InputStream is = PropertyReader.class.getResourceAsStream("/doxi_test.properties");
       if (is == null) {
         // then from tomcat's conf dir
         String tomcatHome = System.getProperty("catalina.base");

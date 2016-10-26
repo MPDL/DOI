@@ -6,6 +6,7 @@ public class PidServiceResponseVO extends AbstractVO {
   private String url;
   private String creator;
   private String userUid;
+  private String matches;
   private String message;
   private String institute;
   private String contact;
@@ -74,5 +75,13 @@ public class PidServiceResponseVO extends AbstractVO {
 
   public void setContact(String contact) {
     this.contact = contact;
+  }
+
+  public String getMatches() {
+    return this.matches;
+  }
+
+  public void setMatches(String matches) {
+    this.matches = matches;
   }
 }

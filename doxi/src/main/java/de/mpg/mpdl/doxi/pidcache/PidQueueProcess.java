@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.exception.DoxiException;
 
 public class PidQueueProcess {
   private static final Logger LOG = LoggerFactory.getLogger(PidQueueProcess.class);
@@ -22,10 +22,15 @@ public class PidQueueProcess {
     this.pidQueueService = new PidQueueService(em);
   }
 
-  public void empty(int anzahl) {
-    final List<Pid> pids = this.pidQueueService.getFirstBlock(anzahl);
-    if (pids.size() == 0) {
-      return;
+  public void empty(int anzahl) throws DoxiException {
+    List<Pid> pids;
+    try {
+      pids = this.pidQueueService.getFirstBlock(anzahl);
+      if (pids.size() == 0) {
+        return;
+      }
+    } catch (PidQueueServiceException e) {
+      throw new DoxiException(e);
     }
 
     for (Pid pid : pids) {
@@ -34,8 +39,8 @@ public class PidQueueProcess {
         this.gwdgClient.update(pid);
         this.pidQueueService.remove(pid.getPidID());
         this.em.getTransaction().commit();
-      } catch (PidNotFoundException e) {
-        // TODO
+      } catch (GwdgException | PidQueueServiceException e) {
+        throw new DoxiException(e);
       }
     }
   }

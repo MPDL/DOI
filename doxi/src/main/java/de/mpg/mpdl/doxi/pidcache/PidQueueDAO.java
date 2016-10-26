@@ -31,13 +31,13 @@ public class PidQueueDAO {
   }
   
   public PidQueue getFirst() {
-    final String query = "SELECT q FROM pid_queue q ORDER BY q.created DESC";
+    final String query = "SELECT q FROM pid_queue q ORDER BY q.created";
     
-    return this.em.createQuery(query, PidQueue.class).getSingleResult();
+    return this.em.createQuery(query, PidQueue.class).setMaxResults(1).getSingleResult();
   }
   
   public List<PidQueue> getFirst(int anz) {
-    final String query = "SELECT q FROM pid_queue q ORDER BY q.created DESC";
+    final String query = "SELECT q FROM pid_queue q ORDER BY q.created";
     
     return this.em.createQuery(query, PidQueue.class).setMaxResults(anz).getResultList();
   }

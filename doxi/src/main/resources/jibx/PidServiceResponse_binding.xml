@@ -4,7 +4,7 @@
 	<mapping name="pidserviceresponse" class="de.mpg.mpdl.doxi.pidcache.PidServiceResponseVO" ordered="false">
 		
 		<value style="element" name="action" usage="optional" field="action"/>
-		
+		<value style="element" name="matches" usage="optional" field="matches"></value>
 		<value style="element" name="message" usage="optional" field="message"></value>
 		
 		<structure name="Handle" usage="optional">

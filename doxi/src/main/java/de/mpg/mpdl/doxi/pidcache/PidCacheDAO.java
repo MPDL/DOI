@@ -22,8 +22,8 @@ public class PidCacheDAO {
   }
   
   public PidCache getFirst() {
-    final String query = "SELECT c FROM pid_cache c ORDER BY c.created DESC";
-    return this.em.createQuery(query, PidCache.class).getSingleResult();
+    final String query = "SELECT c FROM pid_cache c ORDER BY c.created";
+    return this.em.createQuery(query, PidCache.class).setMaxResults(1).getSingleResult();
   }
   
   public long getSize() {

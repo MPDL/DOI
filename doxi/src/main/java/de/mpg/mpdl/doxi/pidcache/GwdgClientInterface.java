@@ -2,65 +2,18 @@ package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
 
-import de.mpg.mpdl.doxi.exception.DoxiException;
-import de.mpg.mpdl.doxi.exception.PidNotFoundException;
-
 public interface GwdgClientInterface {
-  /**
-   * Calls GWDG PID manager interface:
-   * 
-   * - http://handle.gwdg.de:8080/pidservice/write/create
-   * 
-   * @param url:
-   * @return
-   */
-  public Pid create(URI url) throws DoxiException;
+  public Pid create(URI url) throws GwdgException;
 
-  /**
-   * Calls GWDG PID manager interface:
-   * 
-   * - http://handle.gwdg.de:8080/pidservice/read/view
-   * 
-   * @return
-   */
-  public Pid retrieve(PidID pidID) throws PidNotFoundException;
+  public Pid retrieve(PidID pidID) throws GwdgException;
 
-  /**
-   * Calls GWDG PID manager interface via:
-   * 
-   * - http://handle.gwdg.de:8080/pidservice/read/search
-   * 
-   * @param url
-   * @return
-   */
-  public Pid search(URI url) throws PidNotFoundException;
+  public Pid search(URI url) throws GwdgException;
 
-  /**
-   * Calls GWDG PID manager interface:
-   * 
-   * - http://handle.gwdg.de:8080/pidservice/write/edit
-   * 
-   * @return
-   * @throws PidNotFoundException 
-   * @throws Exception
-   */
-  public Pid update(Pid pid) throws PidNotFoundException;
+  public Pid update(Pid pid) throws GwdgException;
 
-  /**
-   * Calls GWDG PID manager interface:
-   * 
-   * - http://handle.gwdg.de:8080/pidservice/
-   * 
-   * @return
-   */
-  public void delete(PidID pidID) throws DoxiException;
+  public Pid delete(PidID pidID) throws GwdgException;
 
-  /**
-   * True if GWDG PID service is available. False if not.
-   * 
-   * @return
-   */
   public boolean serviceAvailable();
-  
+
   public String getGwdgUser();
 }
