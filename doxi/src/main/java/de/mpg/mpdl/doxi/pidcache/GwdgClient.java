@@ -16,6 +16,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.filter.LoggingFilter;
+import org.jibx.runtime.JiBXException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ public class GwdgClient implements GwdgClientInterface {
   }
 
   @Override
-  public Pid create(URI url) throws GwdgException, Exception {
+  public Pid create(URI url) throws GwdgException, JiBXException  {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
@@ -96,14 +97,14 @@ public class GwdgClient implements GwdgClientInterface {
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
-    } catch (Exception e) {
+    } catch (GwdgException | JiBXException e) {
       LOG.error("create: url " + url + ": "+ e);
       throw e;
     }
   }
 
   @Override
-  public Pid retrieve(PidID pidID) throws PidNotFoundException, GwdgException, Exception {
+  public Pid retrieve(PidID pidID) throws PidNotFoundException, GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests retrieve with ID " + pidID);
@@ -131,14 +132,14 @@ public class GwdgClient implements GwdgClientInterface {
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     } catch (PidNotFoundException e) {
       throw e;
-    } catch (Exception e) {
+    } catch (GwdgException | JiBXException e) {
       LOG.error("retrieve: pidID " + pidID + ": "+ e);
       throw e;
     }
   }
 
   @Override
-  public Pid search(URI url) throws PidNotFoundException, GwdgException, Exception {
+  public Pid search(URI url) throws PidNotFoundException, GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests search with url " + url);
@@ -167,14 +168,14 @@ public class GwdgClient implements GwdgClientInterface {
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     } catch (PidNotFoundException e) {
       throw e;
-    } catch (Exception e) {
+    } catch (GwdgException | JiBXException e) {
       LOG.error("search: url " + url + ": "+ e);
       throw e;
     }
   }
 
   @Override
-  public Pid update(Pid pid) throws PidNotFoundException, GwdgException, Exception {
+  public Pid update(Pid pid) throws PidNotFoundException, GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests update with pid " + pid);
@@ -208,7 +209,7 @@ public class GwdgClient implements GwdgClientInterface {
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     } catch (PidNotFoundException e) {
       throw e;
-    } catch (Exception e) {
+    } catch (GwdgException | JiBXException e) {
       LOG.error("update: pid " + pid + ": "+ e);
       throw e;
     }
@@ -232,7 +233,7 @@ public class GwdgClient implements GwdgClientInterface {
       }
       
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
-    } catch (Exception e) {
+    } catch (GwdgException e) {
       LOG.warn("Service not available: " + e);
       return false;
     }
