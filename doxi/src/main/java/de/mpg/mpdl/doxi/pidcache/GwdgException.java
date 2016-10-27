@@ -1,5 +1,11 @@
 package de.mpg.mpdl.doxi.pidcache;
 
+/**
+ * DoxiException and its subclasses define a subclass adapted for the DOxI service
+ * 
+ * @author walter
+ *
+ */
 public class GwdgException extends Exception {
   private int statusCode;
 

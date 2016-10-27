@@ -45,7 +45,7 @@ public class PidCacheProcess {
         }
         i++;
       }
-    } catch (PidCacheServiceException e) {
+    } catch (Exception e) {
       throw new DoxiException(e);
     }
   }

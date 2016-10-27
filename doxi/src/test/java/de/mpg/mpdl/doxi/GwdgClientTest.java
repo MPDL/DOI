@@ -123,20 +123,4 @@ public class GwdgClientTest {
 
     LOG.info("--------------------- FINISHED test_5_UpdatePid ---------------------");
   }
-
-  @Ignore
-  @Test
-  public void test_6_DeletePid() throws Exception {
-    LOG.info("--------------------- STARTING test_6_DeletePid ---------------------");
-
-    Pid pid =
-        gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
-    Assert.assertNotNull(pid);
-    
-    Pid pid_ = gwdgClient.delete(pid.getPidID());
-
-    Assert.assertNotNull(pid_);
-
-    LOG.info("--------------------- FINISHED test_6_DeletePid ---------------------");
-  }
 }

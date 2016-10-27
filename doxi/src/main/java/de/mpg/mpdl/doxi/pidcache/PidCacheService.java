@@ -17,27 +17,19 @@ public class PidCacheService {
         Integer.parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SIZE_MAX));
   }
 
-  public void add(PidID pidID) throws PidCacheServiceException {
-    try {
-      final PidCache pidCache = new PidCache(pidID, new Date());
-      this.pidCacheDAO.create(pidCache);
-    } catch (Exception e) {
-      throw new PidCacheServiceException(e);
+  public void add(PidID pidID) {
+    final PidCache pidCache = new PidCache(pidID, new Date());
+    this.pidCacheDAO.create(pidCache);
+  }
+
+  public void remove(PidID pidID) {
+    final PidCache pidCache = this.pidCacheDAO.find(pidID);
+    if (pidCache != null) {
+      this.pidCacheDAO.remove(pidCache);
     }
   }
 
-  public void remove(PidID pidID) throws PidCacheServiceException {
-    try {
-      final PidCache pidCache = this.pidCacheDAO.find(pidID);
-      if (pidCache != null) {
-        this.pidCacheDAO.remove(pidCache);
-      }
-    } catch (Exception e) {
-      throw new PidCacheServiceException(e);
-    }
-  }
-
-  public PidID getFirst() throws PidCacheServiceException {
+  public PidID getFirst() {
     try {
       final PidCache pidCache = this.pidCacheDAO.getFirst();
       if (pidCache != null) {
@@ -45,35 +37,21 @@ public class PidCacheService {
       }
     } catch (NoResultException e) {
       return null;
-    } catch (Exception e) {
-      throw new PidCacheServiceException(e);
     }
-    
+
     return null;
   }
 
-  public long getSize() throws PidCacheServiceException {
-    try {
-      return this.pidCacheDAO.getSize();
-    } catch (Exception e) {
-      throw new PidCacheServiceException(e);
-    }
+  public long getSize() {
+    return this.pidCacheDAO.getSize();
   }
 
-  public boolean isFull() throws PidCacheServiceException {
-    try {
-      return (this.sizeMax == getSize());
-    } catch (Exception e) {
-      throw new PidCacheServiceException(e);
-    }
+  public boolean isFull() {
+    return (this.sizeMax == getSize());
   }
 
-  public boolean isEmpty() throws PidCacheServiceException {
-    try {
-      return (0 == getSize());
-    } catch (Exception e) {
-      throw new PidCacheServiceException(e);
-    }
+  public boolean isEmpty() {
+    return (0 == getSize());
   }
 
   public int getSizeMax() {

@@ -36,7 +36,6 @@ public class PropertyReader {
   public static final String DOXI_PID_CACHE_USER_PASSWORD = "doxi.pid.cache.user.password"; // TODO
   
   public static final String DOXI_PID_GWDG_SERVICE_CREATE_PATH = "doxi.pid.gwdg.service.create.path";
-  public static final String DOXI_PID_GWDG_SERVICE_DELETE_PATH = "doxi.pid.gwdg.service.delete.path";
   public static final String DOXI_PID_GWDG_SERVICE_SEARCH_PATH = "doxi.pid.gwdg.service.search.path";
   public static final String DOXI_PID_GWDG_SERVICE_UPDATE_PATH = "doxi.pid.gwdg.service.update.path";
   public static final String DOXI_PID_GWDG_SERVICE_URL = "doxi.pid.gwdg.service.url";

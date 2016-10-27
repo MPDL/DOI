@@ -29,7 +29,7 @@ public class PidQueueProcess {
       if (pids.size() == 0) {
         return;
       }
-    } catch (PidQueueServiceException e) {
+    } catch (Exception e) {
       throw new DoxiException(e);
     }
 

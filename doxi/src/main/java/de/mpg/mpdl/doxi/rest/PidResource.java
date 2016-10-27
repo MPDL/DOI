@@ -58,9 +58,9 @@ public class PidResource {
       @QueryParam(URL) String url) //
       throws Exception {
     final String resultPid = pidService.create(URI.create(url));
-    final Response r = Response.status(Status.CREATED).entity(resultPid).build();
+    final Response response = Response.status(Status.CREATED).entity(resultPid).build();
 
-    return r;
+    return response;
   }
 
   @Path(PATH_RETRIEVE)
@@ -77,9 +77,9 @@ public class PidResource {
       @QueryParam(PID) String id) //
       throws Exception {
     final String resultPid = pidService.retrieve(PidID.create(id));
-    final Response r = Response.status(Status.OK).entity(resultPid).build();
+    final Response response = Response.status(Status.OK).entity(resultPid).build();
 
-    return r;
+    return response;
   }
   
   @Path(PATH_SEARCH)
@@ -96,9 +96,9 @@ public class PidResource {
       @QueryParam(URL) String url) //
       throws Exception {
     final String resultPid = pidService.search(URI.create(url));
-    final Response r = Response.status(Status.OK).entity(resultPid).build();
+    final Response response = Response.status(Status.OK).entity(resultPid).build();
 
-    return r;
+    return response;
   }
 
   @Path(PATH_UPDATE)
@@ -117,9 +117,9 @@ public class PidResource {
       @QueryParam(URL) String url) //
       throws Exception {
     final String resultPid = pidService.update(new Pid(PidID.create(id), URI.create(url)));
-    final Response r = Response.status(Status.OK).entity(resultPid).build();
+    final Response response = Response.status(Status.OK).entity(resultPid).build();
 
-    return r;
+    return response;
   }
   
   @Path(PATH_CACHE_SIZE)
@@ -134,9 +134,9 @@ public class PidResource {
   public Response cacheSize() //
       throws Exception {
     final long size = pidService.getCacheSize();
-    final Response r = Response.status(Status.OK).entity("CacheSize: " + size).build();
+    final Response response = Response.status(Status.OK).entity("CacheSize: " + size).build();
 
-    return r;
+    return response;
   }
 
   @Path(PATH_QUEUE_SIZE)
@@ -151,8 +151,8 @@ public class PidResource {
   public Response queueSize() //
       throws Exception {
     final long size = pidService.getQueueSize();
-    final Response r = Response.status(Status.OK).entity("QueueSize: " + size).build();
+    final Response response = Response.status(Status.OK).entity("QueueSize: " + size).build();
 
-    return r;
+    return response;
   }
 }

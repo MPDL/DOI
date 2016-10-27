@@ -15,71 +15,51 @@ public class PidQueueService {
     this.pidQueueDAO = new PidQueueDAO(em);
   }
 
-  public void add(Pid pid) throws PidQueueServiceException {
-    try {
-      final PidQueue pidQueue = new PidQueue(pid.getPidID(), pid.getUrl(), new Date());
-      this.pidQueueDAO.create(pidQueue);
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
+  public void add(Pid pid) {
+    final PidQueue pidQueue = new PidQueue(pid.getPidID(), pid.getUrl(), new Date());
+    this.pidQueueDAO.create(pidQueue);
+  }
+
+  public void remove(PidID pidID) {
+    final PidQueue pidQueue = this.pidQueueDAO.find(pidID);
+    if (pidQueue != null) {
+      this.pidQueueDAO.remove(pidQueue);
     }
   }
 
-  public void remove(PidID pidID) throws PidQueueServiceException {
-    try {
-      final PidQueue pidQueue = this.pidQueueDAO.find(pidID);
-      if (pidQueue != null) {
-        this.pidQueueDAO.remove(pidQueue);
-      }
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
-    }
-  }
-
-  public Pid retrieve(PidID pidID) throws PidQueueServiceException {
-    try {
-      final PidQueue pidQueue = this.pidQueueDAO.find(pidID);
-      if (pidQueue != null) {
-        return new Pid(pidQueue.getID(), pidQueue.getUrl());
-      }
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
+  public Pid retrieve(PidID pidID) {
+    final PidQueue pidQueue = this.pidQueueDAO.find(pidID);
+    if (pidQueue != null) {
+      return new Pid(pidQueue.getID(), pidQueue.getUrl());
     }
 
     return null;
   }
 
-  public Pid update(Pid pid) throws PidQueueServiceException {
-    try {
-      final PidQueue pidQueue = this.pidQueueDAO.find(pid.getPidID());
-      if (pidQueue != null) {
-        pidQueue.setUrl(pid.getUrl());
-        this.pidQueueDAO.update(pidQueue);
-        return pid;
-      }
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
+  public Pid update(Pid pid) {
+    final PidQueue pidQueue = this.pidQueueDAO.find(pid.getPidID());
+    if (pidQueue != null) {
+      pidQueue.setUrl(pid.getUrl());
+      this.pidQueueDAO.update(pidQueue);
+      return pid;
     }
 
     return null;
   }
 
-  public List<Pid> getFirstBlock(int size) throws PidQueueServiceException {
+  public List<Pid> getFirstBlock(int size) {
     final List<Pid> pids = new ArrayList<Pid>();
 
-    try {
-      final List<PidQueue> list = this.pidQueueDAO.getFirst(size);
+    final List<PidQueue> list = this.pidQueueDAO.getFirst(size);
 
-      for (PidQueue pidQueue : list) {
-        pids.add(new Pid(pidQueue.getID(), pidQueue.getUrl()));
-      }
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
+    for (PidQueue pidQueue : list) {
+      pids.add(new Pid(pidQueue.getID(), pidQueue.getUrl()));
     }
 
     return pids;
   }
 
-  public Pid search(URI url) throws PidQueueServiceException {
+  public Pid search(URI url) {
     try {
       final PidQueue pidQueue = this.pidQueueDAO.findByUrl(url);
       if (pidQueue != null) {
@@ -87,26 +67,16 @@ public class PidQueueService {
       }
     } catch (NoResultException e) {
       return null;
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
     }
 
     return null;
   }
 
-  public long getSize() throws PidQueueServiceException {
-    try {
-      return this.pidQueueDAO.getSize();
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
-    }
+  public long getSize() {
+    return this.pidQueueDAO.getSize();
   }
 
-  public boolean isEmpty() throws PidQueueServiceException {
-    try {
-      return this.getSize() == 0;
-    } catch (Exception e) {
-      throw new PidQueueServiceException(e);
-    }
+  public boolean isEmpty() {
+    return this.getSize() == 0;
   }
 }
