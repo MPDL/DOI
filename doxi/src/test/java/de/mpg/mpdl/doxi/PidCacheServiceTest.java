@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ public class PidCacheServiceTest {
     this.em.close();
   }
 
+  @Ignore
   @Test
   public void test_1_removeAll_empty() throws Exception {
     LOG.info("--------------------- STARTING test_1_removeAll_empty ---------------------");
@@ -58,6 +60,7 @@ public class PidCacheServiceTest {
     LOG.info("--------------------- FINISHED test_1_removeAll_empty ---------------------");
   }
 
+  @Ignore
   @Test
   public void test_2_add_getFirst() throws Exception {
     LOG.info("--------------------- STARTING test_2_add_getFirst ---------------------");
@@ -89,6 +92,7 @@ public class PidCacheServiceTest {
     LOG.info("--------------------- FINISHED test_2_add_getFirst ---------------------");
   }
 
+  @Ignore
   @Test
   public void test_3_remove() throws Exception {
     LOG.info("--------------------- STARTING test_4_remove ---------------------");
@@ -125,6 +129,7 @@ public class PidCacheServiceTest {
     LOG.info("--------------------- FINISHED test_3_remove ---------------------");
   }
 
+  @Ignore
   @Test
   public void test_4_full() throws Exception {
     LOG.info("--------------------- STARTING test_4_full ---------------------");
@@ -147,6 +152,7 @@ public class PidCacheServiceTest {
     LOG.info("--------------------- FINISHED test_4_full ---------------------");
   }
 
+  @Ignore
   @Test
   public void test_5_removeAll_empty() throws Exception {
     LOG.info("--------------------- STARTING test_5_removeAll_empty ---------------------");

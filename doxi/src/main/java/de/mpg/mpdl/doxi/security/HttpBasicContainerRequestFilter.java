@@ -19,7 +19,7 @@ import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 @Provider
 public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 
-  private static Logger logger = LoggerFactory.getLogger(HttpBasicContainerRequestFilter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HttpBasicContainerRequestFilter.class);
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -43,10 +43,10 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
           requestContext.setSecurityContext(new Authorizer(authenticatedUser));
           return;
         } else {
-          logger.warn("User " + values[0] + " provided a wrong password, proceeding with anonymous");
+          LOG.warn("User " + values[0] + " provided a wrong password, proceeding with anonymous");
         }
       } catch (Exception e) {
-        logger.warn("ERROR with Http basic authentication, proceeding with anonymous", e);
+        LOG.warn("ERROR with Http basic authentication, proceeding with anonymous", e);
         // throw new ForbiddenException("Wrong credentials!");
       }
     }

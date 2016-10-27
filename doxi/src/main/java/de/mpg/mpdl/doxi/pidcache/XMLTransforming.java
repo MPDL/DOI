@@ -16,7 +16,7 @@ public class XMLTransforming {
 
   public XMLTransforming() {}
 
-  public PidServiceResponseVO transformToVO(String xml) {
+  public PidServiceResponseVO transformToVO(String xml) throws JiBXException {
     if (xml == null) {
       throw new IllegalArgumentException(getClass().getSimpleName()
           + ":transformToVO: pidServiceResponseXml is null");
@@ -30,17 +30,14 @@ public class XMLTransforming {
       Object unmarshalledObject = uctx.unmarshalDocument(sr, null);
       pidServiceResponseVO = (PidServiceResponseVO) unmarshalledObject;
     } catch (JiBXException e) {
-      // TODO
       LOG.error("ERROR: " + e);
-      // // throw a new UnmarshallingException, log the root cause of the JiBXException first
-      // logger.error(e.getRootCause());
-      // throw new UnmarshallingException(pidServiceResponseXml, e);
+      throw e;
     }
 
     return pidServiceResponseVO;
   }
 
-  public String transformToXML(PidServiceResponseVO pidServiceResponseVO) {
+  public String transformToXML(PidServiceResponseVO pidServiceResponseVO) throws JiBXException {
     if (pidServiceResponseVO == null) {
       throw new IllegalArgumentException(getClass().getSimpleName()
           + "transformToXML:pidServiceResponseVO is null");
@@ -54,13 +51,10 @@ public class XMLTransforming {
       StringWriter sw = new StringWriter();
       mctx.setOutput(sw);
       mctx.marshalDocument(pidServiceResponseVO, "UTF-8", null, sw);
-      // use the following call to omit the leading "<?xml" tag of the generated XML:
-      // mctx.marshalDocument(containerVO);
       utf8container = sw.toString().trim();
     } catch (JiBXException e) {
       LOG.error("ERROR: " + e);
-      // TODO
-      // throw new MarshallingException(pidServiceResponseVO.getClass().getSimpleName(), e);
+      throw e;
     }
 
     return utf8container;

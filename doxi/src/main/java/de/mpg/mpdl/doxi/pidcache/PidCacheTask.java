@@ -41,9 +41,9 @@ public class PidCacheTask extends Thread {
       LOG.warn("PidCacheTask InterruptedException angefordert.");
       this.terminate = true;
     } catch (Exception e) {
-      // TODO
-      LOG.error("PidCacheTask", e);
+      LOG.error("ERROR " + e);
     }
+    
     LOG.info("PidCacheTask terminated.");
   }
 }

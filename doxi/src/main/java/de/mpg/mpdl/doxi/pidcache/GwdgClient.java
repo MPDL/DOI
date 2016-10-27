@@ -16,6 +16,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.filter.LoggingFilter;
+import org.jibx.runtime.JiBXException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public class GwdgClient implements GwdgClientInterface {
   }
 
   @Override
-  public Pid create(URI url) throws GwdgException {
+  public Pid create(URI url) throws GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
@@ -89,14 +90,14 @@ public class GwdgClient implements GwdgClientInterface {
       Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
       LOG.info("create successfully returned pid " + pid);
       return pid;
-    } else { // TODO
-      LOG.error("Error create");
+    } else {
+      LOG.error("Create: " + response.getStatus(), response.readEntity(String.class));
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid retrieve(PidID pidID) throws GwdgException {
+  public Pid retrieve(PidID pidID) throws GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests retrieve with ID " + pidID);
@@ -116,13 +117,13 @@ public class GwdgClient implements GwdgClientInterface {
       LOG.info("retrieve successfully returned pid " + pid);
       return pid;
     } else { // TODO
-      LOG.error("Error retrieve");
+      LOG.error("retrieve: " + response.getStatus(), response.readEntity(String.class));
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid search(URI url) throws GwdgException {
+  public Pid search(URI url) throws GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests search with url " + url);
@@ -141,14 +142,14 @@ public class GwdgClient implements GwdgClientInterface {
       Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
       LOG.info("search successfully returned pid " + pid);
       return pid;
-    } else { // TODO
-      LOG.error("Error search");
+    } else {
+      LOG.error("search: " + response.getStatus(), response.readEntity(String.class));
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid update(Pid pid) throws GwdgException {
+  public Pid update(Pid pid) throws GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests update with pid " + pid);
@@ -170,14 +171,14 @@ public class GwdgClient implements GwdgClientInterface {
       Pid _pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
       LOG.info("update successfully returned pid " + _pid);
       return _pid;
-    } else { // TODO
-      LOG.error("Error update");
+    } else {
+      LOG.error("update: " + response.getStatus(), response.readEntity(String.class));
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
 
   @Override
-  public Pid delete(PidID pidID) throws GwdgException {
+  public Pid delete(PidID pidID) throws GwdgException, JiBXException {
     // TODO
     if (secContext != null) {
       LOG.info("User " + secContext.getUserPrincipal() + " requests delete() with identifier " + pidID);
@@ -196,8 +197,8 @@ public class GwdgClient implements GwdgClientInterface {
       Pid _pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
       LOG.info("delete successfully deleted pid " + _pid);
       return _pid;
-    } else { // TODO
-      LOG.error("Error delete");
+    } else {
+      LOG.error("delete: " + response.getStatus(), response.readEntity(String.class));
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
     }
   }
@@ -216,8 +217,8 @@ public class GwdgClient implements GwdgClientInterface {
     if (response.getStatus() == Response.Status.OK.getStatusCode()) {
       LOG.info("serviceAvailable() successfully");
       return true;
-    } else { // TODO
-      LOG.error("Error: Service not available");
+    } else {
+      LOG.error("serviceAvailable: Service not available");
       return false;
     }
   }

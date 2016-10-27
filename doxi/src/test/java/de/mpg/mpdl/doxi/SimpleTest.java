@@ -30,7 +30,7 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class SimpleTest {
 
-  private Logger logger = LoggerFactory.getLogger(SimpleTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(SimpleTest.class);
 
   private String testDoi = "10.15771/pure.999223";
   private String url = "http://dev-pubman.mpdl.mpg.de/pubman/item/escidoc:844691";

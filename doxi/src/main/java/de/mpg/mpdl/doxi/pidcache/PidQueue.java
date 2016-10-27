@@ -36,6 +36,10 @@ public class PidQueue {
     return URI.create(this.url);
   }
 
+  public void setUrl(URI url) {
+    this.url = url.toString();
+  }
+
   public Date getCreated() {
     return this.created;
   }

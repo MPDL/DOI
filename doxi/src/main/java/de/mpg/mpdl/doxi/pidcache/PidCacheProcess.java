@@ -37,13 +37,15 @@ public class PidCacheProcess {
           final Pid pid = gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(current))));
           this.pidCacheService.add(pid.getPidID());
           this.em.getTransaction().commit();
-        } catch (Exception e) { // TODO
-          LOG.error("ERROR: " + e );
-          this.em.getTransaction().rollback();
+        } catch (Exception e) {
+          LOG.error("ERROR: " + e);
+          if (this.em.getTransaction().isActive()) {
+            this.em.getTransaction().rollback();
+          }
         }
         i++;
       }
-    } catch (PidCacheServiceException e) { // TODO
+    } catch (PidCacheServiceException e) {
       throw new DoxiException(e);
     }
   }

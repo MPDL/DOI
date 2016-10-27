@@ -16,6 +16,10 @@ public class PidQueueDAO {
     this.em.persist(pidQueue);
   }
   
+  public void update(PidQueue pidQueue) {
+    this.em.persist(pidQueue);
+  }
+
   public void remove(PidQueue pidQueue) {
     this.em.remove(pidQueue);
   }
@@ -28,12 +32,6 @@ public class PidQueueDAO {
     final String query = "SELECT q FROM pid_queue q where q.url= ?1";
     
     return this.em.createQuery(query, PidQueue.class).setParameter(1, url.toString()).getSingleResult();
-  }
-  
-  public PidQueue getFirst() {
-    final String query = "SELECT q FROM pid_queue q ORDER BY q.created";
-    
-    return this.em.createQuery(query, PidQueue.class).setMaxResults(1).getSingleResult();
   }
   
   public List<PidQueue> getFirst(int anz) {

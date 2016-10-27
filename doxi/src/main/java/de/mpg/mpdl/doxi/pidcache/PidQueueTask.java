@@ -41,9 +41,9 @@ public class PidQueueTask extends Thread {
       LOG.warn("PidQueueTask InterruptedException angefordert.");
       this.terminate = true;
     } catch (Exception e) {
-      // TODO
-      LOG.error("PidQueueTask", e);
+      LOG.error("ERROR " + e);
     }
+    
     LOG.info("PidQueueTask terminated.");
   }
 }

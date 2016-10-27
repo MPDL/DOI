@@ -48,14 +48,14 @@ public class PidQueueService {
     return null;
   }
 
-  public Pid getFirst() throws PidQueueServiceException {
+  public Pid update(Pid pid) throws PidQueueServiceException {
     try {
-      final PidQueue pidQueue = this.pidQueueDAO.getFirst();
+      final PidQueue pidQueue = this.pidQueueDAO.find(pid.getPidID());
       if (pidQueue != null) {
-        return new Pid(pidQueue.getID(), pidQueue.getUrl());
+        pidQueue.setUrl(pid.getUrl());
+        this.pidQueueDAO.update(pidQueue);
+        return pid;
       }
-    } catch (NoResultException e) {
-      return null;
     } catch (Exception e) {
       throw new PidQueueServiceException(e);
     }
@@ -85,6 +85,8 @@ public class PidQueueService {
       if (pidQueue != null) {
         return new Pid(pidQueue.getID(), pidQueue.getUrl());
       }
+    } catch (NoResultException e) {
+      return null;
     } catch (Exception e) {
       throw new PidQueueServiceException(e);
     }
