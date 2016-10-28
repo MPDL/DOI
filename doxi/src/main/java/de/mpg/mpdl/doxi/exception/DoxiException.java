@@ -6,6 +6,7 @@ package de.mpg.mpdl.doxi.exception;
  * @author walter
  *
  */
+@SuppressWarnings("serial")
 public class DoxiException extends Exception {
   private int statusCode;
 

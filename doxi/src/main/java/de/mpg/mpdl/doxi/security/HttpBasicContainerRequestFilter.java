@@ -13,7 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 
 @PreMatching
 @Provider
@@ -23,7 +23,7 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
-    // TODO Auto-generated method stub
+    // TODO SECURITY Auto-generated method stub
     String auth = requestContext.getHeaderString("authorization");
     if (auth != null && auth.startsWith("Basic")) {
       DoxiUser authenticatedUser;
@@ -34,7 +34,7 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
         // credentials = username:password
         final String[] values = credentials.split(":", 2);
         // EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
-        EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
+        EntityManager em = EMF.emf.createEntityManager();
         authenticatedUser = em.find(DoxiUser.class, values[0]);
         em.close();
 

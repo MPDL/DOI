@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 public class PropertyReader {
   private static final Logger LOG = LoggerFactory.getLogger(PropertyReader.class);
 
+  private static final String PROPERTIES_FILE = "/doxi.properties";
+  private static final String MESSAGES_FILE = "/messages.properties";
+  
   public static final String DOXI_ADMIN_CREATE = "doxi.admin.create";
   public static final String DOXI_ADMIN_PASSWORD = "doxi.admin.password";
   public static final String DOXI_ADMIN_PREFIX = "doxi.admin.prefix";
@@ -32,8 +35,6 @@ public class PropertyReader {
   public static final String DOXI_PID_CACHE_EMPTY_INTERVAL = "doxi.pid.cache.empty.interval";
   public static final String DOXI_PID_CACHE_REFRESH_BLOCKSIZE = "doxi.pid.cache.refresh.blocksize";
   public static final String DOXI_PID_CACHE_REFRESH_INTERVAL = "doxi.pid.cache.refresh.interval";
-  public static final String DOXI_PID_CACHE_USER_NAME = "doxi.pid.cache.user.name"; // TODO
-  public static final String DOXI_PID_CACHE_USER_PASSWORD = "doxi.pid.cache.user.password"; // TODO
   
   public static final String DOXI_PID_GWDG_SERVICE_CREATE_PATH = "doxi.pid.gwdg.service.create.path";
   public static final String DOXI_PID_GWDG_SERVICE_SEARCH_PATH = "doxi.pid.gwdg.service.search.path";
@@ -58,9 +59,7 @@ public class PropertyReader {
   private static void loadProperties() {
     try {
       // First try to load from from internal
-      // TODO
-      InputStream is = PropertyReader.class.getResourceAsStream("/doxi.properties");
-//      InputStream is = PropertyReader.class.getResourceAsStream("/doxi_test.properties");
+      InputStream is = PropertyReader.class.getResourceAsStream(PROPERTIES_FILE);
       if (is == null) {
         // then from tomcat's conf dir
         String tomcatHome = System.getProperty("catalina.base");
@@ -69,9 +68,10 @@ public class PropertyReader {
       }
       properties = new Properties();
       properties.load(is);
-      LOG.info("Properties loaded from doxi.properties");
+      LOG.info("Properties loaded.");
     } catch (IOException e) {
-      LOG.error("Error while loading properties from doxi.properties", e);
+      LOG.error("PROPERTY READER: {}\n{}", PROPERTIES_FILE, e);
+      throw new IllegalArgumentException("PropertyReader: " + PROPERTIES_FILE + " not found");
     }
 
   }
@@ -86,12 +86,13 @@ public class PropertyReader {
 
   private static void loadMessages() {
     try {
-      InputStream is = PropertyReader.class.getResourceAsStream("/message.properties");
+      InputStream is = PropertyReader.class.getResourceAsStream(MESSAGES_FILE);
       messages = new Properties();
       messages.load(is);
-      LOG.info("Messages loaded from message.properties");
+      LOG.info("Messages loaded.");
     } catch (IOException e) {
-      LOG.error("Error while loading messages from message.properties", e);
+      LOG.error("PROPERTY READER: {}\n{}", MESSAGES_FILE, e);
+      throw new IllegalArgumentException("PropertyReader: " + MESSAGES_FILE + " not found");
     }
   }
 }

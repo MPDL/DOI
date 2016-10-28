@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.jibx.runtime.JiBXException;
 
+import de.mpg.mpdl.doxi.exception.GwdgException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 
 public interface GwdgClientInterface {

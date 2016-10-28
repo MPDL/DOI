@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.security.DoxiUser;
 
 public class ViewUserDB {
@@ -13,7 +13,7 @@ public class ViewUserDB {
   public List<DoxiUser> userList;
 
   public ViewUserDB() {
-    EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
+    EntityManager em = EMF.emf.createEntityManager();
     TypedQuery<DoxiUser> query = em.createQuery("select u from users u", DoxiUser.class);
 
     setUserList(query.getResultList());

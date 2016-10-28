@@ -12,14 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 
 public class PidService implements PidServiceInterface {
   private static final Logger LOG = LoggerFactory.getLogger(PidService.class);
 
-  private final EntityManager em;
-  private final PidCacheService pidCacheService;
-  private final PidQueueService pidQueueService;
   private final GwdgClient gwdgClient;
   private final XMLTransforming xmlTransforming;
 
@@ -27,38 +24,37 @@ public class PidService implements PidServiceInterface {
   private SecurityContext secContext;
 
   public PidService() {
-    this.em = JerseyApplicationConfig.emf.createEntityManager();
-    this.pidCacheService = new PidCacheService(this.em);
-    this.pidQueueService = new PidQueueService(this.em);
     this.gwdgClient = new GwdgClient();
     this.xmlTransforming = new XMLTransforming();
   }
 
   @Override
   public String create(URI url) throws DoxiException {
-    // TODO
-    if (secContext != null) {
-      LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
-    } else {
-      LOG.info("User requests create with url " + url);
-    }
+    LOG.info("User {} requests CREATE with URL {}", secContext.getUserPrincipal(), url);
+
+    final EntityManager em = EMF.emf.createEntityManager();
+    final PidCacheService pidCacheService = new PidCacheService(em);
+    final PidQueueService pidQueueService = new PidQueueService(em);
 
     try {
-      Pid _pid = this.pidQueueService.search(url);
+
+      Pid _pid = pidQueueService.search(url);
       if (_pid != null) {
         throw new DoxiException("URL already exists.");
       }
 
-      try {
-        _pid = this.gwdgClient.search(url);
-      } catch (PidNotFoundException e) {
+      if (this.gwdgClient.serviceAvailable()) {
+        try {
+          _pid = this.gwdgClient.search(url);
+        } catch (PidNotFoundException e) {
+        }
+
+        if (_pid != null) {
+          throw new DoxiException("URL already exists.");
+        }
       }
 
-      if (_pid != null) {
-        throw new DoxiException("URL already exists.");
-      }
-
-      PidID pidID = this.pidCacheService.getFirst();
+      PidID pidID = pidCacheService.getFirst();
 
       if (null == pidID) {
         throw new DoxiException("PidCache is empty.");
@@ -66,45 +62,68 @@ public class PidService implements PidServiceInterface {
 
       Pid pid = new Pid(pidID, url);
 
-      this.em.getTransaction().begin();
-      this.pidQueueService.add(pid);
-      this.pidCacheService.remove(pidID);
-      this.em.getTransaction().commit();
+      em.getTransaction().begin();
+      pidQueueService.add(pid);
+      pidCacheService.remove(pidID);
+      em.getTransaction().commit();
 
       return transformToPidServiceResponse(pid, "create");
+
     } catch (DoxiException e) {
       throw e;
     } catch (Exception e) {
-      LOG.error("create: url " + url + ": "+ e);
-      if (this.em.getTransaction().isActive()) {
-        this.em.getTransaction().rollback();
+      LOG.error("CREATE: URL {}:\n{}", url, e);
+      if (em.getTransaction().isActive()) {
+        em.getTransaction().rollback();
       }
       throw new DoxiException(e);
+    } finally {
+      if (em.isOpen()) {
+        em.close();
+      }
     }
   }
 
   @Override
   public String retrieve(PidID pidID) throws DoxiException {
-    try {
-      Pid pid = this.pidQueueService.retrieve(pidID);
+    LOG.info("User {} requests RETRIEVE with ID {}", secContext.getUserPrincipal(), pidID);
 
-      if (pid != null) {
+    final EntityManager em = EMF.emf.createEntityManager();
+    final PidQueueService pidQueueService = new PidQueueService(em);
+
+    try {
+
+      PidQueue pidQueue = pidQueueService.retrieve(pidID);
+
+      if (pidQueue != null) {
+        Pid pid = new Pid(pidID, pidQueue.getUrl());
         return transformToPidServiceResponse(pid, "view");
       }
 
-      pid = this.gwdgClient.retrieve(pidID);
+      Pid pid = this.gwdgClient.retrieve(pidID);
 
       return transformToPidServiceResponse(pid, "view");
+
     } catch (Exception e) {
-      LOG.error("retrieve: pidID " + pidID + ": "+ e);
+      LOG.error("RETRIEVE: ID {}:\n{}", pidID, e);
       throw new DoxiException(e);
+    } finally {
+      if (em.isOpen()) {
+        em.close();
+      }
     }
   }
 
   @Override
   public String search(URI url) throws DoxiException {
+    LOG.info("User {} requests SEARCH with URL {}", secContext.getUserPrincipal(), url);
+
+    final EntityManager em = EMF.emf.createEntityManager();
+    final PidQueueService pidQueueService = new PidQueueService(em);
+
     try {
-      Pid pid = this.pidQueueService.search(url);
+
+      Pid pid = pidQueueService.search(url);
 
       if (pid != null) {
         return transformToPidServiceResponse(pid, "search");
@@ -113,63 +132,99 @@ public class PidService implements PidServiceInterface {
       pid = this.gwdgClient.search(url);
 
       return transformToPidServiceResponse(pid, "search");
+
     } catch (Exception e) {
-      LOG.error("search: url " + url + ": "+ e);
+      LOG.error("SEARCH: URL {}:\n{}", url, e);
       throw new DoxiException(e);
+    } finally {
+      if (em.isOpen()) {
+        em.close();
+      }
     }
   }
 
   @Override
   public String update(Pid pid) throws DoxiException {
-    try {
-      Pid _pid = this.pidQueueService.retrieve(pid.getPidID());
+    LOG.info("User {} requests UPDATE with PID {}", secContext.getUserPrincipal(), pid);
 
-      if (_pid != null) {
-        this.em.getTransaction().begin();
-        this.pidQueueService.update(pid);
-        this.em.getTransaction().commit();
+    final EntityManager em = EMF.emf.createEntityManager();
+    final PidQueueService pidQueueService = new PidQueueService(em);
+
+    try {
+
+      PidQueue pidQueue = pidQueueService.retrieve(pid.getPidID());
+
+      if (pidQueue != null) {
+        em.getTransaction().begin();
+        pidQueue.setUrl(pid.getUrl());
+        em.getTransaction().commit();
         return transformToPidServiceResponse(pid, "modify");
       }
 
-      try {
-        this.gwdgClient.retrieve(pid.getPidID());
-      } catch (PidNotFoundException e) {
-        throw new DoxiException("PID does not exist.");
+      if (this.gwdgClient.serviceAvailable()) {
+        try {
+          this.gwdgClient.retrieve(pid.getPidID());
+        } catch (PidNotFoundException e) {
+          throw new DoxiException("PID does not exist.");
+        }
       }
 
-      this.em.getTransaction().begin();
-      this.pidQueueService.add(pid);
-      this.em.getTransaction().commit();
+      em.getTransaction().begin();
+      pidQueueService.add(pid);
+      em.getTransaction().commit();
 
       return transformToPidServiceResponse(pid, "modify");
+
     } catch (DoxiException e) {
       throw e;
     } catch (Exception e) {
-      LOG.error("update: pid " + pid + ": "+ e);
-      if (this.em.getTransaction().isActive()) {
-        this.em.getTransaction().rollback();
+      LOG.error("UPDATE: PID {}:\n{}", pid, e);
+      if (em.getTransaction().isActive()) {
+        em.getTransaction().rollback();
       }
       throw new DoxiException(e);
+    } finally {
+      if (em.isOpen()) {
+        em.close();
+      }
     }
   }
 
   @Override
   public long getCacheSize() throws DoxiException {
+    LOG.info("User {} requests CACHE_SIZE", secContext.getUserPrincipal());
+
+    final EntityManager em = EMF.emf.createEntityManager();
+    final PidCacheService pidCacheService = new PidCacheService(em);
+
     try {
-      return this.pidCacheService.getSize();
+      return pidCacheService.getSize();
     } catch (Exception e) {
-      LOG.error("getCacheSize: " + e);
+      LOG.error("CACHE_SIZE:\n{}", e);
       throw new DoxiException(e);
+    } finally {
+      if (em.isOpen()) {
+        em.close();
+      }
     }
   }
 
   @Override
   public long getQueueSize() throws DoxiException {
+    LOG.info("User {} requests QUEUE_SIZE", secContext.getUserPrincipal());
+
+    final EntityManager em = EMF.emf.createEntityManager();
+    final PidQueueService pidQueueService = new PidQueueService(em);
+
     try {
-      return this.pidQueueService.getSize();
+      return pidQueueService.getSize();
     } catch (Exception e) {
-      LOG.error("getQueueSize: " + e);
+      LOG.error("QUEUE_SIZE:\n{}", e);
       throw new DoxiException(e);
+    } finally {
+      if (em.isOpen()) {
+        em.close();
+      }
     }
   }
 

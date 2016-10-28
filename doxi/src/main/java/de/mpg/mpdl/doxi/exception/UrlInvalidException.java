@@ -9,6 +9,7 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  * @author walter
  *
  */
+@SuppressWarnings("serial")
 public class UrlInvalidException extends DoxiException {
   public UrlInvalidException() {
     super(PropertyReader.getMessage("URL_INVALID_EXCEPTION"));

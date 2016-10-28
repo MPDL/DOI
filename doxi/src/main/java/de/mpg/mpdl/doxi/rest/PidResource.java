@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.pidcache.Pid;
 import de.mpg.mpdl.doxi.pidcache.PidID;
 import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
@@ -27,12 +28,12 @@ import io.swagger.annotations.ApiResponses;
 @Path("pid")
 @Api(value = "MPDL DOXI PID REST API")
 public class PidResource {
-  private static final String PATH_CACHE_SIZE = "cache/size";
-  private static final String PATH_CREATE = "create";
-  private static final String PATH_QUEUE_SIZE = "queue/size";
-  private static final String PATH_RETRIEVE = "retrieve";
-  private static final String PATH_SEARCH = "search";
-  private static final String PATH_UPDATE = "update";
+  public static final String PATH_CACHE_SIZE = "cache/size";
+  public static final String PATH_CREATE = "create";
+  public static final String PATH_QUEUE_SIZE = "queue/size";
+  public static final String PATH_RETRIEVE = "retrieve";
+  public static final String PATH_SEARCH = "search";
+  public static final String PATH_UPDATE = "update";
   
   private static final String PID = "pid";
   private static final String URL = "url";
@@ -55,8 +56,8 @@ public class PidResource {
   @RolesAllowed(ROLE_USER)
   public Response create( //
       @ApiParam(value = "the URL to which the PID should point", required = true) //
-      @QueryParam(URL) String url) //
-      throws Exception {
+      @QueryParam(URL) String url) throws DoxiException //
+       {
     final String resultPid = pidService.create(URI.create(url));
     final Response response = Response.status(Status.CREATED).entity(resultPid).build();
 
@@ -75,7 +76,7 @@ public class PidResource {
   public Response retrieve( //
       @ApiParam(value = "the ID which should be retrieved", required = true) //
       @QueryParam(PID) String id) //
-      throws Exception {
+      throws DoxiException {
     final String resultPid = pidService.retrieve(PidID.create(id));
     final Response response = Response.status(Status.OK).entity(resultPid).build();
 
@@ -94,7 +95,7 @@ public class PidResource {
   public Response search( //
       @ApiParam(value = "the URL which should be searched", required = true) //
       @QueryParam(URL) String url) //
-      throws Exception {
+      throws DoxiException {
     final String resultPid = pidService.search(URI.create(url));
     final Response response = Response.status(Status.OK).entity(resultPid).build();
 
@@ -115,7 +116,7 @@ public class PidResource {
       @QueryParam("id") String id, //
       @ApiParam(value = "the URL to which the PID should point", required = true) //
       @QueryParam(URL) String url) //
-      throws Exception {
+      throws DoxiException {
     final String resultPid = pidService.update(new Pid(PidID.create(id), URI.create(url)));
     final Response response = Response.status(Status.OK).entity(resultPid).build();
 
@@ -132,7 +133,7 @@ public class PidResource {
   @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
   @RolesAllowed(ROLE_USER)
   public Response cacheSize() //
-      throws Exception {
+      throws DoxiException {
     final long size = pidService.getCacheSize();
     final Response response = Response.status(Status.OK).entity("CacheSize: " + size).build();
 
@@ -149,7 +150,7 @@ public class PidResource {
   @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
   @RolesAllowed(ROLE_USER)
   public Response queueSize() //
-      throws Exception {
+      throws DoxiException {
     final long size = pidService.getQueueSize();
     final Response response = Response.status(Status.OK).entity("QueueSize: " + size).build();
 

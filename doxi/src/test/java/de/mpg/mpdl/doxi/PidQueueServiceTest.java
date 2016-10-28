@@ -18,8 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.Pid;
 import de.mpg.mpdl.doxi.pidcache.PidID;
+import de.mpg.mpdl.doxi.pidcache.PidQueue;
 import de.mpg.mpdl.doxi.pidcache.PidQueueService;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PidQueueServiceTest {
@@ -30,7 +31,7 @@ public class PidQueueServiceTest {
 
   @Before
   public void setUp() throws Exception {
-    this.em = JerseyApplicationConfig.emf.createEntityManager();
+    this.em = EMF.emf.createEntityManager();
     this.pidQueueService = new PidQueueService(em);
   }
 
@@ -56,7 +57,7 @@ public class PidQueueServiceTest {
       size = this.pidQueueService.getSize();
     }
 
-    Assert.assertEquals(size, 0);
+    Assert.assertEquals(0, size);
 
     boolean empty = this.pidQueueService.isEmpty();
 
@@ -105,9 +106,9 @@ public class PidQueueServiceTest {
     LOG.info("--------------------- STARTING test_3_retrieve ---------------------");
 
     PidID pidID = PidID.create("TEST1/00-001Z-0000-002B-FC67-5");
-    Pid _pid = this.pidQueueService.retrieve(pidID);
+    PidQueue pidQueue = this.pidQueueService.retrieve(pidID);
 
-    Assert.assertEquals(pidID, _pid.getPidID());
+    Assert.assertEquals(pidID, pidQueue.getID());
 
     LOG.info("--------------------- FINISHED test_3_retrieve ---------------------");
   }
@@ -118,9 +119,9 @@ public class PidQueueServiceTest {
     LOG.info("--------------------- STARTING test_4_retrieve_notFound ---------------------");
 
     PidID pidID = PidID.create("TESTXX/00-001Z-0000-002B-FC67-5");
-    Pid _pid = this.pidQueueService.retrieve(pidID);
+    PidQueue pidQueue = this.pidQueueService.retrieve(pidID);
 
-    Assert.assertEquals(null, _pid);
+    Assert.assertEquals(null, pidQueue);
 
     LOG.info("--------------------- FINISHED test_4_retrieve_notFound ---------------------");
   }
@@ -159,12 +160,16 @@ public class PidQueueServiceTest {
     this.em.getTransaction().commit();
     
     Pid pid2 = new Pid(PidID.create("TESTU/00-001Z-0000-002B-FC67-5"), URI.create("http://1UPDATE"));
-    this.em.getTransaction().begin();
-    Pid _pid = this.pidQueueService.update(pid2);
-    this.em.getTransaction().commit();
+
+    PidQueue pidQueue = this.pidQueueService.retrieve(pid2.getPidID());
+    if (pidQueue != null) {
+      this.em.getTransaction().begin();
+      pidQueue.setUrl(pid2.getUrl());
+      this.em.getTransaction().commit();
+    }
     
-    Assert.assertEquals(pid1.getPidID(), _pid.getPidID());
-    Assert.assertEquals(pid2.getUrl(), _pid.getUrl());
+    Assert.assertEquals(pid1.getPidID(), pidQueue.getID());
+    Assert.assertEquals(pid2.getUrl(), pidQueue.getUrl());
 
     LOG.info("--------------------- FINISHED test_6_update ---------------------");
   }
@@ -186,7 +191,7 @@ public class PidQueueServiceTest {
       }
     }
 
-    Assert.assertEquals(size, 0);
+    Assert.assertEquals(0, size);
 
     boolean empty = this.pidQueueService.isEmpty();
 

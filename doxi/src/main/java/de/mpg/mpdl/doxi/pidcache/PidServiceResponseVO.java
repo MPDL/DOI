@@ -1,5 +1,6 @@
 package de.mpg.mpdl.doxi.pidcache;
 
+@SuppressWarnings("serial")
 public class PidServiceResponseVO extends AbstractVO {
   private String action;
   private String identifier;

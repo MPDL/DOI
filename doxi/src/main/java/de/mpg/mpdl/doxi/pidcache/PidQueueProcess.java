@@ -40,7 +40,7 @@ public class PidQueueProcess {
         this.pidQueueService.remove(pid.getPidID());
         this.em.getTransaction().commit();
       } catch (Exception e) {
-        LOG.error("ERROR: " + e);
+        LOG.error("EMPTY:\n{}", e);
         if (this.em.getTransaction().isActive()) {
           this.em.getTransaction().rollback();
         }

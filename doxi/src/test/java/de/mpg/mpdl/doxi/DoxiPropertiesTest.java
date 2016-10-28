@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ public class DoxiPropertiesTest {
   public void tearDown() throws Exception {
   }
 
+  @Ignore
   @Test
   public void test_1_properties() throws Exception {
     LOG.info("--------------------- STARTING test_1_properties ---------------------");
@@ -48,8 +50,6 @@ public class DoxiPropertiesTest {
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_INTERVAL));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_BLOCKSIZE));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_INTERVAL));
-    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_USER_NAME));
-    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_USER_PASSWORD));
 
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_CREATE_PATH));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SEARCH_PATH));

@@ -5,12 +5,14 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class PidQueueTask extends Thread {
   private static final Logger LOG = LoggerFactory.getLogger(PidQueueTask.class);
 
+  private final EntityManager em = EMF.emf.createEntityManager();
+  
   private boolean terminate = false;
 
   public void run() {
@@ -23,8 +25,7 @@ public class PidQueueTask extends Thread {
           .parseInt(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_BLOCKSIZE));
 
       final GwdgClient gwdgClient = new GwdgClient();
-      final EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
-      final PidQueueProcess process = new PidQueueProcess(gwdgClient, em);
+      final PidQueueProcess process = new PidQueueProcess(gwdgClient, this.em);
 
       LOG.info("Starting PidQueueTask");
 
@@ -41,7 +42,11 @@ public class PidQueueTask extends Thread {
       LOG.warn("PidQueueTask InterruptedException angefordert.");
       this.terminate = true;
     } catch (Exception e) {
-      LOG.error("ERROR " + e);
+      LOG.error("PID_QUEUE_TASK:\n{}", e);
+    } finally {
+      if (this.em.isOpen()) {
+        this.em.close();
+      }
     }
     
     LOG.info("PidQueueTask terminated.");

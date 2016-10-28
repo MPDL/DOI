@@ -27,24 +27,8 @@ public class PidQueueService {
     }
   }
 
-  public Pid retrieve(PidID pidID) {
-    final PidQueue pidQueue = this.pidQueueDAO.find(pidID);
-    if (pidQueue != null) {
-      return new Pid(pidQueue.getID(), pidQueue.getUrl());
-    }
-
-    return null;
-  }
-
-  public Pid update(Pid pid) {
-    final PidQueue pidQueue = this.pidQueueDAO.find(pid.getPidID());
-    if (pidQueue != null) {
-      pidQueue.setUrl(pid.getUrl());
-      this.pidQueueDAO.update(pidQueue);
-      return pid;
-    }
-
-    return null;
+  public PidQueue retrieve(PidID pidID) {
+    return this.pidQueueDAO.find(pidID);
   }
 
   public List<Pid> getFirstBlock(int size) {

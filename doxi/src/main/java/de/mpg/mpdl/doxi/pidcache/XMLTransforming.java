@@ -30,7 +30,7 @@ public class XMLTransforming {
       Object unmarshalledObject = uctx.unmarshalDocument(sr, null);
       pidServiceResponseVO = (PidServiceResponseVO) unmarshalledObject;
     } catch (JiBXException e) {
-      LOG.error("ERROR: " + e);
+      LOG.error("TRANSFORM:\n{}", e);
       throw e;
     }
 
@@ -53,7 +53,7 @@ public class XMLTransforming {
       mctx.marshalDocument(pidServiceResponseVO, "UTF-8", null, sw);
       utf8container = sw.toString().trim();
     } catch (JiBXException e) {
-      LOG.error("ERROR: " + e);
+      LOG.error("TRANSFORM:\n{}", e);
       throw e;
     }
 

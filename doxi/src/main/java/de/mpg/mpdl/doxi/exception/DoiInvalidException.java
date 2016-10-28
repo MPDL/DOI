@@ -9,6 +9,7 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  * @author walter
  *
  */
+@SuppressWarnings("serial")
 public class DoiInvalidException extends DoxiException {
   public DoiInvalidException() {
     super(PropertyReader.getMessage("DOI_INVALID_EXCEPTION"));

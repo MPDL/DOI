@@ -39,7 +39,7 @@ import de.mpg.mpdl.doxi.exception.DoiRegisterException;
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.MetadataInvalidException;
 import de.mpg.mpdl.doxi.model.DOI;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.security.DoxiUser;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 import net.sf.saxon.TransformerFactoryImpl;
@@ -100,7 +100,7 @@ public class DataciteAPIController implements DoiControllerInterface {
           doiObject.setMetadata(doiMetaDataResponse.readEntity(String.class));
         } else {
           LOG.error("Error getting DOI metadata");
-          // TODO maybe another exception type?
+          // TODO DOI maybe another exception type?
           throw new DoxiException(doiResponse.getStatus(), doiResponse.readEntity(String.class));
         }
       } catch (URISyntaxException e) {
@@ -421,7 +421,7 @@ public class DataciteAPIController implements DoiControllerInterface {
   }
 
   public String getNextDoiSuffix() throws DoiRegisterException {
-    EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
+    EntityManager em = EMF.emf.createEntityManager();
     try {
       em.getTransaction().begin();
 
@@ -448,7 +448,7 @@ public class DataciteAPIController implements DoiControllerInterface {
    * 
    * @return
    */
-  // TODO get prefix (including service ID) for current user from database
+  // TODO DOI get prefix (including service ID) for current user from database
   private String getDoiPrefix() {
     DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
     return currentUser.getPrefix();

@@ -1,5 +1,6 @@
 package de.mpg.mpdl.doxi.pidcache;
 
+@SuppressWarnings("serial")
 public class PidID extends AbstractID {
   private final String id;
 

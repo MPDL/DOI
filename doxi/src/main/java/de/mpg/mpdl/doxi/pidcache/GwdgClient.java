@@ -20,10 +20,11 @@ import org.jibx.runtime.JiBXException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.mpg.mpdl.doxi.exception.GwdgException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
-public class GwdgClient implements GwdgClientInterface {
+  public class GwdgClient implements GwdgClientInterface {
   private static final Logger LOG = LoggerFactory.getLogger(GwdgClient.class);
 
   private static final String URL = "url";
@@ -76,14 +77,14 @@ public class GwdgClient implements GwdgClientInterface {
 
   @Override
   public Pid create(URI url) throws GwdgException, JiBXException  {
-    // TODO
     if (secContext != null) {
-      LOG.info("User " + secContext.getUserPrincipal() + " requests create with url " + url);
+      LOG.info("User {} requests CREATE with URL {}", secContext.getUserPrincipal(), url);
     } else {
-      LOG.info("User requests create with url " + url);
+      LOG.info("User requests CREATE with URL {}", url);
     }
 
     try {
+      
       Response response = gwdgTarget //
           .path(this.gwdgPidServiceCreate) //
           .queryParam(URL, url.toString()).request(MediaType.TEXT_PLAIN_TYPE).post(null);
@@ -92,27 +93,28 @@ public class GwdgClient implements GwdgClientInterface {
         String xml = response.readEntity(String.class);
         PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
         Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-        LOG.info("create successfully returned pid " + pid);
+        LOG.info("create successfully returned pid {}", pid);
         return pid;
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
+      
     } catch (GwdgException | JiBXException e) {
-      LOG.error("create: url " + url + ": "+ e);
+      LOG.error("CREATE: URL {}:\n{}", url, e);
       throw e;
     }
   }
 
   @Override
   public Pid retrieve(PidID pidID) throws PidNotFoundException, GwdgException, JiBXException {
-    // TODO
     if (secContext != null) {
-      LOG.info("User " + secContext.getUserPrincipal() + " requests retrieve with ID " + pidID);
+      LOG.info("User {} requests RETRIEVE with ID {}", secContext.getUserPrincipal(), pidID);
     } else {
-      LOG.info("User requests retrieve with ID " + pidID);
+      LOG.info("User requests RETRIEVE with ID {}", pidID);
     }
 
     try {
+      
       final Response response = this.gwdgTarget //
           .path(this.gwdgPidServiceView) //
           .queryParam(PID, pidID.getIdAsString()).request(MediaType.TEXT_PLAIN_TYPE).get();
@@ -121,7 +123,7 @@ public class GwdgClient implements GwdgClientInterface {
         String xml = response.readEntity(String.class);
         PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
         Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-        LOG.info("retrieve successfully returned pid " + pid);
+        LOG.info("retrieve successfully returned pid {}", pid);
         return pid;
       }
 
@@ -130,25 +132,26 @@ public class GwdgClient implements GwdgClientInterface {
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
+      
     } catch (PidNotFoundException e) {
       throw e;
     } catch (GwdgException | JiBXException e) {
-      LOG.error("retrieve: pidID " + pidID + ": "+ e);
+      LOG.error("RETRIEVE: ID {}:\n{}", pidID, e);
       throw e;
     }
   }
 
   @Override
   public Pid search(URI url) throws PidNotFoundException, GwdgException, JiBXException {
-    // TODO
     if (secContext != null) {
-      LOG.info("User " + secContext.getUserPrincipal() + " requests search with url " + url);
+      LOG.info("User {} requests SEARCH with URL {}", secContext.getUserPrincipal(), url);
     } else {
-      LOG.info("User requests search with url " + url);
+      LOG.info("User requests SEARCH with URL {}", url);
     }
 
     Response response;
     try {
+      
       response = this.gwdgTarget //
           .path(this.gwdgPidServiceSearch) //
           .queryParam(URL, url.toString()).request(MediaType.TEXT_PLAIN_TYPE).get();
@@ -166,24 +169,25 @@ public class GwdgClient implements GwdgClientInterface {
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
+      
     } catch (PidNotFoundException e) {
       throw e;
     } catch (GwdgException | JiBXException e) {
-      LOG.error("search: url " + url + ": "+ e);
+      LOG.error("SEARCH: URL {}:\n{}", url, e);
       throw e;
     }
   }
 
   @Override
   public Pid update(Pid pid) throws PidNotFoundException, GwdgException, JiBXException {
-    // TODO
     if (secContext != null) {
-      LOG.info("User " + secContext.getUserPrincipal() + " requests update with pid " + pid);
+      LOG.info("User {} requests UPDATE with PID {}", secContext.getUserPrincipal(), pid);
     } else {
-      LOG.info("User requests update with pid " + pid);
+      LOG.info("User requests UPDATE with PID {}", pid);
     }
 
     try {
+      
       try {
         this.retrieve(pid.getPidID());
       } catch (PidNotFoundException e) {
@@ -202,29 +206,30 @@ public class GwdgClient implements GwdgClientInterface {
         String xml = response.readEntity(String.class);
         PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
         Pid _pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-        LOG.info("update successfully returned pid " + _pid);
+        LOG.info("update successfully returned pid {}", _pid);
         return _pid;
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
+      
     } catch (PidNotFoundException e) {
       throw e;
     } catch (GwdgException | JiBXException e) {
-      LOG.error("update: pid " + pid + ": "+ e);
+      LOG.error("UPDATE: PID {}:\n{}", pid, e);
       throw e;
     }
   }
 
   @Override
   public boolean serviceAvailable() {
-    // TODO
     if (secContext != null) {
-      LOG.info("User " + secContext.getUserPrincipal() + " requests serviceAvailable() + ");
+      LOG.info("User {} requests SERVICE_AVAILABLE", secContext.getUserPrincipal());
     } else {
-      LOG.info("User requests serviceAvailable() + ");
+      LOG.info("User requests SERVICE_AVAILABLE");
     }
 
     try {
+      
       final Response response = this.gwdgTarget.request().get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
@@ -233,8 +238,9 @@ public class GwdgClient implements GwdgClientInterface {
       }
       
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
+      
     } catch (GwdgException e) {
-      LOG.warn("Service not available: " + e);
+      LOG.warn("SERVICE not available:\n{}", e);
       return false;
     }
   }

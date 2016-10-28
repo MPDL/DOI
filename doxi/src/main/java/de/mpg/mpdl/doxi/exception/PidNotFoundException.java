@@ -2,6 +2,7 @@ package de.mpg.mpdl.doxi.exception;
 
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
+@SuppressWarnings("serial")
 public class PidNotFoundException extends DoxiException {
   public PidNotFoundException() {
     super(PropertyReader.getMessage("DOI_NOT_FOUND_EXCEPTION"));

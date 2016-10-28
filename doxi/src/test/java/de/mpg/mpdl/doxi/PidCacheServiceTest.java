@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.PidCacheService;
 import de.mpg.mpdl.doxi.pidcache.PidID;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PidCacheServiceTest {
@@ -25,7 +25,7 @@ public class PidCacheServiceTest {
 
   @Before
   public void setUp() throws Exception {
-    this.em = JerseyApplicationConfig.emf.createEntityManager();
+    this.em = EMF.emf.createEntityManager();
     this.pidCacheService = new PidCacheService(em);
   }
 
@@ -51,7 +51,7 @@ public class PidCacheServiceTest {
       }
     }
 
-    Assert.assertEquals(size, 0);
+    Assert.assertEquals(0, size);
 
     boolean empty = this.pidCacheService.isEmpty();
 
@@ -169,7 +169,7 @@ public class PidCacheServiceTest {
       }
     }
 
-    Assert.assertEquals(size, 0);
+    Assert.assertEquals(0, size);
 
     boolean empty = this.pidCacheService.isEmpty();
 

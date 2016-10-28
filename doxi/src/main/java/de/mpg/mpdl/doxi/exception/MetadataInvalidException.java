@@ -9,6 +9,7 @@ import de.mpg.mpdl.doxi.util.PropertyReader;
  * @author walter
  *
  */
+@SuppressWarnings("serial")
 public class MetadataInvalidException extends DoxiException {
   private String metadataXml;
 

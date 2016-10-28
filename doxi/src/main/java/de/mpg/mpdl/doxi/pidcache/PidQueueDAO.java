@@ -16,10 +16,6 @@ public class PidQueueDAO {
     this.em.persist(pidQueue);
   }
   
-  public void update(PidQueue pidQueue) {
-    this.em.persist(pidQueue);
-  }
-
   public void remove(PidQueue pidQueue) {
     this.em.remove(pidQueue);
   }

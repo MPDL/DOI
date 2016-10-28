@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.GwdgClient;
 import de.mpg.mpdl.doxi.pidcache.Pid;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -30,8 +30,8 @@ public class GwdgClientTest {
   
   @Before
   public void setUp() throws Exception {
+    this.em = EMF.emf.createEntityManager();
     this.gwdgClient = new GwdgClient();
-    this.em = JerseyApplicationConfig.emf.createEntityManager();
     this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL);
   }
 

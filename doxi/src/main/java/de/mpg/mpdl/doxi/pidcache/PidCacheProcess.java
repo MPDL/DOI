@@ -38,7 +38,7 @@ public class PidCacheProcess {
           this.pidCacheService.add(pid.getPidID());
           this.em.getTransaction().commit();
         } catch (Exception e) {
-          LOG.error("ERROR: " + e);
+          LOG.error("FILL:\n{}", e);
           if (this.em.getTransaction().isActive()) {
             this.em.getTransaction().rollback();
           }

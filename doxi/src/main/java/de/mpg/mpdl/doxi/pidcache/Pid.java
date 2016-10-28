@@ -2,6 +2,7 @@ package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
 
+@SuppressWarnings("serial")
 public class Pid extends AbstractVO {
   private final PidID pidID;
   private final URI url;

@@ -45,7 +45,7 @@ public class UserEditorResource {
     roles.add(doxiRole);
     doxiUser.setRoles(roles);
 
-    EntityManager em = JerseyApplicationConfig.emf.createEntityManager();
+    EntityManager em = EMF.emf.createEntityManager();
     em.getTransaction().begin();
     em.persist(doxiUser);
     em.getTransaction().commit();

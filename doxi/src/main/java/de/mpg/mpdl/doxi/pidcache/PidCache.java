@@ -15,8 +15,7 @@ public class PidCache {
   @Column(name = "created", nullable = false)
   private Date created;
 
-  public PidCache() {
-  }
+  public PidCache() {}
 
   public PidCache(PidID pidID, Date created) {
     this.identifier = pidID.getIdAsString();

@@ -19,8 +19,7 @@ public class PidQueue {
   @Column(name = "created", nullable = false)
   private Date created;
 
-  public PidQueue() {
-  }
+  public PidQueue() {}
 
   public PidQueue(PidID pidID, URI url, Date created) {
     this.identifier = pidID.getIdAsString();
@@ -46,6 +45,7 @@ public class PidQueue {
 
   @Override
   public String toString() {
-    return "PidQueue [identifier=" + this.identifier + ", url=" + this.url + ", created=" + this.created + "]";
+    return "PidQueue [identifier=" + this.identifier + ", url=" + this.url + ", created="
+        + this.created + "]";
   }
 }
