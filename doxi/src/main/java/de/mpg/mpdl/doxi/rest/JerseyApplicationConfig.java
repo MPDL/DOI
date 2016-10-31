@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.controller.DataciteAPIController;
 import de.mpg.mpdl.doxi.controller.DoiControllerInterface;
-import de.mpg.mpdl.doxi.pidcache.GwdgClient;
-import de.mpg.mpdl.doxi.pidcache.GwdgClientInterface;
 import de.mpg.mpdl.doxi.pidcache.PidService;
 import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
 import de.mpg.mpdl.doxi.security.DoxiRole;
@@ -46,7 +44,6 @@ public class JerseyApplicationConfig extends ResourceConfig {
       @Override
       protected void configure() {
         bind(DataciteAPIController.class).to(DoiControllerInterface.class);
-        bind(GwdgClient.class).to(GwdgClientInterface.class);
         bind(PidService.class).to(PidServiceInterface.class);
       }
     });
@@ -109,40 +106,4 @@ public class JerseyApplicationConfig extends ResourceConfig {
       }
     }
   }
-//
-//  public static void main(String[] args) throws Exception {
-//
-//    HttpServer server = new HttpServer();
-//    NetworkListener listener = new NetworkListener("grizzly2", "localhost", 8081);
-//    server.addListener(listener);
-//    server.getServerConfiguration().addHttpHandler(new StaticHttpHandler("src/main/webapp"),
-//        "/doxi/");
-//    WebappContext ctx = new WebappContext("ctx", "/doxi");
-//
-//    // If Java-config should be used, create a class SecurityWebApplicationInitializer extends
-//    // AbstractSecurityWebApplicationInitializer
-//    // and a config and use the following method:
-//    // SecurityWebApplicationInitializer initializer = new SecurityWebApplicationInitializer();
-//    // initializer.onStartup(ctx);
-//
-//    // If XML-Config should be used use SpringWebApplicationInitializer from package jersey-spring
-//    // 3, which does the following:
-//    // ctx.addContextInitParameter("contextConfigLocation", "classpath:applicationContext.xml");
-//    // ctx.addListener(ContextLoaderListener.class);
-//    // ctx.addListener(RequestContextListener.class);
-//
-//    // Register Jersey Servlet
-//    Set<Class<?>> set = new HashSet<Class<?>>();
-//    set.add(JerseyApplicationConfig.class);
-//
-//    // new JerseyServletContainerInitializer().onStartup(set, ctx);
-//    ctx.addServlet("de.mpg.mpdl.doxi.rest.JerseyApplicationConfig",
-//        new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
-//
-//    ctx.deploy(server);
-//
-//    server.start();
-//
-//    Thread.currentThread().join();
-//  }
 }

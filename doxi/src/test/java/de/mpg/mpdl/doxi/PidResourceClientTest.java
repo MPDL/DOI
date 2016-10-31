@@ -30,7 +30,7 @@ public class PidResourceClientTest {
   private static final Logger LOG = LoggerFactory.getLogger(PidResourceClientTest.class);
 
   private EntityManager em;
-  private HttpServer server;
+  private HttpServer server; // Lightweight Grizzly container that runs JAX-RS applications, embedded in the application
   private WebTarget target;
   
   @Before
@@ -39,7 +39,7 @@ public class PidResourceClientTest {
     
     // Client
     ClientConfig clientConfig = new ClientConfig();
-    clientConfig.register(new CsrfProtectionFilter("doxi test"));
+    clientConfig.register(new CsrfProtectionFilter("doxi test"));  // filter with X-Requested-By header
 
     HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder().credentials(
         PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_USER),

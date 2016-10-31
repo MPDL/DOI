@@ -1,5 +1,9 @@
 package de.mpg.mpdl.doxi.rest;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +48,18 @@ public class EMF implements ServletContextListener {
   public void contextDestroyed(ServletContextEvent sce) {
     LOG.info("+++ ServletContextListener : contextDestroyed - Closing EMF");
     emf.close();
-    LOG.info("+++ ServletContextListener : contextDestroyed - Closed EMF done.");
+    LOG.info("+++ ServletContextListener : contextDestroyed - Closed EMF DONE.");
+    
+    LOG.info("+++ ServletContextListener : contextDestroyed - Deregistering JDBC Driver");
+    Enumeration<Driver> drivers = DriverManager.getDrivers();
+    while (drivers.hasMoreElements()) {
+      Driver driver = drivers.nextElement();
+      try {
+        DriverManager.deregisterDriver(driver);
+        LOG.info("+++ ServletContextListener : contextDestroyed - Deregistering JDBC Driver DONE.");
+      } catch (SQLException e) {
+        LOG.error("Error deregistering driver: {}\n{}", driver, e);
+      }
+    }    
   }
 }
