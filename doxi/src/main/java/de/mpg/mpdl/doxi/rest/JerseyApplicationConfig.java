@@ -49,8 +49,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
     });
 
     // Logging
-    registerInstances(new LoggingFilter(
-        java.util.logging.Logger.getLogger("de.mpg.mpdl.doxi.rest.JerseyApplicationConfig"), true));
+    registerInstances(new LoggingFilter(java.util.logging.Logger.getLogger("PidJersey"), true));
 
     // Verwendung von Rollen -> @RolesAllowed
     register(RolesAllowedDynamicFeature.class);
@@ -80,7 +79,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
     try {
       String username = PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_USER);
       DoxiUser alreadyExistsUser = em.find(DoxiUser.class, username);
-      
+
       if (alreadyExistsUser == null) {
         DoxiUser adminUser = new DoxiUser();
         adminUser.setUsername(username);
