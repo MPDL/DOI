@@ -53,8 +53,7 @@ public class GwdgClient {
     client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
     client.property(ClientProperties.READ_TIMEOUT, timeout);
 
-    client.register(new LoggingFilter(
-        java.util.logging.Logger.getLogger("de.mpg.mpdl.doxi.pidcache.GwdgClient"), true));
+    client.register(new LoggingFilter(java.util.logging.Logger.getLogger("GwdgJersey"), true));
 
     this.gwdgTarget =
         client.target(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));
