@@ -58,6 +58,7 @@ public class PidResourceClientTest {
     String passwd = PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_PASSWORD);
     HttpAuthenticationFeature feature =
         HttpAuthenticationFeature.basicBuilder().credentials(user, passwd).build();
+    
     clientConfig.register(feature);
 
     this.target = ClientBuilder.newClient(clientConfig).target("http://localhost:8123/rest/pid");
@@ -75,6 +76,12 @@ public class PidResourceClientTest {
     ctx.deploy(this.server);
 
     this.server.start();
+    
+    int i = 0;
+    while (this.server.isStarted() == false && i < 10) {
+      Thread.sleep(1000);
+      i++;
+    }
 
     // XMLTransforming
     this.xmlTransforming = new XMLTransforming();
@@ -83,6 +90,12 @@ public class PidResourceClientTest {
   @After
   public void tearDown() throws Exception {
     this.server.shutdown();
+
+    int i = 0;
+    while (this.server.isStarted() == true && i < 10) {
+      Thread.sleep(1000);
+      i++;
+    }
   }
 
   @Ignore

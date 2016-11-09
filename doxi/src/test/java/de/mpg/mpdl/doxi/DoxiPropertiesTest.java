@@ -3,16 +3,13 @@ package de.mpg.mpdl.doxi;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DoxiPropertiesTest {
   private static final Logger LOG = LoggerFactory.getLogger(DoxiPropertiesTest.class);
 
@@ -25,8 +22,8 @@ public class DoxiPropertiesTest {
 
   @Ignore
   @Test
-  public void test_1_properties() throws Exception {
-    LOG.info("--------------------- STARTING test_1_properties ---------------------");
+  public void test_properties() throws Exception {
+    LOG.info("--------------------- STARTING test_properties ---------------------");
 
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_CREATE));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_CREATE));
@@ -60,6 +57,6 @@ public class DoxiPropertiesTest {
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_LOGIN));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_PASSWORD));
 
-    LOG.info("--------------------- FINISHED test_1_properties ---------------------");
+    LOG.info("--------------------- FINISHED test_properties ---------------------");
   }
 }

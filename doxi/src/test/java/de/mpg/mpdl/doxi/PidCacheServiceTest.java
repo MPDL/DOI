@@ -46,12 +46,13 @@ public class PidCacheServiceTest {
 
     this.server.start();
 
-    // Sonstige
     int i = 0;
     while (this.server.isStarted() == false && i < 10) {
       Thread.sleep(1000);
       i++;
     }
+    
+    // Sonstige
     this.em = EMF.emf.createEntityManager();
     this.pidCacheService = new PidCacheService(this.em);
   }
