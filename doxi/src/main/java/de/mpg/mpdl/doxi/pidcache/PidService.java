@@ -40,17 +40,18 @@ public class PidService implements PidServiceInterface {
 
       Pid _pid = pidQueueService.search(url);
       if (_pid != null) {
-        throw new DoxiException("URL already exists.");
+        throw new DoxiException("URL " + url + " already exists.");
       }
 
       if (this.gwdgClient.serviceAvailable()) {
         try {
           _pid = this.gwdgClient.search(url);
         } catch (PidNotFoundException e) {
+          LOG.info("PID zur URL {} not found.", url);
         }
 
         if (_pid != null) {
-          throw new DoxiException("URL already exists.");
+          throw new DoxiException("URL " + url + " already exists.");
         }
       }
 

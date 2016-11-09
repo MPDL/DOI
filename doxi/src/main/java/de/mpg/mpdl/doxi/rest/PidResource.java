@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -34,12 +35,12 @@ public class PidResource {
   public static final String PATH_RETRIEVE = "retrieve";
   public static final String PATH_SEARCH = "search";
   public static final String PATH_UPDATE = "update";
-  
-  private static final String PID = "pid";
+
+  private static final String ID = "id";
   private static final String URL = "url";
-  
+
   private static final String ROLE_USER = "user";
-  
+
   @Inject
   private PidServiceInterface pidService;
 
@@ -47,17 +48,16 @@ public class PidResource {
   @ApiOperation(//
       value = "Generates and register a Pid with known URL.",
       notes = "If Pid with URL already exists it cannot be created.")
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "PID created.", response = String.class),
+  @ApiResponses({@ApiResponse(code = 201, message = "PID created.", response = String.class),
       @ApiResponse(code = 400, message = "PID not created.")})
   @POST
   @Produces(MediaType.TEXT_PLAIN)
-  @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @RolesAllowed(ROLE_USER)
   public Response create( //
       @ApiParam(value = "the URL to which the PID should point", required = true) //
-      @QueryParam(URL) String url) throws DoxiException //
-       {
+      @FormParam(URL) String url) throws DoxiException //
+  {
     final String resultPid = pidService.create(URI.create(url));
     final Response response = Response.status(Status.CREATED).entity(resultPid).build();
 
@@ -66,31 +66,29 @@ public class PidResource {
 
   @Path(PATH_RETRIEVE)
   @ApiOperation(value = "Retrieves a Pid with known ID.")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "PID found.", response = String.class),
+  @ApiResponses({@ApiResponse(code = 200, message = "PID found.", response = String.class),
       @ApiResponse(code = 400, message = "PID not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
+  @Consumes(MediaType.TEXT_PLAIN)
   @RolesAllowed(ROLE_USER)
   public Response retrieve( //
       @ApiParam(value = "the ID which should be retrieved", required = true) //
-      @QueryParam(PID) String id) //
+      @QueryParam(ID) String id) //
       throws DoxiException {
     final String resultPid = pidService.retrieve(PidID.create(id));
     final Response response = Response.status(Status.OK).entity(resultPid).build();
 
     return response;
   }
-  
+
   @Path(PATH_SEARCH)
   @ApiOperation(value = "Searches a Pid with known URL.")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "PID found.", response = String.class),
+  @ApiResponses({@ApiResponse(code = 200, message = "PID found.", response = String.class),
       @ApiResponse(code = 400, message = "PID not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
+  @Consumes(MediaType.TEXT_PLAIN)
   @RolesAllowed(ROLE_USER)
   public Response search( //
       @ApiParam(value = "the URL which should be searched", required = true) //
@@ -104,33 +102,31 @@ public class PidResource {
 
   @Path(PATH_UPDATE)
   @ApiOperation(value = "Updates an existing Pid.")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "PID updated.", response = String.class),
+  @ApiResponses({@ApiResponse(code = 200, message = "PID updated.", response = String.class),
       @ApiResponse(code = 400, message = "PID not updated.")})
   @PUT
   @Produces(MediaType.TEXT_PLAIN)
-  @Consumes({MediaType.TEXT_XML, MediaType.TEXT_XML})
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @RolesAllowed(ROLE_USER)
   public Response update( //
       @ApiParam(value = "the ID of the existing Pid", required = true) //
-      @QueryParam("id") String id, //
+      @FormParam(ID) String id, //
       @ApiParam(value = "the URL to which the PID should point", required = true) //
-      @QueryParam(URL) String url) //
+      @FormParam(URL) String url) //
       throws DoxiException {
     final String resultPid = pidService.update(new Pid(PidID.create(id), URI.create(url)));
     final Response response = Response.status(Status.OK).entity(resultPid).build();
 
     return response;
   }
-  
+
   @Path(PATH_CACHE_SIZE)
   @ApiOperation(value = "Returns the current size of the Pid Cache.")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Size found.", response = String.class),
+  @ApiResponses({@ApiResponse(code = 200, message = "Size found.", response = String.class),
       @ApiResponse(code = 400, message = "Size not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
+  @Consumes(MediaType.TEXT_PLAIN)
   @RolesAllowed(ROLE_USER)
   public Response cacheSize() //
       throws DoxiException {
@@ -142,12 +138,11 @@ public class PidResource {
 
   @Path(PATH_QUEUE_SIZE)
   @ApiOperation(value = "Returns the current size of the Pid Queue.")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Size found.", response = String.class),
+  @ApiResponses({@ApiResponse(code = 200, message = "Size found.", response = String.class),
       @ApiResponse(code = 400, message = "Size not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  @Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
+  @Consumes(MediaType.TEXT_PLAIN)
   @RolesAllowed(ROLE_USER)
   public Response queueSize() //
       throws DoxiException {

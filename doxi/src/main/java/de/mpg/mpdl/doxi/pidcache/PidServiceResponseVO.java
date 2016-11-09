@@ -85,4 +85,11 @@ public class PidServiceResponseVO extends AbstractVO {
   public void setMatches(String matches) {
     this.matches = matches;
   }
+
+  @Override
+  public String toString() {
+    return "PidServiceResponseVO [action=" + action + ", identifier=" + identifier + ", url=" + url
+        + ", creator=" + creator + ", userUid=" + userUid + ", matches=" + matches + ", message="
+        + message + ", institute=" + institute + ", contact=" + contact + "]";
+  }
 }
