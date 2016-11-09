@@ -2,6 +2,10 @@ package de.mpg.mpdl.doxi;
 
 import javax.persistence.EntityManager;
 
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.NetworkListener;
+import org.glassfish.grizzly.servlet.WebappContext;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,23 +19,53 @@ import org.slf4j.LoggerFactory;
 import de.mpg.mpdl.doxi.pidcache.PidCacheService;
 import de.mpg.mpdl.doxi.pidcache.PidID;
 import de.mpg.mpdl.doxi.rest.EMF;
+import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PidCacheServiceTest {
   private static final Logger LOG = LoggerFactory.getLogger(PidCacheServiceTest.class);
 
+  private HttpServer server; // Lightweight Grizzly container that runs JAX-RS applications,
+                             // embedded in the application
   private EntityManager em;
   private PidCacheService pidCacheService;
 
   @Before
   public void setUp() throws Exception {
+    // Server
+    this.server = new HttpServer();
+
+    NetworkListener listener = new NetworkListener("grizzly2", "localhost", 8123);
+    this.server.addListener(listener);
+
+    WebappContext ctx = new WebappContext("ctx", "/");
+    ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig",
+        new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
+    ctx.addListener("de.mpg.mpdl.doxi.rest.EMF");
+    ctx.deploy(this.server);
+
+    this.server.start();
+
+    // Sonstige
+    int i = 0;
+    while (this.server.isStarted() == false && i < 10) {
+      Thread.sleep(1000);
+      i++;
+    }
     this.em = EMF.emf.createEntityManager();
-    this.pidCacheService = new PidCacheService(em);
+    this.pidCacheService = new PidCacheService(this.em);
   }
 
   @After
   public void tearDown() throws Exception {
     this.em.close();
+    this.server.shutdown();
+
+    int i = 0;
+    while (this.server.isStarted() == true && i < 10) {
+      Thread.sleep(1000);
+      i++;
+    }
   }
 
   @Ignore

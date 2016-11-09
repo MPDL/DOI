@@ -3,8 +3,6 @@ package de.mpg.mpdl.doxi;
 import java.net.URI;
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.GwdgClient;
 import de.mpg.mpdl.doxi.pidcache.Pid;
-import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -25,19 +22,16 @@ public class GwdgClientTest {
   private static final Logger LOG = LoggerFactory.getLogger(GwdgClientTest.class);
 
   private GwdgClient gwdgClient;
-  private EntityManager em;
   private String dummyUrl;
   
   @Before
   public void setUp() throws Exception {
-    this.em = EMF.emf.createEntityManager();
     this.gwdgClient = new GwdgClient();
     this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL);
   }
 
   @After
   public void tearDown() throws Exception {
-    this.em.close();
   }
 
   @Ignore

@@ -81,9 +81,7 @@ public class SimpleTest {
     NetworkListener listener = new NetworkListener("grizzly2", "localhost", 8123);
     server.addListener(listener);
 
-
     WebappContext ctx = new WebappContext("ctx", "/");
-
 
     // If Java-config should be used, create a class SecurityWebApplicationInitializer extends
     // AbstractSecurityWebApplicationInitializer
@@ -91,18 +89,16 @@ public class SimpleTest {
     // SecurityWebApplicationInitializer initializer = new SecurityWebApplicationInitializer();
     // initializer.onStartup(ctx);
 
-
-
     // If XML-Config should be used use SpringWebApplicationInitializer from package jersey-spring
     // 3, which does the following:
     // ctx.addContextInitParameter("contextConfigLocation", "classpath:applicationContext.xml");
     // ctx.addListener(ContextLoaderListener.class);
     // ctx.addListener(RequestContextListener.class);
 
-
     // Register Jersey Servlet
     ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig",
         new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
+    ctx.addListener("de.mpg.mpdl.doxi.rest.EMF");
 
     ctx.deploy(server);
 
@@ -124,7 +120,6 @@ public class SimpleTest {
   public void tearDown() throws Exception {
     server.shutdown();
     // server.stop();
-
   }
 
   @Ignore
@@ -226,7 +221,6 @@ public class SimpleTest {
     Response result2 = target.path("test2").request().get();
     logger.info("Exception " + result2.readEntity(String.class) + result2.getStatus());
   }
-
 
   private static String streamToString(InputStream is) {
     String inputStreamString = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
