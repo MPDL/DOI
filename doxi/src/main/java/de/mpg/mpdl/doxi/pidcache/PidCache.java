@@ -26,10 +26,6 @@ public class PidCache {
     return PidID.create(this.identifier);
   }
 
-  public Date getCreated() {
-    return this.created;
-  }
-
   @Override
   public String toString() {
     return "PidCache [identifier=" + this.identifier + ", created=" + this.created + "]";

@@ -39,10 +39,6 @@ public class PidQueue {
     this.url = url.toString();
   }
 
-  public Date getCreated() {
-    return this.created;
-  }
-
   @Override
   public String toString() {
     return "PidQueue [identifier=" + this.identifier + ", url=" + this.url + ", created="

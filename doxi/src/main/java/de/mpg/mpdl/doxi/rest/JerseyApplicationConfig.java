@@ -49,7 +49,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
     });
 
     // Logging
-    registerInstances(new LoggingFilter(java.util.logging.Logger.getLogger("PidJersey"), true));
+    registerInstances(new LoggingFilter(java.util.logging.Logger.getLogger("DoxiJersey"), true));
 
     // Verwendung von Rollen -> @RolesAllowed
     register(RolesAllowedDynamicFeature.class);

@@ -13,5 +13,4 @@ public class ForbiddenMapper implements ExceptionMapper<NotAuthorizedException> 
     return Response.status(Status.UNAUTHORIZED).entity(exception.getMessage())
         .header("WWW-Authenticate", "Basic realm=\"Please provide username and password\"").build();
   }
-
 }
