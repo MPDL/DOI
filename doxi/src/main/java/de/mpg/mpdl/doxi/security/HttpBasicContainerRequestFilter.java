@@ -23,33 +23,31 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
-    // TODO SECURITY Auto-generated method stub
     String auth = requestContext.getHeaderString("authorization");
+    
     if (auth != null && auth.startsWith("Basic")) {
-      DoxiUser authenticatedUser;
       try {
-        // Authorization: Basic base64credentials
         String base64Credentials = auth.substring("Basic".length()).trim();
         String credentials = Base64.decodeAsString(base64Credentials);
-        // credentials = username:password
         final String[] values = credentials.split(":", 2);
-        // EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+        
         EntityManager em = EMF.emf.createEntityManager();
-        authenticatedUser = em.find(DoxiUser.class, values[0]);
+        final DoxiUser authenticatedUser = em.find(DoxiUser.class, values[0]);
         em.close();
 
-        boolean authenticated = BCrypt.checkpw(values[1], authenticatedUser.getPassword());
+        boolean authenticated = authenticatedUser!= null && BCrypt.checkpw(values[1], authenticatedUser.getPassword());
+        
         if (authenticated) {
           requestContext.setSecurityContext(new Authorizer(authenticatedUser));
           return;
         } else {
-          LOG.warn("User " + values[0] + " provided a wrong password, proceeding with anonymous");
         }
       } catch (Exception e) {
         LOG.warn("ERROR with Http basic authentication, proceeding with anonymous", e);
         // throw new ForbiddenException("Wrong credentials!");
       }
     }
+    
     requestContext.setSecurityContext(new Authorizer(null));
   }
 }

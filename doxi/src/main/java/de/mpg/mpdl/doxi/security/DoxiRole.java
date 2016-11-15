@@ -26,12 +26,12 @@ public class DoxiRole {
     return role;
   }
 
-  public void setRole(String role) {
-    this.role = role;
-  }
-
   public String getUsername() {
     return username;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
   }
 
   public void setUsername(String username) {
@@ -40,6 +40,6 @@ public class DoxiRole {
 
   @Override
   public String toString() {
-    return role;
+    return "DoxiRole [role=" + role + ", username=" + username + "]";
   }
 }

@@ -34,53 +34,54 @@ public class DoxiUser implements Principal {
   @JoinColumn(name = "username", referencedColumnName = "username")
   private List<DoxiRole> roles = new ArrayList<DoxiRole>();
 
+  public String getEmail() {
+    return email;
+  }
+
   @Override
   public String getName() {
     return username;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
   }
 
   public String getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
   public String getPrefix() {
     return prefix;
-  }
-
-  public void setPrefix(String prefix) {
-    this.prefix = prefix;
   }
 
   public List<DoxiRole> getRoles() {
     return roles;
   }
 
+  public String getUsername() {
+    return username;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setPrefix(String prefix) {
+    this.prefix = prefix;
+  }
+
   public void setRoles(List<DoxiRole> roles) {
     this.roles = roles;
   }
 
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
   @Override
   public String toString() {
-    return username + " (Roles: " + roles + " --- Prefix: " + prefix + ")";
+    return "DoxiUser [username=" + username + ", password=" + password + ", email=" + email
+        + ", prefix=" + prefix + ", roles=" + roles + "]";
   }
 }
