@@ -41,6 +41,7 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
           requestContext.setSecurityContext(new Authorizer(authenticatedUser));
           return;
         } else {
+          LOG.warn("User " + values[0] + " unknown or user provided a wrong password, proceeding with anonymous");
         }
       } catch (Exception e) {
         LOG.warn("ERROR with Http basic authentication, proceeding with anonymous", e);
