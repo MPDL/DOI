@@ -1,5 +1,7 @@
 package de.mpg.mpdl.doxi.pidcache;
 
+import java.io.File;
+
 import javax.persistence.EntityManager;
 
 import org.slf4j.Logger;
@@ -30,11 +32,15 @@ public class PidQueueTask extends Thread {
       LOG.info("Starting PidQueueTask");
 
       while (!this.terminate) {
-        if (gwdgClient.serviceAvailable()) {
-          LOG.info("Gwdg Service available.");
-          process.empty(blockSize);
-        } else {
-          LOG.warn("Gwdg Service not available.");
+        if (!existSleepFile())
+          if (gwdgClient.serviceAvailable()) {
+            LOG.info("Gwdg Service available.");
+            process.empty(blockSize);
+          } else {
+            LOG.warn("Gwdg Service not available.");
+          }
+        else {
+          LOG.warn("Sleep File gesetzt: " + PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_QUEUE_SLEEP_FILE));
         }
         Thread.sleep(emptyInterval);
       }
@@ -50,5 +56,10 @@ public class PidQueueTask extends Thread {
     }
     
     LOG.info("PidQueueTask terminated.");
+  }
+  
+  private boolean existSleepFile() {
+    File f = new File(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_QUEUE_SLEEP_FILE));
+    return f.exists();
   }
 }

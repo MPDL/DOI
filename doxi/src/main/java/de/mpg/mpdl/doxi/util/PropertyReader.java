@@ -30,11 +30,13 @@ public class PropertyReader {
   public static final String DOXI_JDBC_USER = "doxi.jdbc.user";
   
   public static final String DOXI_PID_CACHE_CACHE_SIZE_MAX = "doxi.pid.cache.cache.size.max";
+  public static final String DOXI_PID_CACHE_CACHE_SLEEP_FILE = "doxi.pid.cache.cache.sleep.file";
   public static final String DOXI_PID_CACHE_DUMMY_URL = "doxi.pid.cache.dummy.url";
   public static final String DOXI_PID_CACHE_EMPTY_BLOCKSIZE = "doxi.pid.cache.empty.blocksize";
   public static final String DOXI_PID_CACHE_EMPTY_INTERVAL = "doxi.pid.cache.empty.interval";
+  public static final String DOXI_PID_CACHE_QUEUE_SLEEP_FILE = "doxi.pid.cache.queue.sleep.file";
   public static final String DOXI_PID_CACHE_REFRESH_BLOCKSIZE = "doxi.pid.cache.refresh.blocksize";
-  public static final String DOXI_PID_CACHE_REFRESH_INTERVAL = "doxi.pid.cache.refresh.interval";
+  public static final String DOXI_PID_CACHE_REFRESH_INTERVAL = "doxi.pid.cache.refresh.interval";  
   
   public static final String DOXI_PID_GWDG_SERVICE_CREATE_PATH = "doxi.pid.gwdg.service.create.path";
   public static final String DOXI_PID_GWDG_SERVICE_SEARCH_PATH = "doxi.pid.gwdg.service.search.path";
@@ -63,7 +65,7 @@ public class PropertyReader {
       if (is == null) {
         // then from tomcat's conf dir
         String tomcatHome = System.getProperty("catalina.base");
-        String path = tomcatHome + "/conf/doxi.properties";
+        String path = tomcatHome + "/conf" + PROPERTIES_FILE;
         is = new FileInputStream(path);
       }
       properties = new Properties();

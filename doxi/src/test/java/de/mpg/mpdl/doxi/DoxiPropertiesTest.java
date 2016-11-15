@@ -54,6 +54,8 @@ public class DoxiPropertiesTest {
 
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SIZE_MAX));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SIZE_MAX));
+    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SLEEP_FILE));
+    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_CACHE_SLEEP_FILE));
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL));
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_EMPTY_BLOCKSIZE));
@@ -64,6 +66,8 @@ public class DoxiPropertiesTest {
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_BLOCKSIZE));
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_INTERVAL));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_REFRESH_INTERVAL));
+    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_QUEUE_SLEEP_FILE));
+    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_QUEUE_SLEEP_FILE));
 
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_CREATE_PATH));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_CREATE_PATH));
