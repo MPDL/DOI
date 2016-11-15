@@ -168,22 +168,4 @@ public class DOIResource {
     
     return Response.status(Status.OK).entity(resultDoi.getMetadata()).build();
   }
-
-  /*
-   * @Path("test")
-   * 
-   * @GET public Response test() throws DoxiException { if(1==1) { throw new
-   * DoiAlreadyExistsException(); }
-   * 
-   * 
-   * return Response.ok().build(); }
-   * 
-   * @Path("test2")
-   * 
-   * @GET public Response test2() throws DoxiException { if(1==1) { throw new
-   * MetadataInvalidException("blaa"); }
-   * 
-   * 
-   * return Response.ok().build(); }
-   */
 }

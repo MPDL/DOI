@@ -22,10 +22,26 @@ public class PidCache {
     this.created = created;
   }
 
+  public Date getCreated() {
+    return created;
+  }
+
   public PidID getID() {
     return PidID.create(this.identifier);
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+  
   @Override
   public String toString() {
     return "PidCache [identifier=" + this.identifier + ", created=" + this.created + "]";

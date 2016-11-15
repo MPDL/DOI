@@ -27,12 +27,32 @@ public class PidQueue {
     this.created = created;
   }
 
+  public Date getCreated() {
+    return created;
+  }
+
   public PidID getID() {
     return PidID.create(this.identifier);
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
   public URI getUrl() {
     return URI.create(this.url);
+  }
+
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
   }
 
   public void setUrl(URI url) {
