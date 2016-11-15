@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
-import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 import de.mpg.mpdl.doxi.rest.EMF;
 
 public class PidService implements PidServiceInterface {
@@ -38,22 +37,19 @@ public class PidService implements PidServiceInterface {
 
     try {
 
+      // Pruefung: URL in Queue bereits vorhanden
       Pid _pid = pidQueueService.search(url);
       if (_pid != null) {
         throw new DoxiException("URL " + url + " already exists.");
       }
 
-      if (this.gwdgClient.serviceAvailable()) {
-        try {
-          _pid = this.gwdgClient.search(url);
-        } catch (PidNotFoundException e) {
-          LOG.info("PID zur URL {} not found.", url);
-        }
-
-        if (_pid != null) {
-          throw new DoxiException("URL " + url + " already exists.");
-        }
-      }
+//      if (this.gwdgClient.serviceAvailable()) {
+//        try { // Pruefung: URL bei GWDG bereits vorhanden
+//          this.gwdgClient.search(url);
+//          throw new DoxiException("URL " + url + " already exists.");
+//        } catch (PidNotFoundException e) {
+//        }
+//      }
 
       PidID pidID = pidCacheService.getFirst();
 
@@ -63,6 +59,15 @@ public class PidService implements PidServiceInterface {
 
       Pid pid = new Pid(pidID, url);
 
+//      if (this.gwdgClient.serviceAvailable()) {
+//        try { // Pruefung: PID bei GWDG ueberhaupt vorhanden
+//          this.gwdgClient.retrieve(pidID);
+//        } catch (PidNotFoundException e) {
+//            throw new DoxiException("PID " + _pid + " does not exists.");
+//        }
+//      }
+      
+      // falls bis hier keine Fehler aufgetreten sind, PID in Queue stellen und aus Cache loeschen 
       em.getTransaction().begin();
       pidQueueService.add(pid);
       pidCacheService.remove(pidID);
@@ -153,8 +158,15 @@ public class PidService implements PidServiceInterface {
 
     try {
 
+      // Pruefung: URL in Queue bereits vorhanden
+      Pid _pid = pidQueueService.search(pid.getUrl());
+      if (_pid != null) {
+        throw new DoxiException("URL " + pid.getUrl() + " already exists.");
+      }
+      
       PidQueue pidQueue = pidQueueService.retrieve(pid.getPidID());
 
+      // Pruefung: PID noch in Queue 
       if (pidQueue != null) {
         em.getTransaction().begin();
         pidQueue.setUrl(pid.getUrl());
@@ -162,14 +174,16 @@ public class PidService implements PidServiceInterface {
         return transformToPidServiceResponse(pid, "modify");
       }
 
-      if (this.gwdgClient.serviceAvailable()) {
-        try {
-          this.gwdgClient.retrieve(pid.getPidID());
-        } catch (PidNotFoundException e) {
-          throw new DoxiException("PID does not exist.");
-        }
-      }
+//      // Pruefung: PID bei GWDG ueberhaupt vorhanden
+//      if (this.gwdgClient.serviceAvailable()) {
+//        try {
+//          this.gwdgClient.retrieve(pid.getPidID());
+//        } catch (PidNotFoundException e) {
+//          throw new DoxiException("PID does not exist.");
+//        }
+//      }
 
+      // falls bis hier keine Fehler aufgetreten sind, PID in Queue stellen
       em.getTransaction().begin();
       pidQueueService.add(pid);
       em.getTransaction().commit();
