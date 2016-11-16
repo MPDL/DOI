@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
+import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 import de.mpg.mpdl.doxi.rest.EMF;
 
 public class PidService implements PidServiceInterface {
@@ -110,6 +111,9 @@ public class PidService implements PidServiceInterface {
 
       return transformToPidServiceResponse(pid, "view");
 
+    } catch (PidNotFoundException e) {
+      LOG.warn("RETRIEVE: ID {}:\n{}", pidID, e);
+      throw new DoxiException(e);
     } catch (Exception e) {
       LOG.error("RETRIEVE: ID {}:\n{}", pidID, e);
       throw new DoxiException(e);
@@ -139,6 +143,9 @@ public class PidService implements PidServiceInterface {
 
       return transformToPidServiceResponse(pid, "search");
 
+    } catch (PidNotFoundException e) {
+      LOG.warn("SEARCH: URL {}:\n{}", url, e);
+      throw new DoxiException(e);
     } catch (Exception e) {
       LOG.error("SEARCH: URL {}:\n{}", url, e);
       throw new DoxiException(e);

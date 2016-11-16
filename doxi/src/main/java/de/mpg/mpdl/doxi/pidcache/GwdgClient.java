@@ -118,6 +118,7 @@ public class GwdgClient {
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
 
     } catch (PidNotFoundException e) {
+      LOG.warn("RETRIEVE: ID {}:\n{}", pidID, e);
       throw e;
     } catch (GwdgException | JiBXException e) {
       LOG.error("RETRIEVE: ID {}:\n{}", pidID, e);
@@ -150,6 +151,7 @@ public class GwdgClient {
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
 
     } catch (PidNotFoundException e) {
+      LOG.warn("SEARCH: URL {}:\n{}", url, e);
       throw e;
     } catch (GwdgException | JiBXException e) {
       LOG.error("SEARCH: URL {}:\n{}", url, e);
