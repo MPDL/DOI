@@ -29,7 +29,7 @@ public class PidCacheProcess {
   public void fill(int anzahl) throws DoxiException {
     try {
       
-      if (this.pidCacheService.isEmpty()) {
+      if (this.pidCacheService.isFull()) {
         return;
       }
       
