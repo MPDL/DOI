@@ -53,6 +53,7 @@ public class PidQueueProcess {
         this.em.getTransaction().begin();
         this.pidQueueService.remove(pid.getPidID());
         this.em.getTransaction().commit();
+        LOG.info("{} entries done", pids.size());
       }
       
     } catch (Exception e) {

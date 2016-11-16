@@ -19,9 +19,9 @@ public class PidCacheDAO {
     return this.em.find(PidCache.class, pidID.getIdAsString());
   }
   
-  public List<PidCache> getAll() {
+  public List<PidCache> getFirst(int anz) {
     final String query = "SELECT c FROM pid_cache c ORDER BY c.created";
-    return this.em.createQuery(query, PidCache.class).getResultList();
+    return this.em.createQuery(query, PidCache.class).setMaxResults(anz).getResultList();
   }
   
   public PidCache getFirst() {

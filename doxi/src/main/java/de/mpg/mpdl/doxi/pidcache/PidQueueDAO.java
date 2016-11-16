@@ -26,11 +26,6 @@ public class PidQueueDAO {
     return this.em.createQuery(query, PidQueue.class).setParameter(1, url.toString()).getSingleResult();
   }
   
-  public List<PidQueue> getAll() {
-    final String query = "SELECT q FROM pid_queue q ORDER BY q.created";
-    return this.em.createQuery(query, PidQueue.class).getResultList();
-  }
-  
   public List<PidQueue> getFirst(int anz) {
     final String query = "SELECT q FROM pid_queue q ORDER BY q.created";
     

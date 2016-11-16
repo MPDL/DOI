@@ -16,7 +16,7 @@ public class ViewPidQueueDB {
     EntityManager em = EMF.emf.createEntityManager();
     
     PidQueueDAO pidQueueDAO = new PidQueueDAO(em);
-    setPidQueueList(pidQueueDAO.getAll());
+    setPidQueueList(pidQueueDAO.getFirst(100));
 
     em.close();
   }

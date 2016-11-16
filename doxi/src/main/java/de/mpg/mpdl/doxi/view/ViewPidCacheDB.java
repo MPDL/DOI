@@ -16,7 +16,7 @@ public class ViewPidCacheDB {
     EntityManager em = EMF.emf.createEntityManager();
     
     PidCacheDAO pidCacheDAO = new PidCacheDAO(em);
-    setPidCacheList(pidCacheDAO.getAll());
+    setPidCacheList(pidCacheDAO.getFirst(100));
 
     em.close();
   }

@@ -27,9 +27,14 @@ public class PidCacheProcess {
   }
 
   public void fill(int anzahl) throws DoxiException {
-    long current = 0;
-    int i = 0;
     try {
+      
+      if (this.pidCacheService.isEmpty()) {
+        return;
+      }
+      
+      long current = 0;
+      int i = 0;
       while (this.pidCacheService.isFull() == false && current != new Date().getTime() && i <= anzahl) {
         current = new Date().getTime();
         try {
@@ -45,6 +50,8 @@ public class PidCacheProcess {
         }
         i++;
       }
+      LOG.info("{} entries filled", i);
+      
     } catch (Exception e) {
       throw new DoxiException(e);
     }
