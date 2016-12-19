@@ -5,8 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.security.DoxiUser;
+import de.mpg.mpdl.doxi.util.EMF;
 
 public class ViewUserDB {
 

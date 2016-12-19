@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.rest;
+package de.mpg.mpdl.doxi.util;
 
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -15,8 +15,6 @@ import javax.servlet.annotation.WebListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.mpg.mpdl.doxi.util.PropertyReader;
 
 @WebListener
 public class EMF implements ServletContextListener {

@@ -19,6 +19,7 @@ import de.mpg.mpdl.doxi.pidcache.PidService;
 import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
 import de.mpg.mpdl.doxi.security.DoxiRole;
 import de.mpg.mpdl.doxi.security.DoxiUser;
+import de.mpg.mpdl.doxi.util.EMF;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;

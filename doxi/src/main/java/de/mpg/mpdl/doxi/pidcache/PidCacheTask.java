@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.rest.EMF;
+import de.mpg.mpdl.doxi.util.EMF;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class PidCacheTask extends Thread {

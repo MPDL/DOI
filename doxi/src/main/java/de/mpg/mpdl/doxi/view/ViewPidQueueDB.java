@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 
 import de.mpg.mpdl.doxi.pidcache.PidQueue;
 import de.mpg.mpdl.doxi.pidcache.PidQueueDAO;
-import de.mpg.mpdl.doxi.rest.EMF;
+import de.mpg.mpdl.doxi.util.EMF;
 
 public class ViewPidQueueDB {
 

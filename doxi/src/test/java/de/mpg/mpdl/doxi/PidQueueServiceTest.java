@@ -24,8 +24,8 @@ import de.mpg.mpdl.doxi.pidcache.Pid;
 import de.mpg.mpdl.doxi.pidcache.PidID;
 import de.mpg.mpdl.doxi.pidcache.PidQueue;
 import de.mpg.mpdl.doxi.pidcache.PidQueueService;
-import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.util.EMF;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PidQueueServiceTest {

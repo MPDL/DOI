@@ -13,7 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.rest.EMF;
+import de.mpg.mpdl.doxi.util.EMF;
 
 @PreMatching
 @Provider

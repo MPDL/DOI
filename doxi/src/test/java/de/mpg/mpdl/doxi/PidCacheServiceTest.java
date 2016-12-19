@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.PidCacheService;
 import de.mpg.mpdl.doxi.pidcache.PidID;
-import de.mpg.mpdl.doxi.rest.EMF;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.util.EMF;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PidCacheServiceTest {
