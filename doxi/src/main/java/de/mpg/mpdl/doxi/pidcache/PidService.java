@@ -107,9 +107,7 @@ public class PidService implements PidServiceInterface {
         return transformToPidServiceResponse(pid, "view");
       }
 
-      Pid pid = this.gwdgClient.retrieve(pidID);
-
-      return transformToPidServiceResponse(pid, "view");
+      return this.gwdgClient.retrieve(pidID);
 
     } catch (PidNotFoundException e) {
       LOG.warn("RETRIEVE: ID {}:\n{}", pidID, e);
@@ -139,9 +137,7 @@ public class PidService implements PidServiceInterface {
         return transformToPidServiceResponse(pid, "search");
       }
 
-      pid = this.gwdgClient.search(url);
-
-      return transformToPidServiceResponse(pid, "search");
+      return this.gwdgClient.search(url);
 
     } catch (PidNotFoundException e) {
       LOG.warn("SEARCH: URL {}:\n{}", url, e);

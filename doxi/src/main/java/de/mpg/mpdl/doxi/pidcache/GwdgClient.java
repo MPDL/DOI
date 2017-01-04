@@ -94,7 +94,7 @@ public class GwdgClient {
     }
   }
 
-  public Pid retrieve(PidID pidID) throws PidNotFoundException, GwdgException, JiBXException {
+  public String retrieve(PidID pidID) throws PidNotFoundException, GwdgException, JiBXException {
     LOG.info("User requests RETRIEVE with ID {}", pidID);
 
     try {
@@ -105,10 +105,8 @@ public class GwdgClient {
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         String xml = response.readEntity(String.class);
-        PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
-        Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-        LOG.info("retrieve successfully returned pid {}", pid);
-        return pid;
+        LOG.info("retrieve successfully returned pid");
+        return xml;
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
@@ -120,13 +118,13 @@ public class GwdgClient {
     } catch (PidNotFoundException e) {
       LOG.warn("RETRIEVE: ID {}:\n{}", pidID, e);
       throw e;
-    } catch (GwdgException | JiBXException e) {
+    } catch (GwdgException e) {
       LOG.error("RETRIEVE: ID {}:\n{}", pidID, e);
       throw e;
     }
   }
 
-  public Pid search(URI url) throws PidNotFoundException, GwdgException, JiBXException {
+  public String search(URI url) throws PidNotFoundException, GwdgException, JiBXException {
     LOG.info("User requests SEARCH with URL {}", url);
 
     Response response;
@@ -138,10 +136,8 @@ public class GwdgClient {
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         String xml = response.readEntity(String.class);
-        PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
-        Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-        LOG.info("search successfully returned pid " + pid);
-        return pid;
+        LOG.info("search successfully returned pid");
+        return xml;
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
@@ -153,7 +149,7 @@ public class GwdgClient {
     } catch (PidNotFoundException e) {
       LOG.warn("SEARCH: URL {}:\n{}", url, e);
       throw e;
-    } catch (GwdgException | JiBXException e) {
+    } catch (GwdgException e) {
       LOG.error("SEARCH: URL {}:\n{}", url, e);
       throw e;
     }

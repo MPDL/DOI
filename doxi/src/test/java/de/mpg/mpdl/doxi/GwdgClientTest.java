@@ -68,11 +68,9 @@ public class GwdgClientTest {
         gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
     Assert.assertNotNull(pid);
     
-    Pid pid_ = gwdgClient.retrieve(pid.getPidID());
+    String xml = gwdgClient.retrieve(pid.getPidID());
 
-    Assert.assertNotNull(pid_);
-    Assert.assertEquals(pid.getPidID(), pid_.getPidID());
-    Assert.assertEquals(pid.getUrl(), pid_.getUrl());
+    Assert.assertNotNull(xml);
 
     LOG.info("--------------------- FINISHED test_3_RetrievePid ---------------------");
   }
@@ -86,11 +84,9 @@ public class GwdgClientTest {
         gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
     Assert.assertNotNull(pid);
     
-    Pid pid_ = gwdgClient.search(pid.getUrl());
+    String xml = gwdgClient.search(pid.getUrl());
 
-    Assert.assertNotNull(pid_);
-    Assert.assertEquals(pid.getPidID(), pid_.getPidID());
-    Assert.assertEquals(pid.getUrl(), pid_.getUrl());
+    Assert.assertNotNull(xml);
 
     LOG.info("--------------------- FINISHED test_4_SearchPid ---------------------");
   }
