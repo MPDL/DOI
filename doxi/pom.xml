@@ -1,16 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.mpg.mpdl.doi</groupId>
 	<artifactId>doxi</artifactId>
 	<packaging>war</packaging>
 	<version>1.1-SNAPSHOT</version>
 	<name>doxi</name>
+	
 	<scm>
 		<connection>scm:git:https://github.com/MPDL/DOI.git</connection>
 		<developerConnection>scm:git:https://github.com/MPDL/DOI.git</developerConnection>
 		<url>https://github.com/MPDL/DOI</url>
 		<tag>HEAD</tag>
 	</scm>
+	
 	<repositories>
 		<repository>
 			<id>nexus</id>
@@ -23,6 +26,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
@@ -35,6 +39,7 @@
 			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
 	<build>
 		<finalName>doxi</finalName>
 		<resources>
@@ -105,7 +110,42 @@
 				</dependencies>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.jibx</groupId>
+										<artifactId>
+											jibx-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2.6,)
+										</versionRange>
+										<goals>
+											<goal>bind</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -131,6 +171,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.bcel</groupId>
@@ -205,11 +246,13 @@
 			<version>1.7.12</version>
 		</dependency>
 	</dependencies>
+	
 	<properties>
 		<jdk.version>1.8</jdk.version>
 		<jersey.version>2.21</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
 	<profiles>
 		<profile>
 			<id>env-jrebel-build</id>
