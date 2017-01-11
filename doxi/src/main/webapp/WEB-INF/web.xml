@@ -12,7 +12,7 @@
 
 	<listener>
 		<listener-class>
-             de.mpg.mpdl.doxi.rest.EMF
+             de.mpg.mpdl.doxi.util.EMF
         </listener-class>
 	</listener>	
 
