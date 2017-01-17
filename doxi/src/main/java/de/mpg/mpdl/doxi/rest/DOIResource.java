@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
 
 @Path("doi")
-@Api(value = "MPDL DOXI DOI REST API")
+@Api(value = "DOI API")
 public class DOIResource {
   @Inject
   private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();

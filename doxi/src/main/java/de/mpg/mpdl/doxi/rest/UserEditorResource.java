@@ -32,7 +32,7 @@ public class UserEditorResource {
   @RolesAllowed("admin")
   public ViewUserDB createUser(@FormParam("username") String username,
       @FormParam("email") String email, @FormParam("password") String password,
-      @FormParam("prefix") String prefix, @FormParam("role") String role) {
+      @FormParam("prefix") String prefix, @FormParam("role") String sRoles) {
 
     DoxiUser doxiUser = new DoxiUser();
     doxiUser.setUsername(username);
@@ -40,10 +40,12 @@ public class UserEditorResource {
     doxiUser.setPassword(password);
     doxiUser.setPrefix(prefix);
     List<DoxiRole> roles = new ArrayList<DoxiRole>();
-    DoxiRole doxiRole = new DoxiRole();
-    doxiRole.setRole(role);
-    doxiRole.setUsername(username);
-    roles.add(doxiRole);
+    for (String role : sRoles.split(";")) {
+      DoxiRole doxiRole = new DoxiRole();
+      doxiRole.setRole(role);
+      doxiRole.setUsername(username);
+      roles.add(doxiRole);
+    }
     doxiUser.setRoles(roles);
 
     EntityManager em = EMF.emf.createEntityManager();

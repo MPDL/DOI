@@ -63,6 +63,7 @@ public class JerseyApplicationConfig extends ResourceConfig {
     beanConfig.setBasePath("/doxi/rest");
     beanConfig.setResourcePackage("de.mpg.mpdl.doxi.rest");
     beanConfig.setScan(true);
+    beanConfig.setPrettyPrint(true);
 
     try {
       String createUser = PropertyReader.getProperty(PropertyReader.DOXI_ADMIN_CREATE);

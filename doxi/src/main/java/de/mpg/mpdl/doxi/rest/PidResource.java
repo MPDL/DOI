@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @Path("pid")
-@Api(value = "MPDL DOXI PID REST API")
+@Api(value = "PID API")
 public class PidResource {
   public static final String PATH_CACHE_SIZE = "cache/size";
   public static final String PATH_CREATE = "create";
@@ -39,7 +39,7 @@ public class PidResource {
   private static final String ID = "id";
   private static final String URL = "url";
 
-  private static final String ROLE_USER = "user";
+  private static final String ROLE_USER = "pid_user";
 
   @Inject
   private PidServiceInterface pidService;
