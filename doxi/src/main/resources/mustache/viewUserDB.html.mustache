@@ -67,7 +67,7 @@
 				<table class="table table-striped">
 					<tr><th>Username</th><th>Email</th><th>Prefix</th><th>Roles</th></tr>
 					{{#userList}}
-					<tr><td>{{username}}</td><td>{{email}}</td><td>{{prefix}}</td><td>{{#roles}}{{role}},{{/roles}}</td></tr>
+					<tr><td>{{username}}</td><td>{{email}}</td><td>{{prefix}}</td><td>{{#roles}}{{role}} {{/roles}}</td></tr>
 					{{/userList}}
 				</table>
 			</div>
@@ -113,8 +113,10 @@
 			<div class="form-group has-feedback">
 				<label for="role">Role</label>
 				<select class="form-control" id="role" name="role">
-					<option value="user">User</option>
 					<option value="admin">Admin</option>
+					<option value="user">Doxi User</option>
+					<option value="pid_user">Pid User</option>
+					<option value="user;pid_user">Doxi + Pid User</option>
 				</select>
 			</div>
 
