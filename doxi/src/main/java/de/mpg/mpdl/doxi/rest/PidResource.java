@@ -47,8 +47,9 @@ public class PidResource {
   @Path(PATH_CREATE)
   @ApiOperation(//
       value = "Generates and register a Pid with known URL.",
-      notes = "If Pid with URL already exists it cannot be created.")
-  @ApiResponses({@ApiResponse(code = 201, message = "PID created.", response = String.class),
+      notes = "ATTENTION: The Pid is saved only in the Pid Queue. If the Pid with URL already exists at GWDG it cannot be created!")
+  @ApiResponses({//
+      @ApiResponse(code = 201, message = "PID created.", response = String.class),
       @ApiResponse(code = 400, message = "PID not created.")})
   @POST
   @Produces(MediaType.TEXT_PLAIN)
@@ -66,7 +67,8 @@ public class PidResource {
 
   @Path(PATH_RETRIEVE)
   @ApiOperation(value = "Retrieves a Pid with known ID.")
-  @ApiResponses({@ApiResponse(code = 200, message = "PID found.", response = String.class),
+  @ApiResponses({//
+      @ApiResponse(code = 200, message = "PID found.", response = String.class),
       @ApiResponse(code = 400, message = "PID not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
@@ -84,7 +86,8 @@ public class PidResource {
 
   @Path(PATH_SEARCH)
   @ApiOperation(value = "Searches a Pid with known URL.")
-  @ApiResponses({@ApiResponse(code = 200, message = "PID found.", response = String.class),
+  @ApiResponses({//
+      @ApiResponse(code = 200, message = "PID found.", response = String.class),
       @ApiResponse(code = 400, message = "PID not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
@@ -101,8 +104,11 @@ public class PidResource {
   }
 
   @Path(PATH_UPDATE)
-  @ApiOperation(value = "Updates an existing Pid.")
-  @ApiResponses({@ApiResponse(code = 200, message = "PID updated.", response = String.class),
+  @ApiOperation(//
+      value = "Updates an existing Pid.",
+      notes = "ATTENTION: The Pid is updated only in the Pid Queue. If the Pid does not exist at GWDG it cannot be updated!")
+  @ApiResponses({//
+      @ApiResponse(code = 200, message = "PID updated.", response = String.class),
       @ApiResponse(code = 400, message = "PID not updated.")})
   @PUT
   @Produces(MediaType.TEXT_PLAIN)
@@ -122,7 +128,8 @@ public class PidResource {
 
   @Path(PATH_CACHE_SIZE)
   @ApiOperation(value = "Returns the current size of the Pid Cache.")
-  @ApiResponses({@ApiResponse(code = 200, message = "Size found.", response = String.class),
+  @ApiResponses({//
+      @ApiResponse(code = 200, message = "Size found.", response = String.class),
       @ApiResponse(code = 400, message = "Size not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
@@ -138,7 +145,8 @@ public class PidResource {
 
   @Path(PATH_QUEUE_SIZE)
   @ApiOperation(value = "Returns the current size of the Pid Queue.")
-  @ApiResponses({@ApiResponse(code = 200, message = "Size found.", response = String.class),
+  @ApiResponses({//
+      @ApiResponse(code = 200, message = "Size found.", response = String.class),
       @ApiResponse(code = 400, message = "Size not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)

@@ -9,10 +9,11 @@
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 	<title>MPDL Doxi</title>
-
-	<!-- Bootstrap -->
+	
 	<link href="/doxi/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/doxi/resources/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+	
+	<script src='/doxi/resources/swagger/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
 
 	<style type="text/css">
 		body {
@@ -21,12 +22,43 @@
 		}
 	</style>
 
+	<script>
+		function logout() {
+			$.ajax({
+				type: "GET",
+				url: "/doxi/rest/doi",
+				dataType: 'json',
+				async: true,
+				username: "user",
+				password: "any_stupid_password"
+			})
+				
+			//In our case, we WANT to get access denied, so a success would be a failure.
+			.done(function(){
+				alert("Error while logging out");
+			})
+			
+			//Likewise, a failure *usually* means we succeeded.
+			//set window.location to redirect the user to wherever you want them to go
+			.fail(function(data){
+				if(data.status==401) {
+					alert("Logout successful");
+				}
+				else {
+					alert("Error while logging out");
+				}
+				//window.location = "/doxi";
+			});
+		}
+
+	</script>
+
 </head>
 
 <body role="document">
 
 	<nav class="navbar navbar-inverse navbar-fixed-top">
-
+	
 		<div class="container">
 
 			<div class="navbar-header">
@@ -39,44 +71,35 @@
 				<a class="navbar-brand" href="/doxi">MPDL DOXI</a>
 			</div>
 
-			<div id="navbar" class="collapse navbar-collapse">
+			 <div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="/doxi">Doi API</a></li>
+					<li class="active"><a href="/doxi">Doi API</a></li>
 					<li><a href="/doxi/pid.html">Pid API</a></li>
 					<li><a href="/doxi/md_generator.html">Datacite MD Generator</a></li>
 					<li><a href="/doxi/rest/useradmin">User Admin</a></li>
 					<li><a href="/doxi/rest/pidcache">Pid Cache</a></li>
-					<li class="active"><a href="/doxi/rest/pidqueue">Pid Queue</a></li>
+					<li><a href="/doxi/rest/pidqueue">Pid Queue</a></li>
 					<li><a href="http://doi.mpdl.mpg.de" target="_blank">MPDL DOI Service</a></li>
 					<li><a href="http://doc.pidconsortium.eu/guides/api" target="_blank">PID Consortium</a></li>
 				</ul>
+
+				<form class="navbar-form navbar-right" role="search">
+					<button id="logout_button" type="button" class="btn btn-default" onclick="logout()">Logout</button>
+				</form>
 			</div>
 
 		</div>
-
+		
 	</nav>
 
 	<div class="container theme-showcase" role="main">
 
-		<div class="page-header">
-			<h1>Current Pid Queue</h1>
+		<div class="embed-responsive embed-responsive-4by3">
+			<iframe id="swagger_frame" class="embed-responsive-item" src="/doxi/swagger-pid-api.html"></iframe>
 		</div>
-
-		<div class="row">
-
-			<div class="col-md-12">
-				<table class="table table-striped">
-					<tr><th>Identifier</th><th>Url</th><th>Created</th></tr>
-					{{#pidQueueList}}
-					<tr><td>{{identifier}}</td><td>{{url}}</td><td>{{created}}</td></tr>
-					{{/pidQueueList}}
-				</table>
-			</div>
-			
-		</div>
-
+		
 	</div>
-
+	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
