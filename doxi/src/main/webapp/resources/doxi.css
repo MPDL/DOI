@@ -1,0 +1,15 @@
+@CHARSET "UTF-8";
+
+body {
+	padding-top: 70px;
+	padding-bottom: 30px;
+}
+
+ul.nav li.dropdown:hover > ul.dropdown-menu {
+  		display: block;    
+}
+
+@media (min-width: 979px) {
+  ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+}
