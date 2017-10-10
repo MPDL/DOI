@@ -252,11 +252,10 @@ public class PidService implements PidServiceInterface {
     pidServiceResponseVO.setCreator(this.gwdgClient.getGwdgUser());
     pidServiceResponseVO.setIdentifier(pid.getPidID().getIdAsString());
     pidServiceResponseVO.setUrl(pid.getUrl().toString());
-    pidServiceResponseVO.setUserUid("dummyUser");
-    pidServiceResponseVO.setInstitute("dummyInstitute");
-    pidServiceResponseVO.setContact("dummyContact");
-    pidServiceResponseVO.setMessage("dummyMessage");
-    pidServiceResponseVO.setMatches("dummyMatches");
+//    pidServiceResponseVO.setUserUid("dummyUser");
+//    pidServiceResponseVO.setInstitute("dummyInstitute");
+//    pidServiceResponseVO.setContact("dummyContact");
+//    pidServiceResponseVO.setMessage("dummyMessage");
 
     return xmlTransforming.transformToXML(pidServiceResponseVO);
   }

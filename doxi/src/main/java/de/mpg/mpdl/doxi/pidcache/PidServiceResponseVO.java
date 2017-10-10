@@ -7,7 +7,6 @@ public class PidServiceResponseVO extends AbstractVO {
   private String url;
   private String creator;
   private String userUid;
-  private String matches;
   private String message;
   private String institute;
   private String contact;
@@ -78,18 +77,10 @@ public class PidServiceResponseVO extends AbstractVO {
     this.contact = contact;
   }
 
-  public String getMatches() {
-    return this.matches;
-  }
-
-  public void setMatches(String matches) {
-    this.matches = matches;
-  }
-
   @Override
   public String toString() {
     return "PidServiceResponseVO [action=" + action + ", identifier=" + identifier + ", url=" + url
-        + ", creator=" + creator + ", userUid=" + userUid + ", matches=" + matches + ", message="
-        + message + ", institute=" + institute + ", contact=" + contact + "]";
+        + ", creator=" + creator + ", userUid=" + userUid + ", message=" + message + ", institute="
+        + institute + ", contact=" + contact + "]";
   }
 }
