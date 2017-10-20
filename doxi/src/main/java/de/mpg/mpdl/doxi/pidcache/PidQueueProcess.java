@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 
 public class PidQueueProcess {
@@ -25,9 +24,9 @@ public class PidQueueProcess {
 
   /*
    * PidQueue wird geleert und die enthaltenen PIDs auf GWDG Seite geupdatet.
-   * Das geht aber nur, wenn die PID auf GWDG Seite bereits bekannt ist, und die neue URL dort noch nicht vergeben wurde.
+   * Das geht aber nur, wenn die PID auf GWDG Seite bereits bekannt ist und die neue URL dort noch nicht vergeben wurde.
    */
-  public void empty(int anzahl) throws DoxiException {
+  public void empty(int anzahl) {
     try {
       
       List<Pid> pids = this.pidQueueService.getFirstBlock(anzahl);

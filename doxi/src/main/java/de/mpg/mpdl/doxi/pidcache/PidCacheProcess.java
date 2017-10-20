@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class PidCacheProcess {
@@ -26,7 +25,7 @@ public class PidCacheProcess {
     this.dummyUrl = PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_DUMMY_URL);
   }
 
-  public void fill(int anzahl) throws DoxiException {
+  public void fill(int anzahl) {
     try {
       
       if (this.pidCacheService.isFull()) {
@@ -53,7 +52,7 @@ public class PidCacheProcess {
       LOG.info("{} entries filled", i);
       
     } catch (Exception e) {
-      throw new DoxiException(e);
+      LOG.error("FILL:\n{}", e);
     }
   }
 }

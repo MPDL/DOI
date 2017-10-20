@@ -206,7 +206,7 @@ public class GwdgClient {
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
 
-    } catch (GwdgException e) {
+    } catch (Exception e) {
       LOG.warn("SERVICE not available:\n{}", e);
       return false;
     }
