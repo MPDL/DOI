@@ -32,11 +32,11 @@ public class JsonTransforming {
   }
   
   @SuppressWarnings("unchecked")
-  public String getAsPid(String json) throws PidNotFoundException  {
+  public List<String> getAsList(String json) throws PidNotFoundException  {
     try {
       List<String> list = this.mapper.readValue(json, List.class);
-      if (list.size() == 1) {
-        return list.get(0);
+      if (list.size() != 0) {
+        return list;  
       }
     } catch (Exception e) { // TODO: Eigentlich sollte die Liste immer gefüllt sein. Manchmal liefert die GWDG aber eine leere Liste zurück
     }

@@ -168,18 +168,18 @@ public class PidQueueServiceTest {
 
     URI url = URI.create("http://4");
 
-    Pid _pid = this.pidQueueService.search(url);
+    List<String> list = this.pidQueueService.search(url);
 
-    Assert.assertEquals(null, _pid);
+    Assert.assertTrue(list.isEmpty());
 
     Pid pid1 = new Pid(PidID.create("TEST4/00-001Z-0000-002B-FC67-5"), url);
     this.em.getTransaction().begin();
     this.pidQueueService.add(pid1);
     this.em.getTransaction().commit();
 
-    _pid = this.pidQueueService.search(url);
+    list = this.pidQueueService.search(url);
 
-    Assert.assertEquals(pid1, _pid);
+    Assert.assertEquals(pid1.getUrl().toString(), list.get(0));
 
     LOG.info("--------------------- FINISHED test_5_search ---------------------");
   }

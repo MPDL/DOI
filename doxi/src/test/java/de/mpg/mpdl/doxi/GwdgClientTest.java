@@ -84,9 +84,9 @@ public class GwdgClientTest {
         gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
     Assert.assertNotNull(pid);
     
-    pid = gwdgClient.search(pid.getUrl());
+    String s = gwdgClient.search(pid.getUrl());
 
-    Assert.assertNotNull(pid);
+    Assert.assertNotNull(s);
 
     LOG.info("--------------------- FINISHED test_4_SearchPid ---------------------");
   }

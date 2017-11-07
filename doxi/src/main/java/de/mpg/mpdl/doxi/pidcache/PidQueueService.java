@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 
 import de.mpg.mpdl.doxi.pidcache.model.Pid;
 import de.mpg.mpdl.doxi.pidcache.model.PidID;
@@ -46,17 +45,15 @@ public class PidQueueService {
     return pids;
   }
 
-  public Pid search(URI url) {
-    try {
-      final PidQueue pidQueue = this.pidQueueDAO.findByUrl(url);
-      if (pidQueue != null) {
-        return new Pid(pidQueue.getID(), pidQueue.getUrl());
-      }
-    } catch (NoResultException e) {
-      return null;
+  public List<String> search(URI url) {
+    List<PidQueue> list = this.pidQueueDAO.findByUrl(url);
+    List<String> result = new ArrayList<String>();
+
+    for (PidQueue pidQueue : list) {
+      result.add(pidQueue.getUrl().toString());
     }
 
-    return null;
+    return result;
   }
 
   public long getSize() {

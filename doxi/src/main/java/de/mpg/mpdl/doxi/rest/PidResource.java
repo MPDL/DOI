@@ -97,8 +97,8 @@ public class PidResource {
       @ApiParam(value = "the URL which should be searched", required = true) //
       @QueryParam(URL) String url) //
       throws DoxiException {
-    final String xml = pidService.search(URI.create(url));
-    final Response response = Response.status(Status.OK).entity(xml).build();
+    final String s = pidService.search(URI.create(url));
+    final Response response = Response.status(Status.OK).entity(s).build();
 
     return response;
   }

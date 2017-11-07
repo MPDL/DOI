@@ -22,10 +22,10 @@ public class PidQueueDAO {
     return this.em.find(PidQueue.class, pidID.getIdAsString());
   }
   
-  public PidQueue findByUrl(URI url) {
+  public List<PidQueue> findByUrl(URI url) {
     final String query = "SELECT q FROM pid_queue q where q.url= ?1";
     
-    return this.em.createQuery(query, PidQueue.class).setParameter(1, url.toString()).getSingleResult();
+    return this.em.createQuery(query, PidQueue.class).setParameter(1, url.toString()).getResultList();
   }
   
   public List<PidQueue> getFirst(int anz) {

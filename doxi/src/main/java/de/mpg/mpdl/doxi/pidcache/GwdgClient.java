@@ -120,7 +120,7 @@ public class GwdgClient {
     }
   }
 
-  public Pid search(URI url) throws PidNotFoundException, GwdgException {
+  public String search(URI url) throws PidNotFoundException, GwdgException {
     LOG.info("User requests SEARCH with URL {}", url);
 
     Response response;
@@ -134,10 +134,8 @@ public class GwdgClient {
           .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        String result = this.gwdgSuffix + "/"
-            + this.jsonTransforming.getAsPid(response.readEntity(String.class));
-        LOG.info("search successfully returned pid");
-        return new Pid(PidID.create(result), url);
+        LOG.info("search successfully returned pids");
+        return response.readEntity(String.class);
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {

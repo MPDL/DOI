@@ -1,6 +1,7 @@
 package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Context;
@@ -41,8 +42,8 @@ public class PidService implements PidServiceInterface {
     try {
 
       // Pruefung: URL in Queue bereits vorhanden
-      Pid _pid = pidQueueService.search(url);
-      if (_pid != null) {
+      List<String> list = pidQueueService.search(url);
+      if (list.isEmpty() == false) {
         throw new DoxiException("URL " + url + " already exists.");
       }
 
@@ -133,13 +134,13 @@ public class PidService implements PidServiceInterface {
 
     try {
 
-      Pid pid = pidQueueService.search(url);
+      List<String> list = pidQueueService.search(url);
 
-      if (pid != null) {
-        return this.transformToPidServiceResponse(pid);
+      if (list.isEmpty() == false) {
+        return list.toString();
       }
 
-      return this.transformToPidServiceResponse(this.gwdgClient.search(url));
+      return this.gwdgClient.search(url);
 
     } catch (PidNotFoundException e) {
       LOG.warn("SEARCH: URL {}:\n{}", url, e);
@@ -164,8 +165,8 @@ public class PidService implements PidServiceInterface {
     try {
 
       // Pruefung: URL in Queue bereits vorhanden
-      Pid _pid = pidQueueService.search(pid.getUrl());
-      if (_pid != null) {
+      List<String> list = pidQueueService.search(pid.getUrl());
+      if (list.isEmpty() == false) {
         throw new DoxiException("URL " + pid.getUrl() + " already exists.");
       }
       
