@@ -3,11 +3,13 @@ package de.mpg.mpdl.doxi.pidcache;
 import java.net.URI;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
 
 public interface PidServiceInterface {
-  public long getCacheSize() throws DoxiException;;
+  public long getCacheSize() throws DoxiException;
 
-  public long getQueueSize() throws DoxiException;;
+  public long getQueueSize() throws DoxiException;
 
   public String update(Pid pid) throws DoxiException;
 

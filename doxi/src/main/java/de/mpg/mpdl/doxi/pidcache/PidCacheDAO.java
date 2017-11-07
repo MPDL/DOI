@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
+
 public class PidCacheDAO {
   private final EntityManager em;
 

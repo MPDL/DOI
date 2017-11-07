@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class PidCacheService {

@@ -1,12 +1,12 @@
 package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -14,28 +14,25 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.filter.LoggingFilter;
-import org.jibx.runtime.JiBXException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.GwdgException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.pidcache.json.FullPid;
+import de.mpg.mpdl.doxi.pidcache.json.JsonTransforming;
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class GwdgClient {
   private static final Logger LOG = LoggerFactory.getLogger(GwdgClient.class);
 
-  private static final String URL = "url";
-  private static final String PID = "pid";
-
-  private final String gwdgPidServiceCreate;
-  private final String gwdgPidServiceView;
-  private final String gwdgPidServiceSearch;
-  private final String gwdgPidServiceUpdate;
+  private static final String URL = "URL";
 
   private final WebTarget gwdgTarget;
-  private final XMLTransforming xmlTransforming;
-
+  private final String gwdgSuffix;
+  private final JsonTransforming jsonTransforming;
   private final String gwdgUser;
 
   public GwdgClient() {
@@ -57,56 +54,55 @@ public class GwdgClient {
 
     this.gwdgTarget =
         client.target(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));
-    this.gwdgPidServiceCreate =
-        PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_CREATE_PATH);
-    this.gwdgPidServiceView =
-        PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_VIEW_PATH);
-    this.gwdgPidServiceSearch =
-        PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SEARCH_PATH);
-    this.gwdgPidServiceUpdate =
-        PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_UPDATE_PATH);
+    this.gwdgSuffix = PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SUFFIX);
 
-    this.xmlTransforming = new XMLTransforming();
+    this.jsonTransforming = new JsonTransforming();
   }
 
-  public Pid create(URI url) throws GwdgException, JiBXException {
+  public Pid create(URI url) throws GwdgException {
     LOG.info("User requests CREATE with URL {}", url);
 
     try {
 
-      Response response = gwdgTarget //
-          .path(this.gwdgPidServiceCreate) //
-          .queryParam(URL, url.toString()).request(MediaType.TEXT_PLAIN_TYPE).post(null);
+      Response response = this.gwdgTarget //
+          .path(this.gwdgSuffix) //
+          .request(MediaType.APPLICATION_JSON) //
+          .accept(MediaType.APPLICATION_JSON) //
+          .post(Entity.json(this.jsonTransforming.getGwdgInputAsJson(GwdgClient.URL, url.toString())));
 
       if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-        String xml = response.readEntity(String.class);
-        PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
-        Pid pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
+        String result = response.readEntity(String.class);
+        Pid pid = new Pid(PidID.create(this.jsonTransforming.getAsEpicPid(result).getEpicPid()), url);
         LOG.info("create successfully returned pid {}", pid);
         return pid;
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
 
-    } catch (GwdgException | JiBXException e) {
+    } catch (GwdgException e) {
       LOG.error("CREATE: URL {}:\n{}", url, e);
       throw e;
     }
   }
 
-  public String retrieve(PidID pidID) throws PidNotFoundException, GwdgException, JiBXException {
+  public Pid retrieve(PidID pidID) throws PidNotFoundException, GwdgException {
     LOG.info("User requests RETRIEVE with ID {}", pidID);
 
     try {
 
       final Response response = this.gwdgTarget //
-          .path(this.gwdgPidServiceView) //
-          .queryParam(PID, pidID.getIdAsString()).request(MediaType.TEXT_PLAIN_TYPE).get();
+          .path(pidID.getIdAsString()) //
+          .request() //
+          .accept(MediaType.APPLICATION_JSON) //
+          .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        String xml = response.readEntity(String.class);
-        LOG.info("retrieve successfully returned pid");
-        return xml;
+        String result = response.readEntity(String.class);
+        
+        List<FullPid> list = this.jsonTransforming.getAsFullPid(result);
+        
+        LOG.info("create successfully returned pid {}", result);
+        return new Pid(pidID, URI.create((String)list.get(0).getParsedData()));
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
@@ -124,20 +120,24 @@ public class GwdgClient {
     }
   }
 
-  public String search(URI url) throws PidNotFoundException, GwdgException, JiBXException {
+  public Pid search(URI url) throws PidNotFoundException, GwdgException {
     LOG.info("User requests SEARCH with URL {}", url);
 
     Response response;
     try {
 
       response = this.gwdgTarget //
-          .path(this.gwdgPidServiceSearch) //
-          .queryParam(URL, url.toString()).request(MediaType.TEXT_PLAIN_TYPE).get();
+          .path(this.gwdgSuffix) //
+          .queryParam(URL, url.toString()) //
+          .request() //
+          .accept(MediaType.APPLICATION_JSON) //
+          .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        String xml = response.readEntity(String.class);
+        String result = this.gwdgSuffix + "/"
+            + this.jsonTransforming.transformToPid(response.readEntity(String.class));
         LOG.info("search successfully returned pid");
-        return xml;
+        return new Pid(PidID.create(result), url);
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
@@ -155,7 +155,7 @@ public class GwdgClient {
     }
   }
 
-  public Pid update(Pid pid) throws PidNotFoundException, GwdgException, JiBXException {
+  public Pid update(Pid pid) throws PidNotFoundException, GwdgException {
     LOG.info("User requests UPDATE with PID {}", pid);
 
     try {
@@ -166,27 +166,23 @@ public class GwdgClient {
         throw e;
       }
 
-      Form form = new Form();
-      form.param(URL, pid.getUrl().toString());
+      final Response response = this.gwdgTarget //
+          .path(pid.getPidID().getIdAsString()) //
+          .request(MediaType.APPLICATION_JSON) //
+          .accept(MediaType.APPLICATION_JSON) //
+          .put(Entity.json(
+              this.jsonTransforming.getGwdgInputAsJson(GwdgClient.URL, pid.getUrl().toString())));
 
-      final Response response = gwdgTarget //
-          .path(this.gwdgPidServiceUpdate) //
-          .queryParam(PID, pid.getPidID().getIdAsString()).request(MediaType.TEXT_PLAIN_TYPE)
-          .post(Entity.form(form));
-
-      if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        String xml = response.readEntity(String.class);
-        PidServiceResponseVO vo = xmlTransforming.transformToVO(xml);
-        Pid _pid = new Pid(PidID.create(vo.getIdentifier()), URI.create(vo.getUrl()));
-        LOG.info("update successfully returned pid {}", _pid);
-        return _pid;
+      if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
+        LOG.info("update successful for PID {}", pid);
+        return pid;
       }
 
       throw new GwdgException(response.getStatus(), response.readEntity(String.class));
 
     } catch (PidNotFoundException e) {
       throw e;
-    } catch (GwdgException | JiBXException e) {
+    } catch (GwdgException e) {
       LOG.error("UPDATE: PID {}:\n{}", pid, e);
       throw e;
     }
@@ -197,7 +193,10 @@ public class GwdgClient {
 
     try {
 
-      final Response response = this.gwdgTarget.request().get();
+      final Response response = this.gwdgTarget //
+          .request() //
+          .accept(MediaType.APPLICATION_JSON) //
+          .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         LOG.info("Service available");

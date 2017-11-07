@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.GwdgClient;
-import de.mpg.mpdl.doxi.pidcache.Pid;
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -68,9 +68,9 @@ public class GwdgClientTest {
         gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
     Assert.assertNotNull(pid);
     
-    String xml = gwdgClient.retrieve(pid.getPidID());
+    pid = gwdgClient.retrieve(pid.getPidID());
 
-    Assert.assertNotNull(xml);
+    Assert.assertNotNull(pid);
 
     LOG.info("--------------------- FINISHED test_3_RetrievePid ---------------------");
   }
@@ -84,9 +84,9 @@ public class GwdgClientTest {
         gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
     Assert.assertNotNull(pid);
     
-    String xml = gwdgClient.search(pid.getUrl());
+    pid = gwdgClient.search(pid.getUrl());
 
-    Assert.assertNotNull(xml);
+    Assert.assertNotNull(pid);
 
     LOG.info("--------------------- FINISHED test_4_SearchPid ---------------------");
   }

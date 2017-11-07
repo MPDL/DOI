@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import de.mpg.mpdl.doxi.util.EMF;
 
 public class PidService implements PidServiceInterface {
@@ -19,7 +21,7 @@ public class PidService implements PidServiceInterface {
 
   private final GwdgClient gwdgClient;
   private final XMLTransforming xmlTransforming;
-
+  
   @Context
   private SecurityContext secContext;
 
@@ -74,7 +76,7 @@ public class PidService implements PidServiceInterface {
       pidCacheService.remove(pidID);
       em.getTransaction().commit();
 
-      return transformToPidServiceResponse(pid, "create");
+      return this.transformToPidServiceResponse(pid);
 
     } catch (DoxiException e) {
       throw e;
@@ -104,10 +106,10 @@ public class PidService implements PidServiceInterface {
 
       if (pidQueue != null) {
         Pid pid = new Pid(pidID, pidQueue.getUrl());
-        return transformToPidServiceResponse(pid, "view");
+        return this.transformToPidServiceResponse(pid);
       }
 
-      return this.gwdgClient.retrieve(pidID);
+      return this.transformToPidServiceResponse(this.gwdgClient.retrieve(pidID));
 
     } catch (PidNotFoundException e) {
       LOG.warn("RETRIEVE: ID {}:\n{}", pidID, e);
@@ -134,10 +136,10 @@ public class PidService implements PidServiceInterface {
       Pid pid = pidQueueService.search(url);
 
       if (pid != null) {
-        return transformToPidServiceResponse(pid, "search");
+        return this.transformToPidServiceResponse(pid);
       }
 
-      return this.gwdgClient.search(url);
+      return this.transformToPidServiceResponse(this.gwdgClient.search(url));
 
     } catch (PidNotFoundException e) {
       LOG.warn("SEARCH: URL {}:\n{}", url, e);
@@ -174,7 +176,7 @@ public class PidService implements PidServiceInterface {
         em.getTransaction().begin();
         pidQueue.setUrl(pid.getUrl());
         em.getTransaction().commit();
-        return transformToPidServiceResponse(pid, "modify");
+        return this.transformToPidServiceResponse(pid);
       }
 
 //      // Pruefung: PID bei GWDG ueberhaupt vorhanden
@@ -191,7 +193,7 @@ public class PidService implements PidServiceInterface {
       pidQueueService.add(pid);
       em.getTransaction().commit();
 
-      return transformToPidServiceResponse(pid, "modify");
+      return this.transformToPidServiceResponse(pid);
 
     } catch (DoxiException e) {
       throw e;
@@ -246,16 +248,10 @@ public class PidService implements PidServiceInterface {
     }
   }
 
-  private String transformToPidServiceResponse(Pid pid, String action) throws JiBXException {
+  private String transformToPidServiceResponse(Pid pid) throws JiBXException {
     final PidServiceResponseVO pidServiceResponseVO = new PidServiceResponseVO();
-    pidServiceResponseVO.setAction(action);
-    pidServiceResponseVO.setCreator(this.gwdgClient.getGwdgUser());
     pidServiceResponseVO.setIdentifier(pid.getPidID().getIdAsString());
     pidServiceResponseVO.setUrl(pid.getUrl().toString());
-//    pidServiceResponseVO.setUserUid("dummyUser");
-//    pidServiceResponseVO.setInstitute("dummyInstitute");
-//    pidServiceResponseVO.setContact("dummyContact");
-//    pidServiceResponseVO.setMessage("dummyMessage");
 
     return xmlTransforming.transformToXML(pidServiceResponseVO);
   }

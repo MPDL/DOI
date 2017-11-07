@@ -17,9 +17,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import de.mpg.mpdl.doxi.exception.DoxiException;
-import de.mpg.mpdl.doxi.pidcache.Pid;
-import de.mpg.mpdl.doxi.pidcache.PidID;
 import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,8 +59,8 @@ public class PidResource {
       @ApiParam(value = "the URL to which the PID should point", required = true) //
       @FormParam(URL) String url) throws DoxiException //
   {
-    final String resultPid = pidService.create(URI.create(url));
-    final Response response = Response.status(Status.CREATED).entity(resultPid).build();
+    final String xml = pidService.create(URI.create(url));
+    final Response response = Response.status(Status.CREATED).entity(xml).build();
 
     return response;
   }
@@ -78,8 +78,8 @@ public class PidResource {
       @ApiParam(value = "the ID which should be retrieved", required = true) //
       @QueryParam(ID) String id) //
       throws DoxiException {
-    final String resultPid = pidService.retrieve(PidID.create(id));
-    final Response response = Response.status(Status.OK).entity(resultPid).build();
+    final String xml = pidService.retrieve(PidID.create(id));
+    final Response response = Response.status(Status.OK).entity(xml).build();
 
     return response;
   }
@@ -97,8 +97,8 @@ public class PidResource {
       @ApiParam(value = "the URL which should be searched", required = true) //
       @QueryParam(URL) String url) //
       throws DoxiException {
-    final String resultPid = pidService.search(URI.create(url));
-    final Response response = Response.status(Status.OK).entity(resultPid).build();
+    final String xml = pidService.search(URI.create(url));
+    final Response response = Response.status(Status.OK).entity(xml).build();
 
     return response;
   }
@@ -120,8 +120,8 @@ public class PidResource {
       @ApiParam(value = "the URL to which the PID should point", required = true) //
       @FormParam(URL) String url) //
       throws DoxiException {
-    final String resultPid = pidService.update(new Pid(PidID.create(id), URI.create(url)));
-    final Response response = Response.status(Status.OK).entity(resultPid).build();
+    final String xml = pidService.update(new Pid(PidID.create(id), URI.create(url)));
+    final Response response = Response.status(Status.OK).entity(xml).build();
 
     return response;
   }

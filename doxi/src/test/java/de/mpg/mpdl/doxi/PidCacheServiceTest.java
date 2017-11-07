@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.pidcache.PidCacheService;
-import de.mpg.mpdl.doxi.pidcache.PidID;
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.util.EMF;
 

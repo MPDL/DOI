@@ -69,16 +69,10 @@ public class DoxiPropertiesTest {
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_QUEUE_SLEEP_FILE));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_CACHE_QUEUE_SLEEP_FILE));
 
-    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_CREATE_PATH));
-    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_CREATE_PATH));
-    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SEARCH_PATH));
-    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SEARCH_PATH));
-    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_UPDATE_PATH));
-    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_UPDATE_PATH));
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));
-    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_VIEW_PATH));
-    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_VIEW_PATH));
+    LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SUFFIX));
+    Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SUFFIX));
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_TIMEOUT));
     Assert.assertNotNull(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_TIMEOUT));
     LOG.info(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_USER_LOGIN));

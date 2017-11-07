@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.pidcache;
+package de.mpg.mpdl.doxi.pidcache.model;
 
 @SuppressWarnings("serial")
 public class PidID extends AbstractID {

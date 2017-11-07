@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
 
 public class PidQueueProcess {
   private static final Logger LOG = LoggerFactory.getLogger(PidQueueProcess.class);

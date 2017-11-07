@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class PidCacheProcess {

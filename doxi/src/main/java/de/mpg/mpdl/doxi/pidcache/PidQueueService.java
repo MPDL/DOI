@@ -8,6 +8,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import de.mpg.mpdl.doxi.pidcache.model.Pid;
+import de.mpg.mpdl.doxi.pidcache.model.PidID;
+
 public class PidQueueService {
   private final PidQueueDAO pidQueueDAO;
 

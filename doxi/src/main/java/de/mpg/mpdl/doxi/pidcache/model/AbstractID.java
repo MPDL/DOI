@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.pidcache;
+package de.mpg.mpdl.doxi.pidcache.model;
 
 import java.io.Serializable;
 

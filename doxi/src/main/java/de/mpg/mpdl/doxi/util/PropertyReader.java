@@ -38,11 +38,8 @@ public class PropertyReader {
   public static final String DOXI_PID_CACHE_REFRESH_BLOCKSIZE = "doxi.pid.cache.refresh.blocksize";
   public static final String DOXI_PID_CACHE_REFRESH_INTERVAL = "doxi.pid.cache.refresh.interval";  
   
-  public static final String DOXI_PID_GWDG_SERVICE_CREATE_PATH = "doxi.pid.gwdg.service.create.path";
-  public static final String DOXI_PID_GWDG_SERVICE_SEARCH_PATH = "doxi.pid.gwdg.service.search.path";
-  public static final String DOXI_PID_GWDG_SERVICE_UPDATE_PATH = "doxi.pid.gwdg.service.update.path";
   public static final String DOXI_PID_GWDG_SERVICE_URL = "doxi.pid.gwdg.service.url";
-  public static final String DOXI_PID_GWDG_SERVICE_VIEW_PATH = "doxi.pid.gwdg.service.view.path";
+  public static final String DOXI_PID_GWDG_SERVICE_SUFFIX = "doxi.pid.gwdg.service.suffix";
   public static final String DOXI_PID_GWDG_TIMEOUT = "doxi.pid.gwdg.timeout";
   public static final String DOXI_PID_GWDG_USER_LOGIN = "doxi.pid.gwdg.user.login";
   public static final String DOXI_PID_GWDG_USER_PASSWORD = "doxi.pid.gwdg.user.password";
