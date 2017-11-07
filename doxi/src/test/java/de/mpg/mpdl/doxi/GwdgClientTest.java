@@ -75,15 +75,16 @@ public class GwdgClientTest {
     LOG.info("--------------------- FINISHED test_3_RetrievePid ---------------------");
   }
 
+  @Ignore
   @Test
   public void test_4_SearchPid() throws Exception {
     LOG.info("--------------------- STARTING test_4_SearchPid ---------------------");
 
-//    Pid pid =
-//        gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
-//    Assert.assertNotNull(pid);
+    Pid pid =
+        gwdgClient.create(URI.create(this.dummyUrl.concat(Long.toString(new Date().getTime()))));
+    Assert.assertNotNull(pid);
     
-    Pid pid = gwdgClient.search(URI.create("djhjdhfj"));
+    pid = gwdgClient.search(pid.getUrl());
 
     Assert.assertNotNull(pid);
 
