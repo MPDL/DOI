@@ -128,14 +128,14 @@ public class GwdgClient {
 
       response = this.gwdgTarget //
           .path(this.gwdgSuffix) //
-          .queryParam(URL, url.toString()) //
+          .queryParam(URL, (url.toString() + "*")) // TODO: Warum hier mit * gesucht werden muß ???? (sonst findet die GWDG nix)
           .request() //
           .accept(MediaType.APPLICATION_JSON) //
           .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
         String result = this.gwdgSuffix + "/"
-            + this.jsonTransforming.transformToPid(response.readEntity(String.class));
+            + this.jsonTransforming.getAsPid(response.readEntity(String.class));
         LOG.info("search successfully returned pid");
         return new Pid(PidID.create(result), url);
       }

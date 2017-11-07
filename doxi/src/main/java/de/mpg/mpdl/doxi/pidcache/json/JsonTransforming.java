@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.mpg.mpdl.doxi.exception.GwdgException;
+import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 
 public class JsonTransforming {
   private ObjectMapper mapper = new ObjectMapper();
@@ -30,17 +31,17 @@ public class JsonTransforming {
     }
   }
   
-  public String transformToPid(String json) {
-    if (json == null) {
-      throw new IllegalArgumentException(
-          getClass().getSimpleName() + ":transformToPid: s is null");
+  @SuppressWarnings("unchecked")
+  public String getAsPid(String json) throws PidNotFoundException  {
+    try {
+      List<String> list = this.mapper.readValue(json, List.class);
+      if (list.size() == 1) {
+        return list.get(0);
+      }
+    } catch (Exception e) { // TODO: Eigentlich sollte die Liste immer gefüllt sein. Manchmal liefert die GWDG aber eine leere Liste zurück
     }
-
-    json = json.replace("[", "");
-    json = json.replace("]", "");
-    String result = json.trim();
-
-    return result;
+    
+    throw new PidNotFoundException();  
   }
 
   public String getGwdgInputAsJson(String type, String parsedData) throws GwdgException {
