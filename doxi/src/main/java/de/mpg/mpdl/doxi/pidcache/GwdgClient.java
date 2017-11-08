@@ -1,12 +1,14 @@
 package de.mpg.mpdl.doxi.pidcache;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -17,10 +19,13 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+
 import de.mpg.mpdl.doxi.exception.GwdgException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
+import de.mpg.mpdl.doxi.pidcache.json.EpicPid;
 import de.mpg.mpdl.doxi.pidcache.json.FullPid;
-import de.mpg.mpdl.doxi.pidcache.json.JsonTransforming;
+import de.mpg.mpdl.doxi.pidcache.json.GwdgInput;
 import de.mpg.mpdl.doxi.pidcache.model.Pid;
 import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import de.mpg.mpdl.doxi.util.PropertyReader;
@@ -32,7 +37,6 @@ public class GwdgClient {
 
   private final WebTarget gwdgTarget;
   private final String gwdgSuffix;
-  private final JsonTransforming jsonTransforming;
   private final String gwdgUser;
 
   public GwdgClient() {
@@ -51,28 +55,30 @@ public class GwdgClient {
     client.property(ClientProperties.READ_TIMEOUT, timeout);
 
     client.register(new LoggingFilter(java.util.logging.Logger.getLogger("GwdgJersey"), true));
+    client.register(JacksonJaxbJsonProvider.class);
 
     this.gwdgTarget =
         client.target(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));
     this.gwdgSuffix = PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_SUFFIX);
-
-    this.jsonTransforming = new JsonTransforming();
   }
 
   public Pid create(URI url) throws GwdgException {
     LOG.info("User requests CREATE with URL {}", url);
 
     try {
-
+      
+      List<GwdgInput> list = new ArrayList<GwdgInput>();
+      list.add(new GwdgInput(GwdgClient.URL, url.toString()));
+      
       Response response = this.gwdgTarget //
           .path(this.gwdgSuffix) //
           .request(MediaType.APPLICATION_JSON) //
           .accept(MediaType.APPLICATION_JSON) //
-          .post(Entity.json(this.jsonTransforming.getGwdgInputAsJson(GwdgClient.URL, url.toString())));
+          .post(Entity.json(list));
 
       if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-        String result = response.readEntity(String.class);
-        Pid pid = new Pid(PidID.create(this.jsonTransforming.getAsEpicPid(result).getEpicPid()), url);
+        EpicPid result = response.readEntity(EpicPid.class);
+        Pid pid = new Pid(PidID.create(result.getEpicPid()), url);
         LOG.info("create successfully returned pid {}", pid);
         return pid;
       }
@@ -97,12 +103,10 @@ public class GwdgClient {
           .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        String result = response.readEntity(String.class);
-        
-        List<FullPid> list = this.jsonTransforming.getAsFullPid(result);
+        List<FullPid> result = response.readEntity(new GenericType<List<FullPid>>(){});
         
         LOG.info("create successfully returned pid {}", result);
-        return new Pid(pidID, URI.create((String)list.get(0).getParsedData()));
+        return new Pid(pidID, URI.create((String)result.get(0).getParsedData()));
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
@@ -164,12 +168,14 @@ public class GwdgClient {
         throw e;
       }
 
+      List<GwdgInput> list = new ArrayList<GwdgInput>();
+      list.add(new GwdgInput(GwdgClient.URL, pid.getUrl().toString()));
+      
       final Response response = this.gwdgTarget //
           .path(pid.getPidID().getIdAsString()) //
           .request(MediaType.APPLICATION_JSON) //
           .accept(MediaType.APPLICATION_JSON) //
-          .put(Entity.json(
-              this.jsonTransforming.getGwdgInputAsJson(GwdgClient.URL, pid.getUrl().toString())));
+          .put(Entity.json(list));
 
       if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
         LOG.info("update successful for PID {}", pid);
