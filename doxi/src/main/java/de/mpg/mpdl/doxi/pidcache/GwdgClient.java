@@ -198,6 +198,7 @@ public class GwdgClient {
     try {
 
       final Response response = this.gwdgTarget //
+          .path(this.gwdgSuffix) //
           .request() //
           .accept(MediaType.APPLICATION_JSON) //
           .get();
