@@ -132,12 +132,18 @@ public class GwdgClient {
 
       response = this.gwdgTarget //
           .path(this.gwdgSuffix) //
-          .queryParam(URL, (url.toString() + "*")) // TODO: Warum hier mit * gesucht werden muß ???? (sonst findet die GWDG nix)
+          .queryParam(URL, (url.toString()))
           .request() //
           .accept(MediaType.APPLICATION_JSON) //
           .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+        String result = response.readEntity(String.class);
+        
+        if (result.isEmpty()) {
+          throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
+        }
+        
         LOG.info("search successfully returned pids");
         return response.readEntity(String.class);
       }
