@@ -128,6 +128,7 @@ public class GwdgClient {
     LOG.info("User requests SEARCH with URL {}", url);
 
     Response response;
+    String result = null;
     try {
 
       response = this.gwdgTarget //
@@ -138,21 +139,21 @@ public class GwdgClient {
           .get();
 
       if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-        String result = response.readEntity(String.class);
+        result = response.readEntity(String.class);
         
-        if (result.isEmpty()) {
-          throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
+        if (result.isEmpty() || "[]".equals(result)) {
+          throw new PidNotFoundException(response.getStatus(), result);
         }
         
         LOG.info("search successfully returned pids");
-        return response.readEntity(String.class);
+        return result;
       }
 
       if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-        throw new PidNotFoundException(response.getStatus(), response.readEntity(String.class));
+        throw new PidNotFoundException(response.getStatus(), result);
       }
 
-      throw new GwdgException(response.getStatus(), response.readEntity(String.class));
+      throw new GwdgException(response.getStatus(), result);
 
     } catch (PidNotFoundException e) {
       LOG.warn("SEARCH: URL {}:\n{}", url, e);
