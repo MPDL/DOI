@@ -28,11 +28,14 @@ public class PidQueueProcess {
    * Das geht aber nur, wenn die PID auf GWDG Seite bereits bekannt ist und die neue URL dort noch nicht vergeben wurde.
    */
   public void empty(int anzahl) {
+    final long timeStart = System.currentTimeMillis();;
     try {
+      LOG.info("PidQueueProcess.empty() gestartet. Anzahl = {}", anzahl);
       
       List<Pid> pids = this.pidQueueService.getFirstBlock(anzahl);
       
       if (pids.size() == 0) {
+        LOG.info("0 entries done");
         return;
       }
 
@@ -53,14 +56,16 @@ public class PidQueueProcess {
         this.em.getTransaction().begin();
         this.pidQueueService.remove(pid.getPidID());
         this.em.getTransaction().commit();
-        LOG.info("{} entries done", pids.size());
       }
-      
+      LOG.info("{} entries done", pids.size());
     } catch (Exception e) {
       LOG.error("EMPTY:\n{}", e);
       if (this.em.getTransaction().isActive()) {
         this.em.getTransaction().rollback();
       }
+    } finally {
+      final long timeEnd = System.currentTimeMillis();
+      LOG.info("PidQueueProcess.empty() beendet. Dauer: {} ms", (timeEnd - timeStart));
     }
   }
 }

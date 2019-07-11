@@ -45,3 +45,5 @@ doxi/.settings/
 doxi/.classpath
 doxi/.project
 doxi/target/*
+.project
+.externalToolBuilders/New_Builder.launch
