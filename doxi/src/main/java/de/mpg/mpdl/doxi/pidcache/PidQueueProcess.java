@@ -30,16 +30,20 @@ public class PidQueueProcess {
   public void empty(int anzahl) {
     final long timeStart = System.currentTimeMillis();;
     try {
-      LOG.info("PidQueueProcess.empty() gestartet. Anzahl = {}", anzahl);
+      LOG.info("*** QUEUE *** PidQueueProcess.empty() gestartet. Anzahl = {}", anzahl);
       
       List<Pid> pids = this.pidQueueService.getFirstBlock(anzahl);
       
       if (pids.size() == 0) {
-        LOG.info("0 entries done");
+        LOG.info("*** QUEUE *** Queue is empty.");
         return;
       }
 
+      final long time1 = System.currentTimeMillis();
+      LOG.info("*** QUEUE *** PidQueueService -> getFirstBlock. Dauer: {} ms", (time1 - timeStart));
+      
       for (Pid pid : pids) {
+        final long time2 = System.currentTimeMillis();
         try { // Pruefung: URL bei GWDG bereits vorhanden
           this.gwdgClient.search(pid.getUrl());
           LOG.error("URL already exists. Could not update PID: {}", pid);
@@ -50,14 +54,20 @@ public class PidQueueProcess {
           } catch (PidNotFoundException e2) {
             LOG.error("PID does not exists. Could not update PID: {}", pid);
           }
+        } finally {
+          final long time3 = System.currentTimeMillis();
+          LOG.info("*** QUEUE *** PidQueueService -> Gwdg. Dauer: {} ms", (time3 - time2));
         }
 
         // in jedem Fall PID aus Queue entfernen
+        final long time4 = System.currentTimeMillis();
         this.em.getTransaction().begin();
         this.pidQueueService.remove(pid.getPidID());
         this.em.getTransaction().commit();
+        final long time5 = System.currentTimeMillis();
+        LOG.info("*** QUEUE *** PidQueueService -> remove. Dauer: {} ms", (time5 - time4));
       }
-      LOG.info("{} entries done", pids.size());
+      LOG.info("*** QUEUE *** {} entries done", pids.size());
     } catch (Exception e) {
       LOG.error("EMPTY:\n{}", e);
       if (this.em.getTransaction().isActive()) {
@@ -65,7 +75,7 @@ public class PidQueueProcess {
       }
     } finally {
       final long timeEnd = System.currentTimeMillis();
-      LOG.info("PidQueueProcess.empty() beendet. Dauer: {} ms", (timeEnd - timeStart));
+      LOG.info("*** QUEUE *** PidQueueProcess.empty() beendet. Dauer: {} ms", (timeEnd - timeStart));
     }
   }
 }

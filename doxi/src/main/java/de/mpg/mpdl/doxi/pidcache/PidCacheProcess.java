@@ -29,8 +29,9 @@ public class PidCacheProcess {
   public void fill(int anzahl) {
     final long timeStart = System.currentTimeMillis();;
     try {
-      LOG.info("PidCacheProcess.fill() gestartet. Anzahl = {}", anzahl);
+      LOG.info("*** CACHE *** PidCacheProcess.fill() gestartet. Anzahl = {}", anzahl);
       if (this.pidCacheService.isFull()) {
+        LOG.info("*** CACHE *** Cache is full.");
         return;
       }
       
@@ -51,12 +52,12 @@ public class PidCacheProcess {
         }
         i++;
       }
-      LOG.info("{} entries filled", i);
+      LOG.info("*** CACHE ***  {} entries filled", i);
     } catch (Exception e) {
       LOG.error("FILL:\n{}", e);
     } finally {
       final long timeEnd = System.currentTimeMillis();
-      LOG.info("PidCacheProcess.fill() beendet. Dauer: {} ms", (timeEnd - timeStart));
+      LOG.info("*** CACHE *** PidCacheProcess.fill() beendet. Dauer: {} ms", (timeEnd - timeStart));
     }
   }
 }

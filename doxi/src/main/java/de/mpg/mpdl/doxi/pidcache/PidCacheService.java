@@ -48,7 +48,7 @@ public class PidCacheService {
   }
 
   public boolean isFull() {
-    return (this.sizeMax == getSize());
+    return (getSize() >= this.sizeMax);
   }
 
   public boolean isEmpty() {
