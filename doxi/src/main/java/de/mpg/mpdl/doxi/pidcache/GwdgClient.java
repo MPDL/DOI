@@ -19,8 +19,6 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-
 import de.mpg.mpdl.doxi.exception.GwdgException;
 import de.mpg.mpdl.doxi.exception.PidNotFoundException;
 import de.mpg.mpdl.doxi.pidcache.json.EpicPid;
@@ -55,7 +53,7 @@ public class GwdgClient {
     client.property(ClientProperties.READ_TIMEOUT, timeout);
 
     client.register(new LoggingFilter(java.util.logging.Logger.getLogger("GwdgJersey"), true));
-    client.register(JacksonJaxbJsonProvider.class);
+    //client.register(JacksonJaxbJsonProvider.class);
 
     this.gwdgTarget =
         client.target(PropertyReader.getProperty(PropertyReader.DOXI_PID_GWDG_SERVICE_URL));

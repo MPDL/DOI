@@ -51,8 +51,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<inherited>true</inherited>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
@@ -61,7 +59,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
 				<configuration>
 					<packagingExcludes>**/doxi.properties</packagingExcludes>
 				</configuration>
@@ -69,12 +66,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
 			</plugin>
 			<plugin>
 				<groupId>org.jibx</groupId>
 				<artifactId>jibx-maven-plugin</artifactId>
-				<version>1.3.1</version>
+				<version>1.3.3</version>
 				<configuration>
 					<schemaBindingDirectory>${project.build.outputDirectory}/jibx</schemaBindingDirectory>
 					<includeSchemaBindings>
@@ -89,27 +85,29 @@
 						</goals>
 					</execution>
 				</executions>
-				<!-- 
-				<dependencies>
-					<dependency>
-						<groupId>org.jibx</groupId>
-						<artifactId>jibx-bind</artifactId>
-						<version>1.2.5</version>
-						<exclusions>
-							<exclusion>
-								<artifactId>bcel</artifactId>
-								<groupId>bcel</groupId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.bcel</groupId>
-						<artifactId>bcel</artifactId>
-						<version>6.0-SNAPSHOT</version>
-					</dependency>
-				</dependencies>
-				 -->
 			</plugin>
+			<!-- Globally exclude xml-apis, as they are part of the base library-->
+			  <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-enforcer-plugin</artifactId>
+			    <version>1.4.1</version>
+			    <executions>
+			      <execution>
+			        <goals>
+			          <goal>enforce</goal>
+			        </goals>
+			        <configuration>
+			          <rules>
+			            <bannedDependencies>
+			              <excludes>
+			                <exclude>xml-apis:xml-apis</exclude>
+			              </excludes>
+			            </bannedDependencies>
+			          </rules>
+			        </configuration>
+			      </execution>
+			    </executions>
+			  </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -175,24 +173,25 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-jersey2-jaxrs</artifactId>
-			<version>1.5.3</version>
+			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jibx</groupId>
 			<artifactId>jibx-run</artifactId>
-			<version>1.3.1</version>
+			<version>1.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jibx</groupId>
 			<artifactId>jibx-extras</artifactId>
-			<version>1.3.1</version>
+			<version>1.3.3</version>
+			<exclusions>
+		      <exclusion>
+		        <groupId>xml-apis</groupId>
+		        <artifactId>xml-apis</artifactId>
+		      </exclusion>
+		    </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
@@ -202,7 +201,7 @@
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
-			<version>2.6.0</version>
+			<version>2.7.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
@@ -234,17 +233,22 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.12</version>
+			<version>1.7.30</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.12</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.0</version>
 		</dependency>
 	</dependencies>
 	
 	<properties>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>11</jdk.version>
 		<jersey.version>2.21</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
