@@ -60,7 +60,7 @@ public class DOIResource {
 			"	</titles>\n" + 
 			"	<creators>\n" + 
 			"		<creator>\n" + 
-			"			<creatorName>Max Mustermann</creatorName>\n" + 
+			"			<creatorName>John Doe</creatorName>\n" + 
 			"		</creator>\n" + 
 			"	</creators>\n" + 
 			"	<publisher>Sample Publisher</publisher>\n" + 
