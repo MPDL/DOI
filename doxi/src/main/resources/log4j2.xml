@@ -84,11 +84,32 @@
 		<AppenderRef ref="Console"/>
 	</Logger>
 	
-	<!-- Write all doi/datacite stuff to doi_log and console -->
-	<Logger name="de.mpg.mpdl.doxi.controller" level="info" additivity="false">
+	<Logger name="de.mpg.mpdl.doxi.pidcache.GwdgClient" level="debug" additivity="false">
 		<AppenderRef ref="doi_log"/>
 		<AppenderRef ref="Console"/>
 	</Logger>
+		<Logger name="de.mpg.mpdl.doxi.pidcache.JerseyApplicationConfigPid" level="debug" additivity="false">
+		<AppenderRef ref="doi_log"/>
+		<AppenderRef ref="Console"/>
+	</Logger>
+	
+	<!-- Write all doi/datacite stuff to doi_log and console -->
+	<Logger name="de.mpg.mpdl.doxi.doi" level="info" additivity="false">
+		<AppenderRef ref="doi_log"/>
+		<AppenderRef ref="Console"/>
+	</Logger>
+	
+	<!-- Required for Jersey Logging Feature -->
+	<Logger name="de.mpg.mpdl.doxi.doi.rest.JerseyApplicationConfig" level="debug" additivity="false">
+		<AppenderRef ref="doi_log"/>
+		<AppenderRef ref="Console"/>
+	</Logger>
+	<Logger name="de.mpg.mpdl.doxi.doi.controller.DataciteAPIController" level="debug" additivity="false">
+		<AppenderRef ref="doi_log"/>
+		<AppenderRef ref="Console"/>
+	</Logger>
+
+
 
 
     <!-- most general logger -->

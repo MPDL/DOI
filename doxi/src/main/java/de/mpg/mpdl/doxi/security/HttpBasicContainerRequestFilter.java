@@ -1,6 +1,7 @@
 package de.mpg.mpdl.doxi.security;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -8,7 +9,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 
-import org.glassfish.jersey.internal.util.Base64;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class HttpBasicContainerRequestFilter implements ContainerRequestFilter {
     if (auth != null && auth.startsWith("Basic")) {
       try {
         String base64Credentials = auth.substring("Basic".length()).trim();
-        String credentials = Base64.decodeAsString(base64Credentials);
+        String credentials = new String(Base64.getDecoder().decode(base64Credentials));
         final String[] values = credentials.split(":", 2);
         
         EntityManager em = EMF.emf.createEntityManager();

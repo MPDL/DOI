@@ -37,9 +37,15 @@ public class EMF implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
-    LOG.info("+++ ServletContextListener : contextInitialized - Inititalizing EMF");
+	  LOG.info("+++ ServletContextListener : contextInitialized - Bridging JUL to Log4j");
+	  Log4jBridgeHandler.install(true, "jul-log4j-bridge", true);
+	  //SLF4jBridgeHandler.install();
+    
+	  LOG.info("+++ ServletContextListener : contextInitialized - Inititalizing EMF");
     emf = Persistence.createEntityManagerFactory("default", jpaDBProperties);
     LOG.info("+++ ServletContextListener : contextInitialized - Init EMF done.");
+    
+    
   }
 
   @Override

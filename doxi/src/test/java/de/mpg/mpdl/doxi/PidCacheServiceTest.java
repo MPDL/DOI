@@ -16,9 +16,9 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.mpg.mpdl.doxi.doi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.pidcache.PidCacheService;
 import de.mpg.mpdl.doxi.pidcache.model.PidID;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.util.EMF;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -40,7 +40,7 @@ public class PidCacheServiceTest {
 
     WebappContext ctx = new WebappContext("ctx", "/");
     ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig",
-        new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
+        new ServletContainer(new JerseyApplicationConfig(null))).addMapping("/rest/*");
     ctx.addListener("de.mpg.mpdl.doxi.rest.EMF");
     ctx.deploy(this.server);
 

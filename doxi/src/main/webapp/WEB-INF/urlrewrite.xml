@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE urlrewrite
+    PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+    "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite>
+
+	<!-- Forward old REST requests to new paths -->
+    <rule>
+       <from>^/rest/doi/(.*)$</from>
+       <to type="forward">/doi/rest/v1/$1</to>
+    </rule>
+    
+    <rule>
+       <from>^/rest/pid/(.*)$</from>
+       <to type="forward">/pid/rest/v1/$1</to>
+    </rule>
+
+
+</urlrewrite>

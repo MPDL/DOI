@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.rest;
+package de.mpg.mpdl.doxi.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,6 @@ import org.glassfish.jersey.server.mvc.Template;
 import de.mpg.mpdl.doxi.security.DoxiRole;
 import de.mpg.mpdl.doxi.security.DoxiUser;
 import de.mpg.mpdl.doxi.util.EMF;
-import de.mpg.mpdl.doxi.view.ViewUserDB;
 
 @Path("useradmin")
 public class UserEditorResource {

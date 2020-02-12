@@ -1,4 +1,4 @@
-package de.mpg.mpdl.doxi.rest;
+package de.mpg.mpdl.doxi.pidcache.rest;
 
 import java.net.URI;
 
@@ -20,14 +20,23 @@ import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.pidcache.PidServiceInterface;
 import de.mpg.mpdl.doxi.pidcache.model.Pid;
 import de.mpg.mpdl.doxi.pidcache.model.PidID;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.media.*;
+import io.swagger.v3.oas.annotations.headers.*;
+import io.swagger.v3.oas.annotations.info.Info;
 
-@Path("pid")
-@Api(value = "PID API")
+@Path("/rest/v1")
+@OpenAPIDefinition(
+		info = @Info(
+					title="PID API"
+				),
+		servers = @Server(
+					url = "/doxi"
+				)
+)
+//@Api(value = "PID API")
 public class PidResource {
   public static final String PATH_CACHE_SIZE = "cache/size";
   public static final String PATH_CREATE = "create";
@@ -45,18 +54,18 @@ public class PidResource {
   private PidServiceInterface pidService;
 
   @Path(PATH_CREATE)
-  @ApiOperation(//
-      value = "Generates and register a Pid with known URL.",
-      notes = "ATTENTION: The Pid is saved only in the Pid Queue. If the Pid with URL already exists at GWDG it cannot be created!")
+  @Operation(//
+      summary = "Generates and register a Pid with known URL.",
+      description = "ATTENTION: The Pid is saved only in the Pid Queue. If the Pid with URL already exists at GWDG it cannot be created!")
   @ApiResponses({//
-      @ApiResponse(code = 201, message = "PID created.", response = String.class),
-      @ApiResponse(code = 400, message = "PID not created.")})
+      @ApiResponse(responseCode = "201", description = "PID created."),
+      @ApiResponse(responseCode = "400", description = "PID not created.")})
   @POST
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @RolesAllowed(ROLE_USER)
   public Response create( //
-      @ApiParam(value = "the URL to which the PID should point", required = true) //
+      @Parameter(description = "the URL to which the PID should point", required = true) //
       @FormParam(URL) String url) throws DoxiException //
   {
     final String xml = pidService.create(URI.create(url));
@@ -66,16 +75,16 @@ public class PidResource {
   }
 
   @Path(PATH_RETRIEVE)
-  @ApiOperation(value = "Retrieves a Pid with known ID.")
+  @Operation(summary = "Retrieves a Pid with known ID.")
   @ApiResponses({//
-      @ApiResponse(code = 200, message = "PID found.", response = String.class),
-      @ApiResponse(code = 400, message = "PID not found.")})
+      @ApiResponse(responseCode = "200", description = "PID found."),
+      @ApiResponse(responseCode = "400", description = "PID not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
   @RolesAllowed(ROLE_USER)
   public Response retrieve( //
-      @ApiParam(value = "the ID which should be retrieved", required = true) //
+      @Parameter(description = "the ID which should be retrieved", required = true) //
       @QueryParam(ID) String id) //
       throws DoxiException {
     final String xml = pidService.retrieve(PidID.create(id));
@@ -85,16 +94,16 @@ public class PidResource {
   }
 
   @Path(PATH_SEARCH)
-  @ApiOperation(value = "Searches a Pid with known URL.")
+  @Operation(summary = "Searches a Pid with known URL.")
   @ApiResponses({//
-      @ApiResponse(code = 200, message = "PID found.", response = String.class),
-      @ApiResponse(code = 400, message = "PID not found.")})
+      @ApiResponse(responseCode = "200", description = "PID found."),
+      @ApiResponse(responseCode = "400", description = "PID not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
   @RolesAllowed(ROLE_USER)
   public Response search( //
-      @ApiParam(value = "the URL which should be searched", required = true) //
+      @Parameter(description = "the URL which should be searched", required = true) //
       @QueryParam(URL) String url) //
       throws DoxiException {
     final String s = pidService.search(URI.create(url));
@@ -104,20 +113,20 @@ public class PidResource {
   }
 
   @Path(PATH_UPDATE)
-  @ApiOperation(//
-      value = "Updates an existing Pid.",
-      notes = "ATTENTION: The Pid is updated only in the Pid Queue. If the Pid does not exist at GWDG it cannot be updated!")
+  @Operation(//
+	  summary = "Updates an existing Pid.",
+      description = "ATTENTION: The Pid is updated only in the Pid Queue. If the Pid does not exist at GWDG it cannot be updated!")
   @ApiResponses({//
-      @ApiResponse(code = 200, message = "PID updated.", response = String.class),
-      @ApiResponse(code = 400, message = "PID not updated.")})
+      @ApiResponse(responseCode = "200", description = "PID updated."),
+      @ApiResponse(responseCode = "400", description = "PID not updated.")})
   @PUT
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @RolesAllowed(ROLE_USER)
   public Response update( //
-      @ApiParam(value = "the ID of the existing Pid", required = true) //
+      @Parameter(description = "the ID of the existing Pid", required = true) //
       @FormParam(ID) String id, //
-      @ApiParam(value = "the URL to which the PID should point", required = true) //
+      @Parameter(description = "the URL to which the PID should point", required = true) //
       @FormParam(URL) String url) //
       throws DoxiException {
     final String xml = pidService.update(new Pid(PidID.create(id), URI.create(url)));
@@ -127,10 +136,10 @@ public class PidResource {
   }
 
   @Path(PATH_CACHE_SIZE)
-  @ApiOperation(value = "Returns the current size of the Pid Cache.")
+  @Operation(summary = "Returns the current size of the Pid Cache.")
   @ApiResponses({//
-      @ApiResponse(code = 200, message = "Size found.", response = String.class),
-      @ApiResponse(code = 400, message = "Size not found.")})
+      @ApiResponse(responseCode = "200", description = "Size found."),
+      @ApiResponse(responseCode = "400", description = "Size not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
@@ -144,10 +153,10 @@ public class PidResource {
   }
 
   @Path(PATH_QUEUE_SIZE)
-  @ApiOperation(value = "Returns the current size of the Pid Queue.")
+  @Operation(summary = "Returns the current size of the Pid Queue.")
   @ApiResponses({//
-      @ApiResponse(code = 200, message = "Size found.", response = String.class),
-      @ApiResponse(code = 400, message = "Size not found.")})
+      @ApiResponse(responseCode = "200", description = "Size found."),
+      @ApiResponse(responseCode = "400", description = "Size not found.")})
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)

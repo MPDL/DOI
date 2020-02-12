@@ -172,11 +172,26 @@
 	</dependencyManagement>
 	
 	<dependencies>
+	<!-- 
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-jersey2-jaxrs</artifactId>
 			<version>1.6.0</version>
 		</dependency>
+		-->
+		
+		<!-- Rewrite filter to forward old urls to new one -->
+		<dependency>
+		    <groupId>org.tuckey</groupId>
+		    <artifactId>urlrewritefilter</artifactId>
+		    <version>4.0.3</version>
+		</dependency>
+		
+		<dependency>
+		      <groupId>io.swagger.core.v3</groupId>
+		      <artifactId>swagger-jaxrs2</artifactId>
+		      <version>2.0.0</version>
+    	</dependency>
 		<dependency>
 			<groupId>org.jibx</groupId>
 			<artifactId>jibx-run</artifactId>
@@ -192,6 +207,18 @@
 		        <artifactId>xml-apis</artifactId>
 		      </exclusion>
 		    </exclusions>
+		</dependency>
+		<!-- API, java.xml.bind module -->
+		<dependency>
+		    <groupId>jakarta.xml.bind</groupId>
+		    <artifactId>jakarta.xml.bind-api</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
+		<!-- Runtime, com.sun.xml.bind module -->
+		<dependency>
+		    <groupId>org.glassfish.jaxb</groupId>
+		    <artifactId>jaxb-runtime</artifactId>
+		    <version>2.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
@@ -216,6 +243,10 @@
 			<artifactId>jersey-mvc-mustache</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>org.glassfish.jersey.inject</groupId>
+		    <artifactId>jersey-hk2</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
 			<scope>test</scope>
@@ -235,6 +266,8 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.30</version>
 		</dependency>
+
+		<!-- Use log4j2 as logging framework -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
@@ -245,12 +278,65 @@
 			<artifactId>log4j-core</artifactId>
 			<version>2.13.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jul</artifactId>
+			<version>2.13.0</version>
+		</dependency>
 	</dependencies>
 	
 	<properties>
 		<jdk.version>11</jdk.version>
-		<jersey.version>2.21</jersey.version>
+		<jersey.version>2.30</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.warName>doxi</project.warName>
 	</properties>
+	
+	<profiles>
+	<!-- this profile is used by developers -->
+		<profile>
+			<id>env-development</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<!-- copy the war folder into the tomcat deploy folder ($TOMCAT_HOME/webapps) -->
+							<execution>
+								<id>install</id>
+								<phase>install</phase>
+								<configuration>
+									<tasks>
+										<delete quiet="true" file="${tomcat.webapps}/${project.warName}.war" />
+										<delete quiet="true" dir="${tomcat.webapps}/${project.warName}" />
+										<copy overwrite="true" file="${project.build.directory}/${project.warName}.war" tofile="${tomcat.webapps}/${project.warName}.war" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.zeroturnaround</groupId>
+						<artifactId>jrebel-maven-plugin</artifactId>
+						<version>1.1.5</version>
+						<executions>
+							<execution>
+								<id>generate-rebel-xml</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	
+	</profiles>
 	
 </project>

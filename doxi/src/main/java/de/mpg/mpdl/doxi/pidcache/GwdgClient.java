@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class GwdgClient {
     client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
     client.property(ClientProperties.READ_TIMEOUT, timeout);
 
-    client.register(new LoggingFilter(java.util.logging.Logger.getLogger("GwdgJersey"), true));
+    client.register(new LoggingFeature(java.util.logging.Logger.getLogger(this.getClass().getCanonicalName())));
     //client.register(JacksonJaxbJsonProvider.class);
 
     this.gwdgTarget =

@@ -1,13 +1,13 @@
-package de.mpg.mpdl.doxi.controller;
+package de.mpg.mpdl.doxi.doi.controller;
 
 import java.util.List;
 
+import de.mpg.mpdl.doxi.doi.model.DOI;
 import de.mpg.mpdl.doxi.exception.DoiAlreadyExistsException;
 import de.mpg.mpdl.doxi.exception.DoiNotFoundException;
 import de.mpg.mpdl.doxi.exception.DoiRegisterException;
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.MetadataInvalidException;
-import de.mpg.mpdl.doxi.model.DOI;
 
 public interface DoiControllerInterface {
   /**

@@ -7,6 +7,8 @@
 	
 	<link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32" />
 	<link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16" />
+	
+	<!-- 
 	<link href='/doxi/resources/swagger/css/typography.css' media='screen' rel='stylesheet' type='text/css' />
 	<link href='/doxi/resources/swagger/css/reset.css' media='screen' rel='stylesheet' type='text/css' />
 	<link href='/doxi/resources/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css' />
@@ -24,34 +26,53 @@
 	<script src='/doxi/resources/swagger/lib/highlight.7.3.pack.js' type='text/javascript'></script>
 	<script src='/doxi/resources/swagger/lib/marked.js' type='text/javascript'></script>
 	<script src='/doxi/resources/swagger/lib/swagger-oauth.js' type='text/javascript'></script>
+	-->
+
+		
+	<script src='/doxi/resources/swagger-3/swagger-ui-bundle.js' type='text/javascript'></script>
+	<link href='/doxi/resources/swagger-3/swagger-ui.css' media='screen' rel='stylesheet' type='text/css' />
 
 	<script type="text/javascript">
-		$(function() {
-			var url = "/doxi/swagger-doi.json";
 
-			window.swaggerUi = new SwaggerUi(
-					{
-						url : url,
-						dom_id : "swagger-ui-container",
-						supportedSubmitMethods : [ 'get', 'post', 'put', 'delete', 'patch' ],
-						onFailure : function(data) {
-							log("Unable to Load SwaggerUI");
-						},
-						docExpansion : "list",
-						apisSorter : "alpha",
-						operationsSorter : "method",
-						validatorUrl : null
-					});
+	    window.onload = function() {
 
-			window.swaggerUi.load();
-
+	        // Begin Swagger UI call region
+	        const ui = SwaggerUIBundle({
+	          "dom_id": "#swagger-ui-container",
+	          deepLinking: true,
+	          layout: "BaseLayout",
+	          url: "/doxi/doi/openapi.json",
+	          operationsSorter: "method",
+	          presets: [
+	            SwaggerUIBundle.presets.apis
+	          ],
+	          plugins: [
+	            SwaggerUIBundle.plugins.DownloadUrl
+	            
+	          ],
+	          // this is required to keep the slash / in the DOI as it is and do not encode to %2f 
+	        	  // This is NOT compliant to RFC3986, as path must always be encoded. However, DOIs are not compliant anyway
+	        	  requestInterceptor: (request) => {
+	        	    request.url = request.url.replace(/%2F/g, "/")
+	        	    return request
+	        	  }
+	        	
+	        })
+	        
+	        
+	        // End Swagger UI call region
+	
+	
+	        window.ui = ui
+	      }
+	
 			function log() {
 				if ('console' in window) {
 					console.log.apply(console, arguments);
 				}
 			}
 
-		});
+	
 
 	</script>
 	

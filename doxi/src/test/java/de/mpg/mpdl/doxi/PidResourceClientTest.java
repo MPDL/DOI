@@ -21,10 +21,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.mpg.mpdl.doxi.doi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.pidcache.PidServiceResponseVO;
 import de.mpg.mpdl.doxi.pidcache.XMLTransforming;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
-import de.mpg.mpdl.doxi.rest.PidResource;
+import de.mpg.mpdl.doxi.pidcache.rest.PidResource;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 // ####################################################################################
@@ -71,7 +71,7 @@ public class PidResourceClientTest {
 
     WebappContext ctx = new WebappContext("ctx", "/");
     ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig",
-        new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
+        new ServletContainer(new JerseyApplicationConfig(null))).addMapping("/rest/*");
     ctx.addListener("de.mpg.mpdl.doxi.rest.EMF");
     ctx.deploy(this.server);
 

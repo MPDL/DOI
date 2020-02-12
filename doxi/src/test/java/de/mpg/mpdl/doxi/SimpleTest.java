@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mpg.mpdl.doxi.controller.DataciteAPIController;
-import de.mpg.mpdl.doxi.rest.JerseyApplicationConfig;
+import de.mpg.mpdl.doxi.doi.controller.DataciteAPIController;
+import de.mpg.mpdl.doxi.doi.rest.JerseyApplicationConfig;
 import de.mpg.mpdl.doxi.util.PropertyReader;
 
 public class SimpleTest {
@@ -97,7 +97,7 @@ public class SimpleTest {
 
     // Register Jersey Servlet
     ctx.addServlet("de.mpg.mpdl.doi.rest.JerseyApplicationConfig",
-        new ServletContainer(new JerseyApplicationConfig())).addMapping("/rest/*");
+        new ServletContainer(new JerseyApplicationConfig(null))).addMapping("/rest/*");
     ctx.addListener("de.mpg.mpdl.doxi.rest.EMF");
 
     ctx.deploy(server);
