@@ -21,25 +21,58 @@ import javax.ws.rs.core.Response.Status;
 import de.mpg.mpdl.doxi.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doxi.doi.model.DOI;
 import de.mpg.mpdl.doxi.exception.DoxiException;
-
-import io.swagger.v3.oas.annotations.*;
-import io.swagger.v3.oas.annotations.responses.*;
-import io.swagger.v3.oas.annotations.servers.Server;
-import io.swagger.v3.oas.annotations.media.*;
-import io.swagger.v3.oas.annotations.headers.*;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.servers.Server;
 
 
 @Path("/rest/v1")
 @OpenAPIDefinition(
 		info = @Info(
-					title="DOI API"
+					title="DOI API",
+					version = "1.1",
+					contact = @Contact(
+								name = "Max Planck Digital Library DOI Service",
+								url = "https://doi.mpdl.mpg.de/"
+							)
 				),
 		servers = @Server(
 					url = "/doxi"
 				)
 )
 public class DOIResource {
+	
+	public static final String DATACITE_MD_V4_EXAMPLE = 
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
+			"<resource xmlns=\"http://datacite.org/schema/kernel-4\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd\">\n" + 
+			"	<identifier identifierType=\"DOI\"></identifier>\n" + 
+			"	<titles>\n" + 
+			"		<title>Sample Title</title>\n" + 
+			"	</titles>\n" + 
+			"	<creators>\n" + 
+			"		<creator>\n" + 
+			"			<creatorName>Max Mustermann</creatorName>\n" + 
+			"		</creator>\n" + 
+			"	</creators>\n" + 
+			"	<publisher>Sample Publisher</publisher>\n" + 
+			"	<publicationYear>2020</publicationYear>\n" + 
+			"	<resourceType resourceTypeGeneral=\"Other\"></resourceType>\n" +
+			"</resource>";
+	
+	
+	
+	
+	
+	
 	@Inject
 	private DoiControllerInterface doiController;// = DataciteAPIController.getInstance();
 
@@ -58,7 +91,11 @@ public class DOIResource {
 	@RolesAllowed("user")
 	public Response create(@Parameter(description = "the DOI to be registered", required = true) @PathParam("doi") String doi,
 			@Parameter(description = "the URL to which this DOI should point. If no URL is given, a draft DOI is created (not findable). Use the update method to provide the URL later.", required = false) @QueryParam("url") String url,
-			@Parameter(description = "the metadata of this DOI in XML format. The identifier tag in the XML must either match the provided DOI or be empty (will be filled with provided DOI).", required = true) String metadataXml)
+			@RequestBody(description = "the metadata of this DOI in XML format. The identifier tag in the XML must either match the provided DOI or be empty (will be filled with provided DOI).", required = true,
+				content = {
+						@Content(mediaType = MediaType.TEXT_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE)), 
+						@Content(mediaType = MediaType.APPLICATION_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE))}
+			 ) String metadataXml)
 			throws Exception {
 		DOI resultDoi = doiController.createDOI(doi, url, metadataXml);
 		
@@ -83,7 +120,11 @@ public class DOIResource {
 	public Response createAutoOrSuffix(
 			@Parameter(description = "the URL to which this DOI should point. If no URL is given, a draft DOI is created (not findable). Use the update method to provide the URL later.", required = false) @QueryParam("url") String url,
 			@Parameter(description = "an optional suffix", required = false) @QueryParam("suffix") String suffix,
-			@Parameter(description = "the metadata of this DOI in XML format. The identifier tag in the XML must be empty, it will automatically be filled with the generated DOI.", required = true) String metadataXml)
+			@RequestBody(description = "the metadata of this DOI in XML format. The identifier tag in the XML must be empty, it will automatically be filled with the generated DOI.", required = true,
+					content = {
+							@Content(mediaType = MediaType.TEXT_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE)), 
+							@Content(mediaType = MediaType.APPLICATION_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE))}
+			) String metadataXml)
 			throws DoxiException {
 		DOI resultDoi = null;
 		if (suffix == null) {
@@ -113,7 +154,11 @@ public class DOIResource {
 	@RolesAllowed("user")
 	public Response updateDOI(@Parameter(description = "the DOI to be updated", required = true) @PathParam("doi") String doi,
 			@Parameter(description = "the new URL", required = true) @QueryParam("url") String url,
-			@Parameter(description = "the new metadata", required = true) String metadataXml) throws DoxiException {
+			@Parameter(description = "the new metadata", required = true,
+					content = {
+							@Content(mediaType = MediaType.TEXT_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE)), 
+							@Content(mediaType = MediaType.APPLICATION_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE))}
+			) String metadataXml) throws DoxiException {
 
 		DOI resultDoi = doiController.updateDOI(doi, url, metadataXml);
 

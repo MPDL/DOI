@@ -85,11 +85,11 @@
 	</Logger>
 	
 	<Logger name="de.mpg.mpdl.doxi.pidcache.GwdgClient" level="debug" additivity="false">
-		<AppenderRef ref="doi_log"/>
+		<AppenderRef ref="handle_log"/>
 		<AppenderRef ref="Console"/>
 	</Logger>
 		<Logger name="de.mpg.mpdl.doxi.pidcache.JerseyApplicationConfigPid" level="debug" additivity="false">
-		<AppenderRef ref="doi_log"/>
+		<AppenderRef ref="handle_log"/>
 		<AppenderRef ref="Console"/>
 	</Logger>
 	
