@@ -260,7 +260,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4-1201-jdbc41</version>
+			<version>42.2.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -291,6 +291,8 @@
 		<jersey.version>2.30</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.warName>doxi</project.warName>
+		<!-- Required due to a problem in OpenJDK, see https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8212233-->
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 	
 	<profiles>
