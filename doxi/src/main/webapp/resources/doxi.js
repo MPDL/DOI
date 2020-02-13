@@ -1,7 +1,7 @@
 		function logout() {
 			$.ajax({
 				type: "GET",
-				url: "/doxi/rest/doi",
+				url: "/doxi/doi/rest/v1",
 				dataType: 'json',
 				async: true,
 				username: "user",

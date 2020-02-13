@@ -7,9 +7,20 @@
 <urlrewrite>
 
 	<!-- Forward old REST requests to new paths -->
+	
+	<rule>
+       <from>^/rest/doi$</from>
+       <to type="forward">/doi/rest/v1</to>
+    </rule>
+	
     <rule>
        <from>^/rest/doi/(.*)$</from>
        <to type="forward">/doi/rest/v1/$1</to>
+    </rule>
+
+    <rule>
+       <from>^/rest/pid$</from>
+       <to type="forward">/pid/rest/v1</to>
     </rule>
     
     <rule>

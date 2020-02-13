@@ -39,6 +39,7 @@ import de.mpg.mpdl.doxi.exception.DoiNotFoundException;
 import de.mpg.mpdl.doxi.exception.DoiRegisterException;
 import de.mpg.mpdl.doxi.exception.DoxiException;
 import de.mpg.mpdl.doxi.exception.MetadataInvalidException;
+import de.mpg.mpdl.doxi.security.DoxiRole;
 import de.mpg.mpdl.doxi.security.DoxiUser;
 import de.mpg.mpdl.doxi.util.EMF;
 import de.mpg.mpdl.doxi.util.PropertyReader;
@@ -132,11 +133,10 @@ public class DataciteAPIController implements DoiControllerInterface {
 		List<DOI> doiList = new ArrayList<DOI>();
 		Response response = dataciteTarget.path("doi").request().get();
 
-		String prefix = getDoiPrefix();
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
 			for (String listItem : response.readEntity(String.class).split("\n")) {
 				if (listItem != null
-						&& listItem.toUpperCase(Locale.ENGLISH).startsWith(prefix.toUpperCase(Locale.ENGLISH))) {
+						&& prefixAllowed(listItem)) {
 					DOI doi = new DOI();
 					doi.setDoi(listItem);
 					doiList.add(doi);
@@ -161,7 +161,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 		LOG.info("User " + secContext.getUserPrincipal() + " requests createDoi() with doi " + doi + " and url " + url);
 
 		LOG.debug("Metadata: " + metadataXml);
-		if (doi == null || !doi.toUpperCase(Locale.ENGLISH).startsWith(getDoiPrefix().toUpperCase(Locale.ENGLISH))) {
+		if (doi == null || !prefixAllowed(doi)) {
 			throw new DoiInvalidException("Prefix not allowed for this user");
 		}
 
@@ -459,5 +459,16 @@ public class DataciteAPIController implements DoiControllerInterface {
 	private String getDoiPrefix() {
 		DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
 		return currentUser.getPrefix();
+	}
+	
+	private boolean prefixAllowed(String doi)
+	{
+		DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
+		boolean isAdmin = false;
+		for(DoxiRole role : currentUser.getRoles())
+		{
+			isAdmin = "admin".contentEquals(role.getRole());
+		}
+		return isAdmin || doi.toUpperCase(Locale.ENGLISH).startsWith(currentUser.getPrefix().toUpperCase(Locale.ENGLISH));
 	}
 }
