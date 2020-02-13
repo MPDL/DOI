@@ -3,7 +3,7 @@
 	<groupId>de.mpg.mpdl.doi</groupId>
 	<artifactId>doxi</artifactId>
 	<packaging>war</packaging>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<name>doxi</name>
 	
 	<scm>
