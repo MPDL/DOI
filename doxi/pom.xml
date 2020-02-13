@@ -3,14 +3,14 @@
 	<groupId>de.mpg.mpdl.doi</groupId>
 	<artifactId>doxi</artifactId>
 	<packaging>war</packaging>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<name>doxi</name>
 	
 	<scm>
 		<connection>scm:git:https://github.com/MPDL/DOI.git</connection>
 		<developerConnection>scm:git:https://github.com/MPDL/DOI.git</developerConnection>
 		<url>https://github.com/MPDL/DOI</url>
-		<tag>HEAD</tag>
+		<tag>doxi-1.4</tag>
 	</scm>
 	
 	<repositories>
