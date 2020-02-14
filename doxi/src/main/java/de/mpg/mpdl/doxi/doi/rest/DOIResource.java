@@ -154,7 +154,7 @@ public class DOIResource {
 	@RolesAllowed("user")
 	public Response updateDOI(@Parameter(description = "the DOI to be updated", required = true) @PathParam("doi") String doi,
 			@Parameter(description = "the new URL", required = true) @QueryParam("url") String url,
-			@Parameter(description = "the new metadata", required = true,
+			@RequestBody(description = "the new metadata", required = true,
 					content = {
 							@Content(mediaType = MediaType.TEXT_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE)), 
 							@Content(mediaType = MediaType.APPLICATION_XML, examples = @ExampleObject(value = DOIResource.DATACITE_MD_V4_EXAMPLE))}
