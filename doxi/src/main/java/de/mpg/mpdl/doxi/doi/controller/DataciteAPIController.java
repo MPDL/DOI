@@ -162,7 +162,8 @@ public class DataciteAPIController implements DoiControllerInterface {
 
 		LOG.debug("Metadata: " + metadataXml);
 		if (doi == null || !prefixAllowed(doi)) {
-			throw new DoiInvalidException("Prefix not allowed for this user");
+			DoxiUser currentUser = (DoxiUser) secContext.getUserPrincipal();
+			throw new DoiInvalidException("Prefix not allowed for this user, only the following is valid: " + currentUser.getPrefix() );
 		}
 
 		// Check if DOI already exists
@@ -468,7 +469,9 @@ public class DataciteAPIController implements DoiControllerInterface {
 		for(DoxiRole role : currentUser.getRoles())
 		{
 			isAdmin = "admin".contentEquals(role.getRole());
+			if(isAdmin) break;
 		}
-		return isAdmin || doi.toUpperCase(Locale.ENGLISH).startsWith(currentUser.getPrefix().toUpperCase(Locale.ENGLISH));
+		boolean prefixAllowed = doi.toUpperCase(Locale.ENGLISH).startsWith(currentUser.getPrefix().toUpperCase(Locale.ENGLISH));
+		return isAdmin || prefixAllowed;
 	}
 }
