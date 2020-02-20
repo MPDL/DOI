@@ -108,7 +108,7 @@ public class DataciteAPIController implements DoiControllerInterface {
 				} else {
 					LOG.error("Error getting DOI metadata");
 					// TODO DOI maybe another exception type?
-					throw new DoxiException(doiResponse.getStatus(), doiResponse.readEntity(String.class));
+					throw new DoxiException(doiMetaDataResponse.getStatus(), doiMetaDataResponse.readEntity(String.class));
 				}
 			} catch (URISyntaxException e) {
 				LOG.error("Error setting URL", e);
