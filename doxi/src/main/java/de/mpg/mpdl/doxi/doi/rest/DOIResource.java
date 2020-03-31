@@ -21,9 +21,11 @@ import javax.ws.rs.core.Response.Status;
 import de.mpg.mpdl.doxi.doi.controller.DoiControllerInterface;
 import de.mpg.mpdl.doxi.doi.model.DOI;
 import de.mpg.mpdl.doxi.exception.DoxiException;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -47,6 +49,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
 				),
 		servers = @Server(
 					url = "/doxi"
+				),
+		externalDocs = @ExternalDocumentation(
+				url = "https://colab.mpdl.mpg.de/mediawiki/DOxI_Documentation",
+				description = "DOI API Documentation"
 				)
 )
 public class DOIResource {
