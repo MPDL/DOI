@@ -7,8 +7,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -25,13 +25,13 @@ public class EMF implements ServletContextListener {
   private static Map<String, String> jpaDBProperties = new HashMap<String, String>();
 
   static {
-    jpaDBProperties.put("javax.persistence.jdbc.driver",
+    jpaDBProperties.put("jakarta.persistence.jdbc.driver",
         PropertyReader.getProperty(PropertyReader.DOXI_JDBC_DRIVER));
-    jpaDBProperties.put("javax.persistence.jdbc.url",
+    jpaDBProperties.put("jakarta.persistence.jdbc.url",
         PropertyReader.getProperty(PropertyReader.DOXI_JDBC_URL));
-    jpaDBProperties.put("javax.persistence.jdbc.user",
+    jpaDBProperties.put("jakarta.persistence.jdbc.user",
         PropertyReader.getProperty(PropertyReader.DOXI_JDBC_USER));
-    jpaDBProperties.put("javax.persistence.jdbc.password",
+    jpaDBProperties.put("jakarta.persistence.jdbc.password",
         PropertyReader.getProperty(PropertyReader.DOXI_JDBC_PASSWORD));
   }
 

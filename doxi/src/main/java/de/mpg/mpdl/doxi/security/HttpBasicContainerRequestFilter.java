@@ -3,7 +3,7 @@ package de.mpg.mpdl.doxi.security;
 import java.io.IOException;
 import java.util.Base64;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;

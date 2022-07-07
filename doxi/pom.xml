@@ -16,7 +16,7 @@
 	<repositories>
 		<repository>
 			<id>nexus</id>
-			<url>http://rd.mpdl.mpg.de/nexus/content/groups/public</url>
+			<url>https://rd.mpdl.mpg.de/nexus3/content/groups/public</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -30,12 +30,12 @@
 		<repository>
 			<id>releases</id>
 			<name>Nexus Managed Releases</name>
-			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/releases</url>
+			<url>https://rd.mpdl.mpg.de/nexus3/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Managed Snapshots</name>
-			<url>http://rd.mpdl.mpg.de/nexus/content/repositories/snapshots</url>
+			<url>https://rd.mpdl.mpg.de/nexus3/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 	
@@ -155,6 +155,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-framework-bom</artifactId>
@@ -169,6 +170,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			-->
 		</dependencies>
 	</dependencyManagement>
 	
@@ -185,7 +187,7 @@
 		<dependency>
 		    <groupId>org.tuckey</groupId>
 		    <artifactId>urlrewritefilter</artifactId>
-		    <version>4.0.3</version>
+		    <version>4.0.4</version>
 		</dependency>
 		
 		<dependency>
@@ -228,8 +230,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>2.7.6</version>
+			<artifactId>org.eclipse.persistence.jpa</artifactId>
+			<version>3.0.2</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
@@ -259,34 +262,34 @@
 		<dependency>
 			<groupId>org.mindrot</groupId>
 			<artifactId>jbcrypt</artifactId>
-			<version>0.3m</version>
+			<version>0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.10</version>
+			<version>42.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.30</version>
+			<version>1.7.36</version>
 		</dependency>
 
 		<!-- Use log4j2 as logging framework -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.15.0</version>
+			<version>2.17.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.15.0</version>
+			<version>2.17.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-jul</artifactId>
-			<version>2.15.0</version>
+			<version>2.17.2</version>
 		</dependency>
 	</dependencies>
 	

@@ -2,8 +2,8 @@ package de.mpg.mpdl.doxi.pidcache;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 
 import de.mpg.mpdl.doxi.pidcache.model.PidID;
 import de.mpg.mpdl.doxi.util.PropertyReader;

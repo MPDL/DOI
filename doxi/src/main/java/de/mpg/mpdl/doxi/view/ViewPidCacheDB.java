@@ -2,7 +2,7 @@ package de.mpg.mpdl.doxi.view;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import de.mpg.mpdl.doxi.pidcache.PidCache;
 import de.mpg.mpdl.doxi.pidcache.PidCacheDAO;

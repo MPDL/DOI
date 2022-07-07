@@ -2,8 +2,8 @@ package de.mpg.mpdl.doxi.view;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 import de.mpg.mpdl.doxi.security.DoxiUser;
 import de.mpg.mpdl.doxi.util.EMF;
